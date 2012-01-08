@@ -1,4 +1,4 @@
-<?php
+ï»¿<?php
 
 error_reporting(E_ALL|E_STRICT);
 
@@ -7,16 +7,17 @@ define('IB01_ROOT', realpath(IB01_LIB_ROOT . '/..'));
 define('IB01_CONSTANTS', IB01_LIB_ROOT . '/CConstants.php');
 
 require_once(IB01_LIB_ROOT . '/util/CErrorException.php');
-require_once(IB01_LIB_ROOT . '/entity/CEntity.php');
+require_once(IB01_LIB_ROOT . '/entity/CScene.php');
+require_once(IB01_LIB_ROOT . '/state/scene/initialize/CSceneParseQuery.php');
 
 /**
- *	IB01‚ðŽÀs‚·‚éƒNƒ‰ƒXB
+ *	IB01ã‚’å®Ÿè¡Œã™ã‚‹ã‚¯ãƒ©ã‚¹ã€‚
  */
 class CIB01
 {
 
 	/**
-	 *	ŽÀs‚µ‚Ü‚·B
+	 *	å®Ÿè¡Œã—ã¾ã™ã€‚
 	 */
 	public static function run()
 	{
