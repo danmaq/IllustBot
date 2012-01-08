@@ -82,7 +82,6 @@ class CDocumentBuilder
 		$body = self::createBody($dom);
 		$this->dom = $dom;
 		$title = $this->createAttribute($body, 'title', $title);
-		$this->createAttribute($body, 'site', CConfigure::SITE_NAME);
 		$this->createAttribute($body, 'ver', CConstants::VERSION);
 		$this->createAttribute($body, 'ua', $_SERVER['HTTP_USER_AGENT']);
 		$body->setAttributeNS(self::URI_XSI, self::NS_XSI . ':noNamespaceSchemaLocation', 'skin/IB01.xsd');
