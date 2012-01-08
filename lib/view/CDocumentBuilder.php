@@ -227,6 +227,22 @@ class CDocumentBuilder
 		$this->getRootElement()->appendChild($topic);
 		return $topic;
 	}
+
+	/**
+	 *	属性を作成します。
+	 *
+	 *	@param DOMNode $element 所属させる要素。
+	 *	@param string $name 属性。
+	 *	@param string $value 値。
+	 *	@preturn DOMNode 作成された属性オブジェクト。
+	 */
+	public function createAttribute(DOMNode $element, $name, $value)
+	{
+		$attr = $this->getDOM()->createAttribute($name);
+		$attr->value = $value;
+		$element->appendChild($attr);
+		return $attr;
+	}
 }
 
 /**
