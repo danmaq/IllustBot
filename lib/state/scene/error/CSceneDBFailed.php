@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 
 require_once(IB01_CONSTANTS);
 require_once(IB01_LIB_ROOT . '/view/CDocumentBuilder.php');
@@ -55,7 +55,7 @@ class CSceneDBFailed
 		$xmlbuilder = new CDocumentBuilder();
 		$message = CDBManager::getInstance()->getException();
 		$xmlbuilder->createSimpleMessage(
-			_('ERROR'), _('データベースとの通信に失敗しました。'),
+			_('ERROR'), _('データベースとの通信に失敗しました。') .
 			$message->getMessage() . "\n" . $message->getTraceAsString());
 		$xmlbuilder->output(CConstants::FILE_XSL_DEFAULT);
 		$entity->setNextState(CEmptyState::getInstance());
