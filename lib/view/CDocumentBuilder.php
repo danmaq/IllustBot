@@ -147,7 +147,10 @@ class CDocumentBuilder
 		{
 			$this->createCodeParagraph($this->createTopic(_('デバッグ用メッセージ')), self::$trace);
 		}
-		ob_start("ob_gzhandler");
+		if(CConfigure::COMPRESS)
+		{
+			ob_start("ob_gzhandler");
+		}
 		if(CConfigure::USE_CLIENT_XSLT)
 		{
 			header('Content-Type: text/xml; charset=UTF-8');
