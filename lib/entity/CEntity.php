@@ -3,24 +3,24 @@
 require_once(IB01_LIB_ROOT . '/state/CEmptyState.php');
 
 /**
- *	ó‘Ô‚ğ‚Á‚½ƒIƒuƒWƒFƒNƒgB
+ *	çŠ¶æ…‹ã‚’æŒã£ãŸã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã€‚
  */
 class CEntity
 {
 
-	/**	‘O‰ñ‚Ìó‘ÔB */
+	/**	å‰å›ã®çŠ¶æ…‹ã€‚ */
 	private $previousState;
 
-	/**	Œ»İ‚Ìó‘ÔB */
+	/**	ç¾åœ¨ã®çŠ¶æ…‹ã€‚ */
 	private $currentState;
 
-	/**	Ÿ‚Ìó‘ÔB */
+	/**	æ¬¡ã®çŠ¶æ…‹ã€‚ */
 	private $nextState;
 
 	/**
-	 *	ƒRƒ“ƒXƒgƒ‰ƒNƒ^B
+	 *	ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿ã€‚
 	 *
-	 *	@param $firstState Å‰‚Ìó‘ÔBŠù’è‚Å‚ÍnullB
+	 *	@param $firstState æœ€åˆã®çŠ¶æ…‹ã€‚æ—¢å®šã§ã¯nullã€‚
 	 */
 	public function __construct(IState $firstState = null)
 	{
@@ -31,7 +31,7 @@ class CEntity
 	}
 
 	/**
-	 *	ƒfƒXƒgƒ‰ƒNƒ^B
+	 *	ãƒ‡ã‚¹ãƒˆãƒ©ã‚¯ã‚¿ã€‚
 	 */
 	function __destruct()
 	{
@@ -39,9 +39,9 @@ class CEntity
 	}
 
 	/**
-	 *	‘O‰ñ‚Ìó‘Ô‚ğæ“¾‚µ‚Ü‚·B
+	 *	å‰å›ã®çŠ¶æ…‹ã‚’å–å¾—ã—ã¾ã™ã€‚
 	 *
-	 *	@return IState ‘O‰ñ‚Ìó‘ÔB
+	 *	@return IState å‰å›ã®çŠ¶æ…‹ã€‚
 	 */
 	public function getPreviousState()
 	{
@@ -49,9 +49,9 @@ class CEntity
 	}
 
 	/**
-	 *	Œ»İ‚Ìó‘Ô‚ğæ“¾‚µ‚Ü‚·B
+	 *	ç¾åœ¨ã®çŠ¶æ…‹ã‚’å–å¾—ã—ã¾ã™ã€‚
 	 *
-	 *	@return IState Œ»İ‚Ìó‘ÔB
+	 *	@return IState ç¾åœ¨ã®çŠ¶æ…‹ã€‚
 	 */
 	public function getCurrentState()
 	{
@@ -59,9 +59,9 @@ class CEntity
 	}
 
 	/**
-	 *	Ÿ‚Ìó‘Ô‚ğæ“¾‚µ‚Ü‚·B
+	 *	æ¬¡ã®çŠ¶æ…‹ã‚’å–å¾—ã—ã¾ã™ã€‚
 	 *
-	 *	@return IState Ÿ‚Ìó‘ÔB
+	 *	@return IState æ¬¡ã®çŠ¶æ…‹ã€‚
 	 */
 	public function getNextState()
 	{
@@ -69,9 +69,9 @@ class CEntity
 	}
 
 	/**
-	 *	Ÿ‚Ìó‘Ô‚ğİ’è‚µ‚Ü‚·B
+	 *	æ¬¡ã®çŠ¶æ…‹ã‚’è¨­å®šã—ã¾ã™ã€‚
 	 *
-	 *	@patam IState $nextState Ÿ‚Ìó‘ÔB
+	 *	@patam IState $nextState æ¬¡ã®çŠ¶æ…‹ã€‚
 	 */
 	public function setNextState(IState $nextState = null)
 	{
@@ -79,7 +79,7 @@ class CEntity
 	}
 
 	/**
-	 *	Às‚µ‚Ü‚·B
+	 *	å®Ÿè¡Œã—ã¾ã™ã€‚
 	 */
 	public function execute()
 	{
@@ -88,9 +88,9 @@ class CEntity
 	}
 
 	/**
-	 *	—\–ñ‚³‚ê‚½Ÿ‚Ìó‘Ô‚ğŠm’è‚µ‚Ü‚·B
+	 *	äºˆç´„ã•ã‚ŒãŸæ¬¡ã®çŠ¶æ…‹ã‚’ç¢ºå®šã—ã¾ã™ã€‚
 	 *
-	 *	@param boolean ó‘Ô‚ª‘JˆÚ‚µ‚½ê‡AtrueB
+	 *	@param boolean çŠ¶æ…‹ãŒé·ç§»ã—ãŸå ´åˆã€trueã€‚
 	 */
 	public function commitNextState()
 	{
@@ -110,7 +110,7 @@ class CEntity
 	}
 
 	/**
-	 *	ó‘Ô‚ğƒŠƒZƒbƒg‚µ‚Ü‚·B
+	 *	çŠ¶æ…‹ã‚’ãƒªã‚»ãƒƒãƒˆã—ã¾ã™ã€‚
 	 */
 	public function dispose()
 	{

@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 
 require_once(IB01_CONSTANTS);
 require_once(IB01_LIB_ROOT . '/state/scene/error/CSceneSimpleError.php');

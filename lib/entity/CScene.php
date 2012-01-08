@@ -6,16 +6,16 @@ require_once(IB01_LIB_ROOT . '/state/scene/error/CSceneSimpleError.php');
 require_once(IB01_LIB_ROOT . '/state/scene/error/CSceneDBFailed.php');
 
 /**
- *	ó‘Ô‚ğ‚Á‚½ƒIƒuƒWƒFƒNƒgB
+ *	çŠ¶æ…‹ã‚’æŒã£ãŸã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã€‚
  */
 class CScene
 	extends CEntity
 {
 
 	/**
-	 *	ƒRƒ“ƒXƒgƒ‰ƒNƒ^B
+	 *	ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿ã€‚
 	 *
-	 *	@param $firstState Å‰‚Ìó‘ÔBŠù’è‚Å‚ÍnullB
+	 *	@param $firstState æœ€åˆã®çŠ¶æ…‹ã€‚æ—¢å®šã§ã¯nullã€‚
 	 */
 	public function __construct(IState $firstState = null)
 	{
@@ -23,12 +23,12 @@ class CScene
 	}
 
 	/**
-	 *	ƒf[ƒ^ƒx[ƒX‚ÉÚ‘±‚µ‚Ü‚·B
+	 *	ãƒ‡ãƒ¼ã‚¿ãƒ™ãƒ¼ã‚¹ã«æ¥ç¶šã—ã¾ã™ã€‚
 	 *
-	 *	¸”s‚µ‚½ê‡A©“®“I‚ÉƒGƒ‰[ƒƒbƒZ[ƒW‚ğ•\¦‚·‚éƒV[ƒ“‚Ö‚ÆƒWƒƒƒ“ƒv‚µ‚Ü‚·B
-	 *	ƒV[ƒ“‚ÌƒRƒ~ƒbƒg‚Ís‚í‚ê‚È‚¢‚½‚ßA–¾¦“I‚És‚¤‚©AŒ»İ‚Ìó‘Ô‚ğ1ƒ‹[ƒvÀs‚·‚é•K—v‚ª‚ ‚è‚Ü‚·B
+	 *	å¤±æ•—ã—ãŸå ´åˆã€è‡ªå‹•çš„ã«ã‚¨ãƒ©ãƒ¼ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ã‚’è¡¨ç¤ºã™ã‚‹ã‚·ãƒ¼ãƒ³ã¸ã¨ã‚¸ãƒ£ãƒ³ãƒ—ã—ã¾ã™ã€‚
+	 *	ã‚·ãƒ¼ãƒ³ã®ã‚³ãƒŸãƒƒãƒˆã¯è¡Œã‚ã‚Œãªã„ãŸã‚ã€æ˜ç¤ºçš„ã«è¡Œã†ã‹ã€ç¾åœ¨ã®çŠ¶æ…‹ã‚’1ãƒ«ãƒ¼ãƒ—å®Ÿè¡Œã™ã‚‹å¿…è¦ãŒã‚ã‚Šã¾ã™ã€‚
 	 *
-	 *	@return boolean Ú‘±‚É¬Œ÷‚µ‚½ê‡AtrueB
+	 *	@return boolean æ¥ç¶šã«æˆåŠŸã—ãŸå ´åˆã€trueã€‚
 	 */
 	public function connectDatabase()
 	{
