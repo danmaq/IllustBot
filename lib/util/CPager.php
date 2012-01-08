@@ -1,6 +1,6 @@
-<?php
+﻿<?php
 
-require_once(NUE_CONSTANTS);
+require_once(IB01_CONSTANTS);
 
 /**
  *	ページャ クラス。
