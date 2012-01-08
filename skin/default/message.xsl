@@ -38,7 +38,7 @@
 					</h1>
 				</header>
 				<p>
-					<xsl:value-of select="topic" />
+					<xsl:value-of select="topic/@title" />: <xsl:value-of select="topic" />
 				</p>
 				<footer>
 					<hr />
