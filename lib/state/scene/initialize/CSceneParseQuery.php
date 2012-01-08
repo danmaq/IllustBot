@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 
 require_once(IB01_CONSTANTS);
 require_once(IB01_LIB_ROOT . '/state/scene/error/CSceneSimpleError.php');
@@ -79,11 +79,7 @@ class CSceneParseQuery
 		$this->setQueryIfNotExists('tpp', CConfigure::DEFAULT_TOPIC_PER_PAGE);
 		$this->setQueryIfNotExists('skin', CConfigure::SKINSET);
 		$existId = isset($_GET['id']);
-		if($this->setQueryIfNotExists('f',
-			$existId ? 'core/top' : 'core/top') && !$existId)
-		{
-			$this->setQueryIfNotExists('t', CConfigure::DEFAULT_TAG);
-		}
+		$this->setQueryIfNotExists('f', $existId ? 'core/top' : 'core/top');
 	}
 
 	/**
