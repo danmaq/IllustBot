@@ -25,7 +25,7 @@
 				<meta name="author" content="danmaq" />
 				<title>
 					<xsl:if test="@title and string-length(@title) > 0"><xsl:value-of select="@title" /> - </xsl:if>
-					<xsl:value-of select="@site" />
+					ぼっと[IB-01]がお絵かきするようです。
 				</title>
 				<link href="skin/default/default.css" rel="StyleSheet" />
 				<link href="http://twitter.com/danmaq" rel="Author" />
@@ -34,9 +34,12 @@
 			<body>
 				<header>
 					<h1>
-						<a href="./">ぼっとがお絵かきするようです。</a>
+						<a href="./">ぼっと[IB-01]がお絵かきするようです。</a>
 					</h1>
 				</header>
+				<p>
+					<xsl:value-of select="topic" />
+				</p>
 				<footer>
 					<hr />
 					<address>by danmaq</address>

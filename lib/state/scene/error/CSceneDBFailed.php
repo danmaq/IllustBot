@@ -57,7 +57,7 @@ class CSceneDBFailed
 		$xmlbuilder->createSimpleMessage(
 			_('ERROR'), _('データベースとの通信に失敗しました。') .
 			$message->getMessage() . "\n" . $message->getTraceAsString());
-		$xmlbuilder->output(CConstants::FILE_XSL_DEFAULT);
+		$xmlbuilder->output(CConstants::FILE_XSL_MESSAGE);
 		$entity->setNextState(CEmptyState::getInstance());
 	}
 

@@ -226,6 +226,7 @@ class CDocumentBuilder
 		$topic = $dom->createElement('topic');
 		$title = $caption;
 		$this->createAttribute($topic, 'title', $title);
+		$topic->appendChild($dom->createTextNode($description));
 		$this->getRootElement()->appendChild($topic);
 		return $topic;
 	}

@@ -93,7 +93,7 @@ class CSceneSimpleError
 	{
 		$xmlbuilder = new CDocumentBuilder();
 		$xmlbuilder->createSimpleMessage(_('ERROR'), $this->description);
-		$xmlbuilder->output(CConstants::FILE_XSL_DEFAULT);
+		$xmlbuilder->output(CConstants::FILE_XSL_MESSAGE);
 		$entity->setNextState(CEmptyState::getInstance());
 	}
 

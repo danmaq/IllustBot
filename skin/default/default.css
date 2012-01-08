@@ -1,0 +1,11 @@
+@charset "UTF-8";
+
+@media all
+{
+	body
+	{
+		font-family: serif;
+		color: rgb(64, 164, 113);
+		background-color: white;
+	}
+}

@@ -19,8 +19,8 @@ class CConstants
 	/** MySQL用のID。 */
 	const DBMS_MYSQL = 'mysql';
 
-	/** 既定のXSLファイル。 */
-	const FILE_XSL_DEFAULT = 'default.xsl';
+	/** 単発メッセージ表示時用XSLファイル。 */
+	const FILE_XSL_MESSAGE = 'message.xsl';
 
 }
 
