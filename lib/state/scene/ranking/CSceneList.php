@@ -83,7 +83,7 @@ class CSceneList
 				$xmlbuilder->createItem(array(
 					'id' => $item->getID(),
 					'theme' => $item->getTheme(),
-				), $score);
+				), $newbie);
 			}
 			foreach($botsScore as $item)
 			{

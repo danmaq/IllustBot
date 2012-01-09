@@ -7,7 +7,7 @@ class CRGB
 {
 
 	/**	RGB565。 */
-	public $rgb = 0;
+	private $rgb = 0;
 
 	/**
 	 *	コンストラクタ。
@@ -56,13 +56,13 @@ class CRGB
 	 */
 	public function getRGBCode()
 	{
-　　	$rgb = $this->rgb;
-　　	$r = round(($rgb & 31) * (255 / 31));
-　　	$rgb >> 5;
-　　	$g = round(($rgb & 63) * (255 / 63));
-　　	$rgb >> 6;
-　　	$b = round(($rgb & 31) * (255 / 31));
-　　	return sprintf('%02X%02X%02X', $r, $g, $b);
+		$rgb = $this->rgb;
+		$r = round(($rgb & 31) * (255 / 31));
+		$rgb >> 5;
+		$g = round(($rgb & 63) * (255 / 63));
+		$rgb >> 6;
+		$b = round(($rgb & 31) * (255 / 31));
+		return sprintf('%02X%02X%02X', $r, $g, $b);
 	}
 
 	/**
@@ -70,10 +70,10 @@ class CRGB
 	 *
 	 *	@return int カラーコード文字列。
 	 */
-　　function __toString()
-　　{
-　　	return $this->getRGBCode();
-　　}
+	public function __toString()
+	{
+		return $this->getRGBCode();
+	}
 }
 
 ?>

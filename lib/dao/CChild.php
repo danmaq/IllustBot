@@ -188,7 +188,7 @@ class CChild
 	{
 		if($this->amount === null)
 		{
-			this->amount = CDBManager::getInstance()->singleFetch(
+			$this->amount = CDBManager::getInstance()->singleFetch(
 				CFileSQLChild::getInstance()->selectUnvotedCount,
 				'EXIST', $this->createDBParamsFromOwner());
 		}

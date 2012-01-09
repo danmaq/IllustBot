@@ -346,7 +346,7 @@ class CBot
 		$result = count($body) > 0;
 		if($result)
 		{
-			$this->createEntity($body[0]['ENTITY_ID']);
+			$this->createEntity($this->getID());
 			$this->setGeneration($body[0]['GENERATION']);
 			$this->setTheme($body[0]['THEME']);
 			$this->setScore($body[0]['SCORE']);
