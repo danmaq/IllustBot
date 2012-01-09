@@ -418,10 +418,7 @@ class CChild
 			}
 			if(!($result && $db->execute($sql, $params)))
 			{
-error_log($db->execute($sql, $params));
-error_log($sql);
-error_log(print_r($params, true));
-				throw new Exception(_('DEAD!'));
+				throw new Exception(_('DB書き込みに失敗'));
 			}
 			$pdo->commit();
 		}
