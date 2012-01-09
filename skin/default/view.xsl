@@ -45,7 +45,7 @@
 					このぼっとのレベルは<xsl:value-of select="bot/@generation" />です。
 					次のレベルまで必要な経験値は<xsl:value-of select="bot/@amount" />です。
 				</p>
-				<p>
+				<p class="aa">
 					<xsl:apply-templates select="line" />
 				</p>
 				<footer>

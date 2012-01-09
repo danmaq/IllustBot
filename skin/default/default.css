@@ -8,4 +8,10 @@
 		color: rgb(64, 164, 113);
 		background-color: white;
 	}
+	
+	.aa
+	{
+		line-height: 1em;
+		letter-spacing: -2px;
+	}
 }
