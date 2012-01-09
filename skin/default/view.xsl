@@ -48,6 +48,24 @@
 				<p class="aa">
 					<xsl:apply-templates select="line" />
 				</p>
+				<h2>
+					「<xsl:value-of select="@title" />」に見えますか？評価してあげてください。
+				</h2>
+				<form action="./" method="post">
+					<input type="hidden" name="f" value="core/botVote" />
+					<input type="hidden" name="id">
+						<xsl:attribute name="value"><xsl:value-of select="bot/@id" /></xsl:attribute>
+					</input>
+					<input type="hidden" name="max" value="4" />
+					<ul>
+						<li><input type="submit" name="score" value="4" /></li>
+						<li><input type="submit" name="score" value="3" /></li>
+						<li><input type="submit" name="score" value="2" /></li>
+						<li><input type="submit" name="score" value="1" /></li>
+						<li><input type="submit" name="score" value="0" /></li>
+					</ul>
+				</form>
+				</ul>
 				<footer>
 					<hr />
 					<address>by danmaq</address>
@@ -64,10 +82,7 @@
 	</xsl:template>
 
 	<!-- ライン。 -->
-	<xsl:template match="line">
-		<xsl:apply-templates select="item" />
-		<br />
-	</xsl:template>
+	<xsl:template match="line"><xsl:apply-templates select="item" /><br /></xsl:template>
 
 	<!-- ピクセル。 -->
 	<xsl:template match="item"><span><xsl:attribute name="style">color: #<xsl:value-of select="@color" /></xsl:attribute>■</span></xsl:template>
