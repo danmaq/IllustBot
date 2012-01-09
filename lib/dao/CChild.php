@@ -50,7 +50,7 @@ class CChild
 	public static function getCountFromOwner(CBot $owner)
 	{
 		self::initialize();
-		return CFileSQLBot::getInstance()->singleFetch(
+		return CDBManager::getInstance()->singleFetch(
 			CFileSQLChild::getInstance()->selectExistsFromOwner, 'COUNT');
 	}
 
