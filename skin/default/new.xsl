@@ -37,9 +37,11 @@
 						<a href="./">ぼっと[IB-01]がお絵かきするようです。</a>
 					</h1>
 				</header>
-				<h2>
-					ぼっとにお題を与えてください。
-				</h2>
+				<xsl:apply-templates select="topic" />
+				<ul>
+					<li>ぼっとにお題を与えてください。<li>
+					<li>できるだけ記号的で単純なお題を与えてあげると、成長が早いです(丸とか星形とか)。<li>
+				</ul>
 				<form action="./" method="post">
 					<ul>
 						<li>
@@ -49,8 +51,8 @@
 						<li>
 							<label for="x">サイズ</label>
 							<select id="x" name="x">
-								<option value="8">8</option>
-								<option value="16">16</option>
+								<option value="8">8 x 8</option>
+								<option value="16">16 x 16</option>
 							</select>
 						</li>
 						<li>
@@ -74,4 +76,12 @@
 			</body>
 		</html>
 	</xsl:template>
+
+	<!-- トピック。 -->
+	<xsl:template name="topic" match="topic">
+		<p>
+			<xsl:value-of select="@title" />: <xsl:value-of select="." />
+		</p>
+	</xsl:template>
+
 </xsl:stylesheet>
