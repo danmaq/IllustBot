@@ -65,7 +65,6 @@
 						<li><input type="submit" name="score" value="0" /></li>
 					</ul>
 				</form>
-				</ul>
 				<footer>
 					<hr />
 					<address>by danmaq</address>
