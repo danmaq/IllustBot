@@ -87,8 +87,12 @@ class CSceneViewImage
 						if($child === null)
 						{
 							$_GET['err'] = _('子ぼっとがいるようだけど初期化できなかった、異常な事態(素敵な事態)');
+							$entity->setNextState(CSceneTop::getInstance());
 						}
-						$this->id = $child->getID();
+						else
+						{
+							$this->id = $child->getID();
+						}
 					}
 				}
 				else
