@@ -73,9 +73,9 @@ class CSceneViewImage
 						if($child !== null)
 						{
 							$this->id = $child->getID();
+							$this->child = null;
 						}
 					}
-					$entity->setNextState(CSceneTop::getInstance());
 				}
 				else
 				{
@@ -83,6 +83,7 @@ class CSceneViewImage
 					if($child->rollback())
 					{
 						$this->child = $child;
+						$this->id = null;
 					}
 					else
 					{
@@ -107,12 +108,12 @@ class CSceneViewImage
 	{
 		if($entity->getNextState() === null)
 		{
-			if($id !== null)
+			if($this->id !== null)
 			{
-				CRedirector::seeOther($id);
+				CRedirector::seeOther($this->id);
 				$entity->dispose();
 			}
-			elseif($bot !== null)
+			elseif($this->child !== null)
 			{
 				$xmlbuilder = new CDocumentBuilder();
 				$xmlbuilder->createSimpleMessage(_('ERROR'), _('HOGEE!'));
