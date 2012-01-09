@@ -1,6 +1,7 @@
 <?php
 
 require_once(IB01_CONSTANTS);
+require_once(IB01_LIB_ROOT . '/dao/CBot.php');
 require_once(IB01_LIB_ROOT . '/view/CDocumentBuilder.php');
 require_once(IB01_LIB_ROOT . '/view/CRedirector.php');
 require_once(IB01_LIB_ROOT . '/state/IState.php');
@@ -22,6 +23,9 @@ class CSceneNewBotPost
 		'y' => '0',
 		'theme' => ''
 	);
+
+	/**	ぼっとさん。 */
+	private $bot = null;
 
 	/**	エラー表示。 */
 	private $errors = null;
@@ -90,6 +94,11 @@ class CSceneNewBotPost
 				{
 					throw new Exception(_('ぼっとさんをいじめちゃだめー。'));
 				}
+				$bot = new CBot();
+				$bot->setChilds($childs);
+				$bot->setSize($x, $y);
+				$bot->commit();
+				$this->bot = $bot;
 				throw new Exception(_('実は未実装。'));
 			}
 		}
@@ -111,6 +120,7 @@ class CSceneNewBotPost
 			$query = array();
 			if($this->errors === null)
 			{
+				$query = $this->bot->getID();
 			}
 			else
 			{
