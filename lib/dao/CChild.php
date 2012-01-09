@@ -267,7 +267,7 @@ class CChild
 				{
 					resetPixels();
 				}
-				$storage &= $this->storage();
+				$storage =& $this->storage();
 				$storage['m'] = base64_encode(gzinflate($this->createRawPixels()));
 				$sql = $fcache->insert;
 				$params =

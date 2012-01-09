@@ -12,7 +12,6 @@ class CBot
 
 	/**	実体のメンバとデフォルト値一覧。 */
 	private static $format = array(
-		'theme' => '',
 		'x' => 8,
 		'y' => 8,
 		'childs' => 10,
@@ -21,6 +20,9 @@ class CBot
 	/**	ぼっと数。 */
 	private static $members = -1;
 
+	/**	お題。 */
+	private $theme;
+
 	/**	世代。 */
 	private $generation;
 
@@ -28,7 +30,71 @@ class CBot
 	private $score;
 
 	/**
-	 *	ユーザ数を取得します。
+	 *	ぼっと一覧を取得します。
+	 *
+	 *	@param CPager $pager ページャ オブジェクト。
+	 *	@return array ぼっと一覧。
+	 */
+	public static function getAllOrderNewbie(CPager $pager = null)
+	{
+		return $this->getAll(CFileSQLBot::getInstance()->selectNewbie, $pager);
+	}
+
+	/**
+	 *	ぼっと一覧を取得します。
+	 *
+	 *	@param CPager $pager ページャ オブジェクト。
+	 *	@return array ぼっと一覧。
+	 */
+	public static function getAllOrderScore(CPager $pager = null)
+	{
+		return $this->getAll(CFileSQLBot::getInstance()->selectScore, $pager);
+	}
+
+	/**
+	 *	ぼっと一覧を取得します。
+	 *
+	 *	@param CPager $pager ページャ オブジェクト。
+	 *	@return array ぼっと一覧。
+	 */
+	public static function getAllOrderGeneration(CPager $pager = null)
+	{
+		return $this->getAll(CFileSQLBot::getInstance()->selectGeneration, $pager);
+	}
+
+	/**
+	 *	ぼっと一覧を取得します。
+	 *
+	 *	@param string $sql SQLクエリ。
+	 *	@param CPager $pager ページャ オブジェクト。
+	 *	@return array ぼっと一覧。
+	 */
+	public static function getAll($sql, CPager $pager = null)
+	{
+		$result = array();
+		$totalCount = self::getTotalCount();
+		if($totalCount > 0)
+		{
+			if($pager === null)
+			{
+				$pager = new CPager();
+			}
+			$all = CDBManager::getInstance()->execAndFetch($sql, $pager->getLimit());
+			foreach($all as $item)
+			{
+				$bot = new CBot($item['ENTITY_ID']);
+				if($bot->rollback())
+				{
+					array_push($result, $bot);
+				}
+			}
+			$pager->setMaxPagesFromCount($totalCount);
+		}
+		return $result;
+	}
+
+	/**
+	 *	ぼっと数を取得します。
 	 *
 	 *	ここで同時にテーブルの初期化も行われます。
 	 *
@@ -117,8 +183,7 @@ class CBot
 	 */
 	public function getTheme()
 	{
-		$body =& $this->storage();
-		return $body['theme'];
+		return $this->theme;
 	}
 
 	/**
@@ -128,8 +193,7 @@ class CBot
 	 */
 	public function setTheme($value)
 	{
-		$body =& $this->storage();
-		$body['theme'] = $value;
+		$this->theme = $value;
 	}
 
 	/**
@@ -240,9 +304,18 @@ class CBot
 			$pdo->beginTransaction();
 			$exists = $this->isExists();
 			$fcache = CFileSQLBot::getInstance();
-			$result = $entity->commit() && $db->execute(
-				$exists ? $fcache->update : $fcache->insert,
-				$this->createDBParams() + $this->createDBParamsOnlyEID());
+			$result = $entity->commit();
+			if($result)
+			{
+				$params = $this->createDBParams() + $this->createDBParamsOnlyEID();
+				$sql = $fcache->update;
+				if(!$exists)
+				{
+					$params += $this->createDBParamsTheme();
+					$sql = $fcache->insert;
+				}
+				$result = $db->execute($sql, $params);
+			}
 			if(!$result)
 			{
 				throw new Exception(_('DB書き込みに失敗'));
@@ -274,8 +347,9 @@ class CBot
 		if($result)
 		{
 			$this->createEntity($body[0]['ENTITY_ID']);
-			$this->setScore($body[0]['SCORE']);
 			$this->setGeneration($body[0]['GENERATION']);
+			$this->setTheme($body[0]['THEME']);
+			$this->setScore($body[0]['SCORE']);
 		}
 		return $result;
 	}
@@ -290,6 +364,18 @@ class CBot
 		return array(
 			'score' => array($this->getScore(), PDO::PARAM_INT),
 			'generation' => array($this->getGeneration(), PDO::PARAM_INT)
+		);
+	}
+
+	/**
+	 *	DB受渡し用のパラメータを生成します。
+	 *
+	 *	@return array DB受渡し用のパラメータ。
+	 */
+	private function createDBParamsTheme()
+	{
+		return array(
+			'theme' => array($this->getTheme(), PDO::PARAM_STR)
 		);
 	}
 }

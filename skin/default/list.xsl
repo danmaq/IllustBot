@@ -37,38 +37,18 @@
 						<a href="./">ぼっと[IB-01]がお絵かきするようです。</a>
 					</h1>
 				</header>
-				<xsl:apply-templates select="topic" />
-				<ul>
-					<li>ぼっとにお題を与えてください。</li>
-					<li>ぼっとは超ど素人です。できるだけ記号的で単純なお題を与えてあげると、成長が早いです(丸とか星形とか)。</li>
-				</ul>
-				<form action="./" method="post">
-					<ul>
-						<li>
-							<label for="theme">お題</label>
-							<input type="text" id="theme" name="theme" value="" maxlength="255" placeholder="255字以内" />
-						</li>
-						<li>
-							<label for="x">サイズ</label>
-							<select id="x" name="x">
-								<option value="8">8 x 8</option>
-								<option value="16">16 x 16</option>
-							</select>
-						</li>
-						<li>
-							<label for="childs">ぼっとの性格</label>
-							<select id="childs" name="childs">
-								<option value="10">飲み込み早いけど、偏屈さん</option>
-								<option value="40">バランス型</option>
-								<option value="100">気変わりしやすく、物覚え悪い</option>
-							</select>
-						</li>
-						<li>
-							<input type="hidden" name="f" value="core/newGamePOST" />
-							<input type="submit" value="これ描いて！" />
-						</li>
-					</ul>
-				</form>
+				<h2>
+					新着お題
+				</h2>
+				<xsl:apply-templates select="new" />
+				<h2>
+					高評価順ランキング
+				</h2>
+				<xsl:apply-templates select="score" />
+				<h2>
+					覚えが早い順ランキング
+				</h2>
+				<xsl:apply-templates select="gene" />
 				<footer>
 					<hr />
 					<address>by danmaq</address>
@@ -78,10 +58,20 @@
 	</xsl:template>
 
 	<!-- トピック。 -->
-	<xsl:template match="topic">
-		<p>
-			<xsl:value-of select="@title" />: <xsl:value-of select="." />
-		</p>
+	<xsl:template match="score|gene|new">
+		<ol>
+			<xsl:apply-templates select="item" />
+		</ol>
+	</xsl:template>
+
+	<!-- トピック。 -->
+	<xsl:template match="item">
+		<li>
+			<a>
+				<xsl:attribute name="href">?<xsl:value-of select="@id" /></xsl:attribute>
+				<xsl:value-of select="@theme" />
+			</a>
+		</li>
 	</xsl:template>
 
 </xsl:stylesheet>

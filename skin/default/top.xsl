@@ -37,11 +37,26 @@
 						<a href="./">ぼっと[IB-01]がお絵かきするようです。</a>
 					</h1>
 				</header>
+				<h2>
+					メインメニュー
+				</h2>
 				<ul>
 					<li><a href="?f=core/newGame">依頼する</a></li>
 					<li><a href="?f=core/list">育てる</a></li>
 					<li>ヘルプ(工事中)</li>
 				</ul>
+				<h2>
+					新着お題
+				</h2>
+				<xsl:apply-templates select="new" />
+				<h2>
+					高評価順ランキング
+				</h2>
+				<xsl:apply-templates select="score" />
+				<h2>
+					覚えが早い順ランキング
+				</h2>
+				<xsl:apply-templates select="gene" />
 				<footer>
 					<hr />
 					<address>by danmaq</address>
@@ -49,4 +64,22 @@
 			</body>
 		</html>
 	</xsl:template>
+
+	<!-- トピック。 -->
+	<xsl:template match="score|gene|new">
+		<ol>
+			<xsl:apply-templates select="item" />
+		</ol>
+	</xsl:template>
+
+	<!-- トピック。 -->
+	<xsl:template match="item">
+		<li>
+			<a>
+				<xsl:attribute name="href">?<xsl:value-of select="@id" /></xsl:attribute>
+				<xsl:value-of select="@theme" />
+			</a>
+		</li>
+	</xsl:template>
+
 </xsl:stylesheet>

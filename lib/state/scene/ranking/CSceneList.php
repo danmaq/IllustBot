@@ -7,9 +7,9 @@ require_once(IB01_LIB_ROOT . '/util/CPager.php');
 require_once(IB01_LIB_ROOT . '/view/CDocumentBuilder.php');
 
 /**
- *	トップ ページ。
+ *	ぼっとにお題を教えるページを表示します。
  */
-class CSceneTop
+class CSceneList
 	implements IState
 {
 
@@ -34,7 +34,7 @@ class CSceneTop
 	{
 		if(self::$instance == null)
 		{
-			self::$instance = new CSceneTop();
+			self::$instance = new CSceneList();
 		}
 		return self::$instance;
 	}
@@ -53,7 +53,7 @@ class CSceneTop
 	 */
 	public function setup(CEntity $entity)
 	{
-		$pager = new CPager(0, 3);
+		$pager = new CPager(0, 30);
 		$this->botsOrderGeneration = CBot::getAllOrderGeneration($pager);
 		$this->botsOrderNewbie = CBot::getAllOrderNewbie($pager);
 		$this->botsOrderScore = CBot::getAllOrderScore($pager);
@@ -94,7 +94,7 @@ class CSceneTop
 				'theme' => $item->getTheme(),
 			), $gene);
 		}
-		$xmlbuilder->output(CConstants::FILE_XSL_TOP);
+		$xmlbuilder->output(CConstants::FILE_XSL_LIST);
 		$entity->setNextState(CEmptyState::getInstance());
 	}
 

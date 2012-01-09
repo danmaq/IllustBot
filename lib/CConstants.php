@@ -19,14 +19,17 @@ class CConstants
 	/** MySQL用のID。 */
 	const DBMS_MYSQL = 'mysql';
 
-	/** 単発メッセージ表示時用XSLファイル。 */
+	/** [TOPと併合予定]単発メッセージ表示時用XSLファイル。 */
 	const FILE_XSL_MESSAGE = 'message.xsl';
 
-	/** トップ ページ表示時用XSLファイル。 */
-	const FILE_XSL_TOP = 'top.xsl';
+	/** 一覧表示時用XSLファイル。 */
+	const FILE_XSL_LIST = 'list.xsl';
 
 	/** 新規作成時用XSLファイル。 */
 	const FILE_XSL_NEW = 'new.xsl';
+
+	/** トップ ページ表示時用XSLファイル。 */
+	const FILE_XSL_TOP = 'top.xsl';
 
 }
 
