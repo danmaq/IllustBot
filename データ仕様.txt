@@ -2,7 +2,8 @@
 ○ぼっと親玉
 id:UUID
 お題：string
-サイズ：0～short_max(16bit)
+サイズX：0～short_max(16bit)
+サイズY：0～short_max(16bit)
 子分隊員数：tinyint
 世代：0～uint_max(32bit)
 累計評価：-int_max～+int_max(32bit)
@@ -10,6 +11,7 @@ id:UUID
 ○ぼっと子分
 id:UUID
 ピクセルごとの行列：0～16777216(24bit)
+1ピクセル3byte
 8x8=64
 16x16=256
 32x32=1024
