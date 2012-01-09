@@ -109,7 +109,7 @@ class CSceneVotePost
 			$query = array();
 			if($this->errors === null)
 			{
-				$owner = $child->getOwner();
+				$owner = $this->child->getOwner();
 				$query = $owner->getID();
 			}
 			else
