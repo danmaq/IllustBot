@@ -58,7 +58,7 @@ class CChild
 		$result = null;
 		if(count($info) > 0)
 		{
-			$result = new CChild($info[0]['ID']);
+			$result = new CChild($info[0]);
 			if(!$result->rollback())
 			{
 				$result = null;
