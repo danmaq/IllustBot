@@ -283,10 +283,10 @@ class CChild
 			{
 				if(count($this->getPixels()) == 0)
 				{
-					resetPixels();
+					$this->resetPixels();
 				}
 				$storage =& $this->storage();
-				$storage['m'] = base64_encode(gzinflate($this->createRawPixels()));
+				$storage['m'] = base64_encode(gzdeflate($this->createRawPixels()));
 				$sql = $fcache->insert;
 				$params =
 					$this->createDBParams() +
@@ -332,7 +332,7 @@ class CChild
 			for($i = 0; $i < $len; $i += 2)
 			{
 				$color = new CRGB(substr($raw, $i, 2));
-				aray_push($pixels, $color);
+				array_push($pixels, $color);
 			}
 			$this->pixels = $pixels;
 		}
@@ -350,7 +350,7 @@ class CChild
 		for($i = 0; $i < $len; $i += 2)
 		{
 			$color = new CRGB();
-			aray_push($pixels, $color);
+			array_push($pixels, $color);
 		}
 		$this->pixels = $pixels;
 	}
@@ -366,7 +366,7 @@ class CChild
 		$pixels = $this->pixels;
 		for($i = count($pixels); --$i >= 0; )
 		{
-			$result = $pixels[i]->getRGBRaw() . $result;
+			$result = $pixels[$i]->getRGBRaw() . $result;
 		}
 		return $result;
 	}
