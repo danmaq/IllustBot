@@ -53,6 +53,7 @@ class CSceneViewImage
 	public function setup(CEntity $entity)
 	{
 		$this->id = null;
+		$this->child = null;
 		if(isset($_GET['id']))
 		{
 			if($entity->connectDatabase())
@@ -60,7 +61,7 @@ class CSceneViewImage
 				$bot = new CBot($_GET['id']);
 				if($bot->rollback())
 				{
-					if(CChild::getCountFromOwner($bot) <= 0)
+					if(CChild::getCountAllFromOwner($bot) <= 0)
 					{
 						$child = null;
 						for($i = $bot->getChilds(); --$i >= 0; )
@@ -70,11 +71,24 @@ class CSceneViewImage
 							$child->setGeneration($bot->getGeneration());
 							$child->commit();
 						}
-						if($child !== null)
+						if($child === null)
+						{
+							$_GET['err'] = _('子ぼっとがいるようでいないような、異常な事態(素敵な事態)');
+							$entity->setNextState(CSceneTop::getInstance());
+						}
+						else
 						{
 							$this->id = $child->getID();
-							$this->child = null;
 						}
+					}
+					else
+					{
+						$child = CChild::getUnvotedFromOwner($bot);
+						if($child === null)
+						{
+							$_GET['err'] = _('子ぼっとがいるようだけど初期化できなかった、異常な事態(素敵な事態)');
+						}
+						$this->id = $child->getID();
 					}
 				}
 				else
@@ -83,7 +97,6 @@ class CSceneViewImage
 					if($child->rollback())
 					{
 						$this->child = $child;
-						$this->id = null;
 					}
 					else
 					{
@@ -120,6 +133,7 @@ class CSceneViewImage
 				$xmlbuilder->output(CConstants::FILE_XSL_MESSAGE);
 				$entity->setNextState(CEmptyState::getInstance());
 			}
+			$entity->setNextState(CEmptyState::getInstance());
 		}
 	}
 

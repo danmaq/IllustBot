@@ -40,6 +40,73 @@ class CChild
 	/**	未投票ぼっとの数。 */
 	private $amount;
 
+	/**
+	 *	未投票の子ぼっとを1件取得します。
+	 *
+	 *	@param CBot $owner 親ぼっと。
+	 *	@return int 子ぼっとの数。
+	 */
+	public static function getUnvotedFromOwner(CBot $owner)
+	{
+		self::initialize();
+		$params = array(
+			'owner' => array($owner->getID(), PDO::PARAM_STR),
+			'generation' => array($owner->getGeneration(), PDO::PARAM_INT)
+		);
+		$info = CDBManager::getInstance()->singleFetch(
+			CFileSQLChild::getInstance()->selectUnvoted, 'ID', $params);
+		$result = null;
+		if(count($info) > 0)
+		{
+			$result = new CChild($info[0]['ID']);
+			if(!$result->rollback())
+			{
+				$result = null;
+			}
+		}
+		return $result;
+	}
+
+	/**
+	 *	子ぼっと数を取得します。
+	 *
+	 *	@param CBot $owner 親ぼっと。
+	 *	@return int 子ぼっとの数。
+	 */
+	public static function getCountAllFromOwner(CBot $owner)
+	{
+		return self::getNumberFromOwner(
+			$owner, CFileSQLChild::getInstance()->selectExistsFromOwner);
+	}
+
+	/**
+	 *	子ぼっと数を取得します。
+	 *
+	 *	@param CBot $owner 親ぼっと。
+	 *	@return int 子ぼっとの数。
+	 */
+	public static function getCountUnvotedFromOwner(CBot $owner)
+	{
+		return self::getNumberFromOwner(
+			$owner, CFileSQLChild::getInstance()->selectUnvotedCount);
+	}
+
+	/**
+	 *	子ぼっと数を取得します。
+	 *
+	 *	@param CBot $owner 親ぼっと。
+	 *	@param string $sql SQLクエリ。
+	 *	@return int 子ぼっとの数。
+	 */
+	public static function getNumberFromOwner(CBot $owner, $sql)
+	{
+		self::initialize();
+		$params = array(
+			'owner' => array($owner->getID(), PDO::PARAM_STR),
+			'generation' => array($owner->getGeneration(), PDO::PARAM_INT)
+		);
+		return CDBManager::getInstance()->singleFetch($sql, 'COUNT', $params);
+	}
 
 	/**
 	 *	子ぼっと数を取得します。
@@ -206,9 +273,7 @@ class CChild
 	{
 		if($this->amount === null)
 		{
-			$this->amount = CDBManager::getInstance()->singleFetch(
-				CFileSQLChild::getInstance()->selectUnvotedCount,
-				'EXIST', $this->createDBParamsFromOwner());
+			$this->amount = self::getCountUnvotedFromOwner($this->getOwner());
 		}
 		return $this->amount;
 	}
