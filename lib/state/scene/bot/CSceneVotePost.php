@@ -18,6 +18,19 @@ class CSceneVotePost
 	/**	クラス オブジェクト。 */
 	private static $instance = null;
 
+	/**	既定の値一覧。 */
+	private $format = array(
+		'id' => '',
+		'max' => '0',
+		'score' => '0'
+	);
+
+	/**	子ぼっとオブジェクト。 */
+	private $child = null;
+
+	/**	エラー表示。 */
+	private $errors = null;
+
 	/**
 	 *	この状態のオブジェクトを取得します。
 	 *
@@ -46,6 +59,7 @@ class CSceneVotePost
 	 */
 	public function setup(CEntity $entity)
 	{
+		$this->child = null;
 		$this->errors = null;
 		try
 		{
@@ -56,7 +70,24 @@ class CSceneVotePost
 			if($entity->connectDatabase())
 			{
 				$_POST += $this->format;
-				throw new Exception(_('未実装なのだ。'));
+				$child = new CChild($_POST['id']);
+				if(!$child->rollback())
+				{
+					throw new Exception(_('存在しないぼっとです。'));
+				}
+				$this->child = $child;
+				$owner = $child->getOwner();
+				if($owner->getGeneration() != $child->getGeneration())
+				{
+					throw new Exception(_('この絵への投票はすでに〆切っています。'));
+				}
+				$maxScore = intval($_POST['max']);
+				$score = round(intval($_POST['score']) - $maxScore / 2);
+				$owner->addScore($score);
+				$child->addScore($score);
+				$child->addVoteCount();
+				$child->commit();
+				$owner->commit();
 			}
 		}
 		catch(Exception $e)
@@ -78,12 +109,21 @@ class CSceneVotePost
 			$query = array();
 			if($this->errors === null)
 			{
+				$owner = $child->getOwner();
+				$query = $owner->getID();
 			}
 			else
 			{
-				$query = array(
-					'f' => 'core/top',
-					'err' => $this->errors);
+				if($this->child === null)
+				{
+					$query = array(
+						'f' => 'core/top',
+						'err' => $this->errors);
+				}
+				else
+				{
+					$query = $this->child->getID();
+				}
 			}
 			CRedirector::seeOther($query);
 			$entity->dispose();

@@ -235,6 +235,14 @@ class CChild
 	}
 
 	/**
+	 *	累計投票数をインクリメントします。
+	 */
+	public function addVoteCount()
+	{
+		$this->voteCount++;
+	}
+
+	/**
 	 *	スコアを取得します。
 	 *
 	 *	@return integer 累計スコア。
@@ -252,6 +260,16 @@ class CChild
 	public function setScore($value)
 	{
 		$this->score = $value;
+	}
+
+	/**
+	 *	累計スコアを加算します。
+	 *
+	 *	@param integer $value 累計スコア。
+	 */
+	public function addScore($value)
+	{
+		$this->score += $value;
 	}
 
 	/**

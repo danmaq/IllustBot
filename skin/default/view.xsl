@@ -52,18 +52,19 @@
 					「<xsl:value-of select="@title" />」に見えますか？評価してあげてください。
 				</h2>
 				<form action="./" method="post">
-					<input type="hidden" name="f" value="core/botVote" />
-					<input type="hidden" name="id">
-						<xsl:attribute name="value"><xsl:value-of select="bot/@id" /></xsl:attribute>
-					</input>
-					<input type="hidden" name="max" value="4" />
-					<ul>
-						<li><input type="submit" name="score" value="4" /></li>
-						<li><input type="submit" name="score" value="3" /></li>
-						<li><input type="submit" name="score" value="2" /></li>
-						<li><input type="submit" name="score" value="1" /></li>
-						<li><input type="submit" name="score" value="0" /></li>
-					</ul>
+					<p>
+						<input type="hidden" name="f" value="core/botVote" />
+						<input type="hidden" name="id">
+							<xsl:attribute name="value"><xsl:value-of select="bot/@id" /></xsl:attribute>
+						</input>
+						<input type="hidden" name="max" value="4" />
+						<input type="submit" name="score" value="4" />
+						<input type="submit" name="score" value="3" />
+						<input type="submit" name="score" value="2" />
+						<input type="submit" name="score" value="1" />
+						<input type="submit" name="score" value="0" />
+						点
+					</p>
 				</form>
 				<footer>
 					<hr />
