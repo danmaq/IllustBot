@@ -31,7 +31,7 @@ class CFileSQLBot
 	 */
 	protected function __construct()
 	{
-		parent::__construct(NUE_ROOT . '/sql/bot');
+		parent::__construct(IB01_ROOT . '/sql/bot');
 	}
 
 	/**

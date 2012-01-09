@@ -117,8 +117,8 @@ class CBot
 	 */
 	public function getTheme()
 	{
-		$storage &= $this->storage();
-		return $storage['theme'];
+		$body =& $this->storage();
+		return $body['theme'];
 	}
 
 	/**
@@ -128,8 +128,8 @@ class CBot
 	 */
 	public function setTheme($value)
 	{
-		$storage &= $this->storage();
-		$storage['theme'] = $value;
+		$body =& $this->storage();
+		$body['theme'] = $value;
 	}
 
 	/**
@@ -139,8 +139,8 @@ class CBot
 	 */
 	public function getChilds()
 	{
-		$storage &= $this->storage();
-		return $storage['childs'];
+		$body =& $this->storage();
+		return $body['childs'];
 	}
 
 	/**
@@ -150,8 +150,8 @@ class CBot
 	 */
 	public function setChilds($value)
 	{
-		$storage &= $this->storage();
-		$storage['childs'] = $value;
+		$body =& $this->storage();
+		$body['childs'] = $value;
 	}
 
 	/**
@@ -161,10 +161,10 @@ class CBot
 	 */
 	public function getSize()
 	{
-		$storage &= $this->storage();
+		$body =& $this->storage();
 		return array(
-			'x' => $storage['x'],
-			'y' => $storage['y']);
+			'x' => $body['x'],
+			'y' => $body['y']);
 	}
 
 	/**
@@ -175,9 +175,9 @@ class CBot
 	 */
 	public function setSize($x, $y)
 	{
-		$storage &= $this->storage();
-		$storage['x'] = $x;
-		$storage['y'] = $y;
+		$body =& $this->storage();
+		$body['x'] = $x;
+		$body['y'] = $y;
 	}
 
 	/**

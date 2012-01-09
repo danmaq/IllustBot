@@ -74,10 +74,6 @@ class CSceneNewBotPost
 				{
 					throw new Exception(_('お題は1～255バイト以内。'));
 				}
-				if(strlen($_POST['description']) <= 2)
-				{
-					throw new Exception(_('お題なしは受理不可。'));
-				}
 				$x = intval($_POST['x']);
 				$y = intval($_POST['y']);
 				$childs = intval($_POST['childs']);
@@ -97,14 +93,15 @@ class CSceneNewBotPost
 				$bot = new CBot();
 				$bot->setChilds($childs);
 				$bot->setSize($x, $y);
+				$bot->setTheme($theme);
 				$bot->commit();
 				$this->bot = $bot;
-				throw new Exception(_('実は未実装。'));
 			}
 		}
 		catch(Exception $e)
 		{
 			$this->errors = $e->getMessage();
+			error_log($e->getTraceAsString());
 		}
 	}
 

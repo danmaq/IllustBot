@@ -48,6 +48,14 @@ class CConfigure
 	const USE_CLIENT_XSLT = true;
 
 	/**
+	 *	使用するDBMSを選択します。
+	 *
+	 *	現在のバージョンではMySQLのみ選択可能です。
+	 *	将来的にはSQLiteも対応予定です。
+	 */
+	const DB_TYPE = 'mysql';
+
+	/**
 	 *	データベースのあるホスト名を設定します。
 	 */
 	const DB_HOST = 'localhost';

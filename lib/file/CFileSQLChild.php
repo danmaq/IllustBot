@@ -31,7 +31,7 @@ class CFileSQLChild
 	 */
 	protected function __construct()
 	{
-		parent::__construct(NUE_ROOT . '/sql/child');
+		parent::__construct(IB01_ROOT . '/sql/child');
 	}
 
 	/**
