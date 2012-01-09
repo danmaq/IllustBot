@@ -23,7 +23,7 @@ class CRGB
 		}
 		else
 		{
-			$rgb = (ord($raw[0]) << 4) + ord($raw[1]);
+			$rgb = (ord($raw[0]) << 8) + ord($raw[1]);
 		}
 		$this->rgb = $rgb;
 	}
@@ -58,9 +58,9 @@ class CRGB
 	{
 		$rgb = $this->rgb;
 		$r = round(($rgb & 31) * (255 / 31));
-		$rgb >> 5;
+		$rgb >>= 5;
 		$g = round(($rgb & 63) * (255 / 63));
-		$rgb >> 6;
+		$rgb >>= 6;
 		$b = round(($rgb & 31) * (255 / 31));
 		return sprintf('%02X%02X%02X', $r, $g, $b);
 	}

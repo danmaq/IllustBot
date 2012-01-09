@@ -70,11 +70,6 @@
 	</xsl:template>
 
 	<!-- ピクセル。 -->
-	<xsl:template match="item">
-		<span>
-			<xsl:attribute name="style">color: #<xsl:value-of select="@color" /></xsl:attribute>
-			■
-		</span>
-	</xsl:template>
+	<xsl:template match="item"><span><xsl:attribute name="style">color: #<xsl:value-of select="@color" /></xsl:attribute>■</span></xsl:template>
 
 </xsl:stylesheet>

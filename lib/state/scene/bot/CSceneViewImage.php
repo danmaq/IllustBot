@@ -139,7 +139,7 @@ class CSceneViewImage
 				$xmlbuilder = new CDocumentBuilder();
 				$xmlbuilder->setTitle($owner->getTheme());
 				$xmlbuilder->createInfo('bot', array(
-					'generation' => $child->getGeneration(),
+					'generation' => $child->getGeneration() + 1,
 					'amount' => $child->getAmount()));
 				for($y = 0; $y < $size['y']; $y++)
 				{
