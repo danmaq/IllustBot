@@ -37,6 +37,7 @@
 						<a href="./">ぼっと[IB-01]がお絵かきするようです。</a>
 					</h1>
 				</header>
+				<xsl:apply-templates select="topic" />
 				<h2>
 					メインメニュー
 				</h2>
@@ -66,13 +67,20 @@
 	</xsl:template>
 
 	<!-- トピック。 -->
+	<xsl:template match="topic">
+		<p>
+			<xsl:value-of select="@title" />: <xsl:value-of select="." />
+		</p>
+	</xsl:template>
+
+	<!-- ぼっと一覧。 -->
 	<xsl:template match="score|gene|new">
 		<ol>
 			<xsl:apply-templates select="item" />
 		</ol>
 	</xsl:template>
 
-	<!-- トピック。 -->
+	<!-- ぼっと。 -->
 	<xsl:template match="item">
 		<li>
 			<a>

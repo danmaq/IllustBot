@@ -18,8 +18,11 @@ class CSceneViewImage
 	/**	クラス オブジェクト。 */
 	private static $instance = null;
 
-	/**	親ぼっとオブジェクト。 */
-	private $bot;
+	/**	ジャンプ先ID。 */
+	private $id;
+
+	/**	子ぼっと。 */
+	private $child;
 
 	/**
 	 *	この状態のオブジェクトを取得します。
@@ -49,6 +52,7 @@ class CSceneViewImage
 	 */
 	public function setup(CEntity $entity)
 	{
+		$this->id = null;
 		if(isset($_GET['id']))
 		{
 			if($entity->connectDatabase())
@@ -56,13 +60,35 @@ class CSceneViewImage
 				$bot = new CBot($_GET['id']);
 				if($bot->rollback())
 				{
-					$this->bot = $bot;
-					// TODO :子ぼっと生成
+					if(CChild::getCountFromOwner($bot) <= 0)
+					{
+						$child = null;
+						for($i = $bot->getChilds(); --$i >= 0; )
+						{
+							$child = new CChild();
+							$child->setOwner($bot);
+							$child->setGeneration($bot->getGeneration());
+							$child->commit();
+						}
+						if($child !== null)
+						{
+							$this->id = $child->getID();
+						}
+					}
 					$entity->setNextState(CSceneTop::getInstance());
 				}
 				else
 				{
-					// TODO : 子ぼっと
+					$child = new CChild($_GET['id']);
+					if($child->rollback())
+					{
+						$this->child = $child;
+					}
+					else
+					{
+						$_GET['err'] = _('存在しないIDです。');
+						$entity->setNextState(CSceneTop::getInstance());
+					}
 				}
 			}
 		}
@@ -81,8 +107,18 @@ class CSceneViewImage
 	{
 		if($entity->getNextState() === null)
 		{
-			CRedirector::seeOther($query);
-			$entity->dispose();
+			if($id !== null)
+			{
+				CRedirector::seeOther($id);
+				$entity->dispose();
+			}
+			elseif($bot !== null)
+			{
+				$xmlbuilder = new CDocumentBuilder();
+				$xmlbuilder->createSimpleMessage(_('ERROR'), _('HOGEE!'));
+				$xmlbuilder->output(CConstants::FILE_XSL_MESSAGE);
+				$entity->setNextState(CEmptyState::getInstance());
+			}
 		}
 	}
 

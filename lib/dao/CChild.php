@@ -40,12 +40,26 @@ class CChild
 	/**	未投票ぼっとの数。 */
 	private $amount;
 
+
+	/**
+	 *	子ぼっと数を取得します。
+	 *
+	 *	@param CBot $owner 親ぼっと。
+	 *	@return int 子ぼっとの数。
+	 */
+	public static function getCountFromOwner(CBot $owner)
+	{
+		self::initialize();
+		return CFileSQLBot::getInstance()->singleFetch(
+			CFileSQLChild::getInstance()->selectExistsFromOwner, 'COUNT');
+	}
+
 	/**
 	 *	テーブルの初期化をします。
 	 */
 	public static function initialize()
 	{
-		if(self::$members < 0)
+		if(!self::$initialized)
 		{
 			CDataEntity::initializeTable();
 			CDBManager::getInstance()->execute(CFileSQLChild::getInstance()->ddl);
