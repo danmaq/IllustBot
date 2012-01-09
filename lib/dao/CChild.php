@@ -50,8 +50,12 @@ class CChild
 	public static function getCountFromOwner(CBot $owner)
 	{
 		self::initialize();
+		$params = array(
+			'owner' => array($owner->getID(), PDO::PARAM_STR),
+			'generation' => array($owner->getGeneration(), PDO::PARAM_INT)
+		);
 		return CDBManager::getInstance()->singleFetch(
-			CFileSQLChild::getInstance()->selectExistsFromOwner, 'COUNT');
+			CFileSQLChild::getInstance()->selectExistsFromOwner, 'COUNT', $params);
 	}
 
 	/**
