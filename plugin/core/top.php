@@ -1,7 +1,7 @@
 <?php
 
-//require_once(NUE_LIB_ROOT . '/state/scene/user/CSceneRemoveUser.php');
+require_once(IB01_LIB_ROOT . '/state/scene/ranking/CSceneTop.php');
 
-//$nextState = CSceneRemoveUser::getInstance();
+$nextState = CSceneTop::getInstance();
 
 ?>

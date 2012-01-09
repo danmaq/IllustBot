@@ -22,6 +22,9 @@ class CConstants
 	/** 単発メッセージ表示時用XSLファイル。 */
 	const FILE_XSL_MESSAGE = 'message.xsl';
 
+	/** トップ ページ表示時用XSLファイル。 */
+	const FILE_XSL_TOP = 'top.xsl';
+
 }
 
 ?>
