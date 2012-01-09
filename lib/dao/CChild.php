@@ -56,9 +56,9 @@ class CChild
 		$info = CDBManager::getInstance()->singleFetch(
 			CFileSQLChild::getInstance()->selectUnvoted, 'ID', $params);
 		$result = null;
-		if(count($info) > 0)
+		if(true)
 		{
-			$result = new CChild($info[0]);
+			$result = new CChild($info);
 			if(!$result->rollback())
 			{
 				$result = null;
@@ -390,7 +390,7 @@ class CChild
 			$this->setGeneration($body[0]['GENERATION']);
 			$this->setVoteCount($body[0]['VOTE_COUNT']);
 			$this->setScore($body[0]['SCORE']);
-			$body =& $item->storage();
+			$body =& $this->storage();
 			$raw = gzinflate(base64_decode($body['m']));
 			$len = strlen($raw);
 			$pixels = array();
