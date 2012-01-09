@@ -38,6 +38,16 @@ abstract class CDataIndex
 	}
 
 	/**
+	 *	実体オブジェクトを設定します。
+	 *
+	 *	@param CDataEntity $value 実体オブジェクト。
+	 */
+	public function setEntity(CDataEntity $value)
+	{
+		$this->entity = $value;
+	}
+
+	/**
 	 *	削除します。
 	 *
 	 *	@return boolean 削除に成功した場合、true。

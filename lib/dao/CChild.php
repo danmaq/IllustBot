@@ -41,10 +41,40 @@ class CChild
 	private $amount;
 
 	/**
+	 *	交叉遺伝します。
+	 *	交叉アルゴリズムに一様交叉を使用します。
+	 *
+	 *	@param CChild $a 子ぼっと。
+	 *	@param CChild $b 子ぼっと。
+	 *	@return CChild 子ぼっと。
+	 */
+	public static function inheritance(CChild $a, CChild $b)
+	{
+		$result = new CChild();
+		$result->setOwner($a->getOwner());
+		$result->setGeneration($a->getGeneration() + 1);
+		$result->resetPixels();
+		$pixels =& $result->getPixels();
+		$pixelsA =& $a->getPixels();
+		$pixelsB =& $b->getPixels();
+		for($i = count($pixels); --$i >= 0; )
+		{
+			$rnd = mt_rand(0, 65535);
+			$pixels[$i] = ($rnd & 1) == 0 ? $pixelsA[$i] : $pixelsB[$i];
+			if($rnd < 1024)
+			{
+				$pixels[$i] = new CRGB();
+			}
+		}
+		$result->commit();
+		return $result;
+	}
+
+	/**
 	 *	未投票の子ぼっとを1件取得します。
 	 *
 	 *	@param CBot $owner 親ぼっと。
-	 *	@return int 子ぼっとの数。
+	 *	@return CChild 子ぼっと。
 	 */
 	public static function getUnvotedFromOwner(CBot $owner)
 	{
@@ -55,13 +85,41 @@ class CChild
 		);
 		$info = CDBManager::getInstance()->singleFetch(
 			CFileSQLChild::getInstance()->selectUnvoted, 'ID', $params);
-		$result = null;
-		if(true)
+		$result = new CChild($info);
+		if(!$result->rollback())
 		{
-			$result = new CChild($info);
-			if(!$result->rollback())
+			$result = null;
+		}
+		return $result;
+	}
+
+	/**
+	 *	子ぼっとを取得します。
+	 *
+	 *	@param CBot $owner 親ぼっと。
+	 *	@return int 子ぼっとの数。
+	 */
+	public static function getFromOwner(CBot $owner, CPager $pager = null)
+	{
+		self::initialize();
+		if($pager === null)
+		{
+			$pager = new CPager();
+		}
+		$params = array(
+			'owner' => array($owner->getID(), PDO::PARAM_STR),
+			'generation' => array($owner->getGeneration(), PDO::PARAM_INT)
+		);
+		$info = CDBManager::getInstance()->execAndFetch(
+			CFileSQLChild::getInstance()->selectFromOwner, $params + $pager->getLimit());
+		$result = array();
+		$len = count($info);
+		for($i = 0; $i < $len; $i++)
+		{
+			$obj = new CChild($info[$i]['ID']);
+			if($obj->rollback())
 			{
-				$result = null;
+				array_push($result, $obj);
 			}
 		}
 		return $result;
@@ -109,23 +167,6 @@ class CChild
 	}
 
 	/**
-	 *	子ぼっと数を取得します。
-	 *
-	 *	@param CBot $owner 親ぼっと。
-	 *	@return int 子ぼっとの数。
-	 */
-	public static function getCountFromOwner(CBot $owner)
-	{
-		self::initialize();
-		$params = array(
-			'owner' => array($owner->getID(), PDO::PARAM_STR),
-			'generation' => array($owner->getGeneration(), PDO::PARAM_INT)
-		);
-		return CDBManager::getInstance()->singleFetch(
-			CFileSQLChild::getInstance()->selectExistsFromOwner, 'COUNT', $params);
-	}
-
-	/**
 	 *	テーブルの初期化をします。
 	 */
 	public static function initialize()
@@ -142,10 +183,11 @@ class CChild
 	 *	コンストラクタ。
 	 *
 	 *	@param string $id 子ぼっとID。
+	 *	@param string $entity_id 実体ID(GUID)。
 	 */
-	public function __construct($id = null)
+	public function __construct($id = null, $entity_id = null)
 	{
-		parent::__construct(self::$format);
+		parent::__construct(self::$format, $entity_id);
 		self::initialize();
 		if($id === null)
 		{
@@ -375,7 +417,8 @@ class CChild
 					$this->createDBParams() +
 					$this->createDBParamsFromOwner() +
 					$this->createDBParamsOnlyEID();
-				$result = $this->getEntity()->commit();
+				$entity = $this->getEntity();
+				$result = $entity->isExists() || $entity->commit();
 			}
 			if(!($result && $db->execute($sql, $params)))
 			{
@@ -420,6 +463,22 @@ class CChild
 			$this->pixels = $pixels;
 		}
 		return $result;
+	}
+
+	/**
+	 *	クローンを生成します。
+	 *	世代レベルは自動的にインクリメントします。
+	 *	実体はクローンしません。(シャローコピーに近いです)
+	 *
+	 *	@return CChild クローン オブジェクト。
+	 */
+	public function clone()
+	{
+		$result = new CChild();
+		$result->setEntity($this->getEntity());
+		$result->setOwner($this->owner);
+		$result->setGeneration($this->getGeneration() + 1);
+		$result->commit():
 	}
 
 	/**

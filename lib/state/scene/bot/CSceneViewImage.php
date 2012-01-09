@@ -63,27 +63,34 @@ class CSceneViewImage
 				{
 					if(CChild::getCountAllFromOwner($bot) <= 0)
 					{
-						$child = null;
-						for($i = $bot->getChilds(); --$i >= 0; )
-						{
-							$child = new CChild();
-							$child->setOwner($bot);
-							$child->setGeneration($bot->getGeneration());
-							$child->commit();
-						}
-						if($child === null)
-						{
-							$_GET['err'] = _('子ぼっとがいるようでいないような、異常な事態(素敵な事態)');
-							$entity->setNextState(CSceneTop::getInstance());
-						}
-						else
-						{
-							$this->id = $child->getID();
-						}
+						$this->createChilds($entity, $bot);
 					}
 					else
 					{
-						$child = CChild::getUnvotedFromOwner($bot);
+						$child = null;
+						try
+						{
+							$child = CChild::getUnvotedFromOwner($bot);
+						}
+						catch(Exception $e)
+						{
+							// TODO : 引き継ぎ・交叉遺伝・突然変異
+							$childs = CChild::getFromOwner($bot);
+							$len = min($bot->getChilds(), count($childs));
+							$threshold = ceil($len * 0.2);
+							for($i = 0; $i < $threshold; $i++)
+							{
+								$childs[$i]->clone();
+							}
+							for($i = $len - $threshold; --$i >= 0; )
+							{
+								CChild::inheritance(
+									$childs[mt_rand(0, $threshold)],
+									$childs[mt_rand(0, $threshold)]);
+							}
+							$bot->nextGeneration();
+							$bot->commit();
+						}
 						if($child === null)
 						{
 							$_GET['err'] = _('子ぼっとがいるようだけど初期化できなかった、異常な事態(素敵な事態)');
@@ -165,6 +172,33 @@ class CSceneViewImage
 	 */
 	public function teardown(CEntity $entity)
 	{
+	}
+
+	/**
+	 *	子ぼっとを生成します。
+	 *
+	 *	@param CEntity $entity この状態が適用されたオブジェクト。
+	 *	@param CBot $bot 親ぼっと。
+	 */
+	private function createChilds(CEntity $entity, CBot $bot)
+	{
+		$child = null;
+		for($i = $bot->getChilds(); --$i >= 0; )
+		{
+			$child = new CChild();
+			$child->setOwner($bot);
+			$child->setGeneration($bot->getGeneration());
+			$child->commit();
+		}
+		if($child === null)
+		{
+			$_GET['err'] = _('子ぼっとがいるようでいないような、異常な事態(素敵な事態)');
+			$entity->setNextState(CSceneTop::getInstance());
+		}
+		else
+		{
+			$this->id = $child->getID();
+		}
 	}
 }
 
