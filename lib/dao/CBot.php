@@ -37,7 +37,7 @@ class CBot
 	 */
 	public static function getAllOrderNewbie(CPager $pager = null)
 	{
-		return $this->getAll(CFileSQLBot::getInstance()->selectNewbie, $pager);
+		return self::getAll(CFileSQLBot::getInstance()->selectNewbie, $pager);
 	}
 
 	/**
@@ -48,7 +48,7 @@ class CBot
 	 */
 	public static function getAllOrderScore(CPager $pager = null)
 	{
-		return $this->getAll(CFileSQLBot::getInstance()->selectScore, $pager);
+		return self::getAll(CFileSQLBot::getInstance()->selectScore, $pager);
 	}
 
 	/**
@@ -59,7 +59,7 @@ class CBot
 	 */
 	public static function getAllOrderGeneration(CPager $pager = null)
 	{
-		return $this->getAll(CFileSQLBot::getInstance()->selectGeneration, $pager);
+		return self::getAll(CFileSQLBot::getInstance()->selectGeneration, $pager);
 	}
 
 	/**
