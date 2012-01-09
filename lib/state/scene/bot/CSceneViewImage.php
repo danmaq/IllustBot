@@ -80,7 +80,7 @@ class CSceneViewImage
 							$threshold = ceil($len * 0.2);
 							for($i = 0; $i < $threshold; $i++)
 							{
-								$childs[$i]->clone();
+								$childs[$i]->shallowCopy();
 							}
 							for($i = $len - $threshold; --$i >= 0; )
 							{

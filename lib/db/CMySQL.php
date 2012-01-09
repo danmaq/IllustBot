@@ -65,6 +65,7 @@ class CMySQL
 				$dsn = sprintf('mysql:dbname=%s;host=%s;port=%d;charset=utf8',
 					CConfigure::DB_NAME, CConfigure::DB_HOST, CConfigure::DB_PORT);
 				$this->dbo = new PDO($dsn, CConfigure::DB_USER, CConfigure::DB_PASSWORD);
+				$this->dbo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 				$this->dbo->query('SET NAMES utf8;');
 				$result = true;
 			}
@@ -171,10 +172,6 @@ class CMySQL
 	public function singleFetch($sql, $column, $args = array())
 	{
 		$body = $this->execAndFetch($sql, $args);
-		if($body == null)
-		{
-			throw $this->getException();
-		}
 		return $body[0][$column];
 	}
 

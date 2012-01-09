@@ -99,19 +99,15 @@ class CChild
 	 *	@param CBot $owner 親ぼっと。
 	 *	@return int 子ぼっとの数。
 	 */
-	public static function getFromOwner(CBot $owner, CPager $pager = null)
+	public static function getFromOwner(CBot $owner)
 	{
 		self::initialize();
-		if($pager === null)
-		{
-			$pager = new CPager();
-		}
 		$params = array(
 			'owner' => array($owner->getID(), PDO::PARAM_STR),
 			'generation' => array($owner->getGeneration(), PDO::PARAM_INT)
 		);
 		$info = CDBManager::getInstance()->execAndFetch(
-			CFileSQLChild::getInstance()->selectFromOwner, $params + $pager->getLimit());
+			CFileSQLChild::getInstance()->selectFromOwner, $params);
 		$result = array();
 		$len = count($info);
 		for($i = 0; $i < $len; $i++)
@@ -422,7 +418,10 @@ class CChild
 			}
 			if(!($result && $db->execute($sql, $params)))
 			{
-				throw new Exception(_('DB書き込みに失敗'));
+error_log($db->execute($sql, $params));
+error_log($sql);
+error_log(print_r($params, true));
+				throw new Exception(_('DEAD!'));
 			}
 			$pdo->commit();
 		}
@@ -472,13 +471,14 @@ class CChild
 	 *
 	 *	@return CChild クローン オブジェクト。
 	 */
-	public function clone()
+	public function shallowCopy()
 	{
 		$result = new CChild();
 		$result->setEntity($this->getEntity());
 		$result->setOwner($this->owner);
 		$result->setGeneration($this->getGeneration() + 1);
-		$result->commit():
+		$result->commit();
+		return $result;
 	}
 
 	/**
