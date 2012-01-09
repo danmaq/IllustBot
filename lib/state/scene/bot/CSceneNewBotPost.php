@@ -2,9 +2,8 @@
 
 require_once(IB01_CONSTANTS);
 require_once(IB01_LIB_ROOT . '/dao/CBot.php');
-require_once(IB01_LIB_ROOT . '/view/CDocumentBuilder.php');
-require_once(IB01_LIB_ROOT . '/view/CRedirector.php');
 require_once(IB01_LIB_ROOT . '/state/IState.php');
+require_once(IB01_LIB_ROOT . '/view/CRedirector.php');
 
 /**
  *	ぼっとにお題を教えるページを表示します。

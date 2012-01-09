@@ -79,7 +79,7 @@ class CSceneParseQuery
 		$this->setQueryIfNotExists('tpp', CConfigure::DEFAULT_TOPIC_PER_PAGE);
 		$this->setQueryIfNotExists('skin', CConfigure::SKINSET);
 		$existId = isset($_GET['id']);
-		$this->setQueryIfNotExists('f', $existId ? 'core/top' : 'core/top');
+		$this->setQueryIfNotExists('f', $existId ? 'core/viewImage' : 'core/top');
 	}
 
 	/**
