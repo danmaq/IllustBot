@@ -37,11 +37,36 @@
 						<a href="./">ぼっと[IB-01]がお絵かきするようです。</a>
 					</h1>
 				</header>
-				<ul>
-					<li><a href="?f=core/newGame">依頼する</a></li>
-					<li><a href="?f=core/list">育てる</a></li>
-					<li>ヘルプ(工事中)</li>
-				</ul>
+				<h2>
+					ぼっとにお題を与えてください。
+				</h2>
+				<form action="./" method="post">
+					<ul>
+						<li>
+							<label for="theme">お題</label>
+							<input type="text" id="theme" name="theme" value="" maxlength="255" placeholder="255字以内" />
+						</li>
+						<li>
+							<label for="x">サイズ</label>
+							<select id="x" name="x">
+								<option value="8">8</option>
+								<option value="16">16</option>
+							</select>
+						</li>
+						<li>
+							<label for="childs">ぼっとの性格</label>
+							<select id="childs" name="childs">
+								<option value="10">飲み込み早いけど、偏屈さん</option>
+								<option value="40">バランス型</option>
+								<option value="100">気変わりしやすく、物覚え悪い</option>
+							</select>
+						</li>
+						<li>
+							<input type="hidden" name="f" value="core/newGamePOST" />
+							<input type="submit" value="これ描いて！" />
+						</li>
+					</ul>
+				</form>
 				<footer>
 					<hr />
 					<address>by danmaq</address>

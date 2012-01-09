@@ -25,6 +25,9 @@ class CConstants
 	/** トップ ページ表示時用XSLファイル。 */
 	const FILE_XSL_TOP = 'top.xsl';
 
+	/** 新規作成時用XSLファイル。 */
+	const FILE_XSL_NEW = 'new.xsl';
+
 }
 
 ?>

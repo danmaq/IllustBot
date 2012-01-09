@@ -60,17 +60,17 @@ class CConfigure
 	/**
 	 *	データベースにログインするユーザIDを設定します。
 	 */
-	const DB_USER = 'SAMPLE_USER';
+	const DB_USER = 'kagaminerin00001';
 
 	/**
 	 *	データベースにログインするパスワードを設定します。
 	 */
-	const DB_PASSWORD = 'SAMPLE_PASSWORD';
+	const DB_PASSWORD = 'zddscc';
 
 	/**
 	 *	使用するデータベース名を設定します。
 	 */
-	const DB_NAME = 'SAMPLE_DATABASE';
+	const DB_NAME = 'kagaminerin00001';
 
 	//////////////////////////////////////////////////////////////////
 	// <<<< ここまで設定可能エリア

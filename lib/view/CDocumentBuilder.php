@@ -139,14 +139,14 @@ class CDocumentBuilder
 	{
 		if(isset($_GET['err']))
 		{
-			$topic = $this->createTopic(_('エラー'));
-			$p = $this->createParagraph($topic);
-			$this->addText($p, $_GET['err']);
+			$this->createSimpleMessage(_('エラー'), $_GET['err']);
 		}
 		if(strlen(self::$trace) > 0)
 		{
-			$this->createCodeParagraph($this->createTopic(_('デバッグ用メッセージ')), self::$trace);
+			$this->createSimpleMessage(_('デバッグ用メッセージ'), self::$trace);
 		}
+		header('Cache-Control: no-cache');
+		header('Pragma: no-cache');
 		if(CConfigure::COMPRESS)
 		{
 			ob_start("ob_gzhandler");
@@ -167,7 +167,7 @@ class CDocumentBuilder
 			$pattern = sprintf('/%s/', preg_quote($xhtml, '/'));
 			header(sprintf('Content-Type: %s; charset=UTF-8',
 				preg_match($pattern, $accept) ? $xhtml : 'text/html'));
-			header('X-UA-Compatible : IE=edge');
+			header('X-UA-Compatible: IE=edge');
 			echo $this->createHTML($xslpath);
 		}
 	}
