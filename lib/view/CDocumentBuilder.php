@@ -240,12 +240,25 @@ class CDocumentBuilder
 	 */
 	public function createItem($args, DOMNode $parent = null)
 	{
+		return $this->createInfo($args, 'item', $parent);
+	}
+
+	/**
+	 *	アイテムを生成します。
+	 *
+	 *	@param array $args 連想配列。
+	 *	@param string $name 要素名。
+	 *	@param DOMNode $parent 親要素。
+	 *	@return DOMElement 要素オブジェクト。
+	 */
+	public function createInfo($args, $name, DOMNode $parent = null)
+	{
 		if($parent === null)
 		{
 			$parent = $this->getRootElement();
 		}
 		$dom = $this->getDOM();
-		$element = $dom->createElement('item');
+		$element = $dom->createElement($name);
 		$parent->appendChild($element);
 		foreach($args as $k => $v)
 		{

@@ -31,6 +31,9 @@ class CConstants
 	/** トップ ページ表示時用XSLファイル。 */
 	const FILE_XSL_TOP = 'top.xsl';
 
+	/** お絵かき表示時用XSLファイル。 */
+	const FILE_XSL_VIEW = 'view.xsl';
+
 }
 
 ?>

@@ -132,9 +132,28 @@ class CSceneViewImage
 			}
 			elseif($this->child !== null)
 			{
+				$child = $this->child;
+				$owner = $child->getOwner();
+				$size = $owner->getSize();
+				$pixels =& $child->getPixels();
 				$xmlbuilder = new CDocumentBuilder();
+				$xmlbuilder->setTitle($owner->getTheme());
+				$xmlbuilder->createInfo('bot', array(
+					'generation' => $child->getGeneration(),
+					'amount' => $child->getAmount()));
+				$info = $xmlbuilder->createElement('bot');
+				$this->createAttribute($element, $k, $v);
+				for($y = 0; $y < $size['y']; $y++)
+				{
+					$line = $xmlbuilder->createElement('line');
+					for($x = 0; $x < $size['x']; $x++)
+					{
+						$xmlbuilder->createItem(
+							array('color' => $pixels[$y * $size['x'] + $x]), $line);
+					}
+				}
 				$xmlbuilder->createSimpleMessage(_('ERROR'), _('HOGEE!'));
-				$xmlbuilder->output(CConstants::FILE_XSL_MESSAGE);
+				$xmlbuilder->output(CConstants::FILE_XSL_VIEW);
 				$entity->setNextState(CEmptyState::getInstance());
 			}
 			$entity->setNextState(CEmptyState::getInstance());
