@@ -53,10 +53,13 @@ class CSceneTop
 	 */
 	public function setup(CEntity $entity)
 	{
-		$pager = new CPager(0, 3);
-		$this->botsOrderGeneration = CBot::getAllOrderGeneration($pager);
-		$this->botsOrderNewbie = CBot::getAllOrderNewbie($pager);
-		$this->botsOrderScore = CBot::getAllOrderScore($pager);
+		if($entity->connectDatabase())
+		{
+			$pager = new CPager(0, 3);
+			$this->botsOrderGeneration = CBot::getAllOrderGeneration($pager);
+			$this->botsOrderNewbie = CBot::getAllOrderNewbie($pager);
+			$this->botsOrderScore = CBot::getAllOrderScore($pager);
+		}
 	}
 
 	/**
@@ -66,36 +69,39 @@ class CSceneTop
 	 */
 	public function execute(CEntity $entity)
 	{
-		$xmlbuilder = new CDocumentBuilder();
-		$newbie = $xmlbuilder->createElement('new');
-		$score = $xmlbuilder->createElement('score');
-		$gene = $xmlbuilder->createElement('gene');
-		$botsNewbie = $this->botsOrderNewbie;
-		$botsScore = $this->botsOrderScore;
-		$botsGene = $this->botsOrderGeneration;
-		foreach($botsNewbie as $item)
+		if($entity->getNextState() === null)
 		{
-			$xmlbuilder->createItem(array(
-				'id' => $item->getID(),
-				'theme' => $item->getTheme(),
-			), $score);
+			$xmlbuilder = new CDocumentBuilder();
+			$newbie = $xmlbuilder->createElement('new');
+			$score = $xmlbuilder->createElement('score');
+			$gene = $xmlbuilder->createElement('gene');
+			$botsNewbie = $this->botsOrderNewbie;
+			$botsScore = $this->botsOrderScore;
+			$botsGene = $this->botsOrderGeneration;
+			foreach($botsNewbie as $item)
+			{
+				$xmlbuilder->createItem(array(
+					'id' => $item->getID(),
+					'theme' => $item->getTheme(),
+				), $score);
+			}
+			foreach($botsScore as $item)
+			{
+				$xmlbuilder->createItem(array(
+					'id' => $item->getID(),
+					'theme' => $item->getTheme(),
+				), $score);
+			}
+			foreach($botsGene as $item)
+			{
+				$xmlbuilder->createItem(array(
+					'id' => $item->getID(),
+					'theme' => $item->getTheme(),
+				), $gene);
+			}
+			$xmlbuilder->output(CConstants::FILE_XSL_TOP);
+			$entity->setNextState(CEmptyState::getInstance());
 		}
-		foreach($botsScore as $item)
-		{
-			$xmlbuilder->createItem(array(
-				'id' => $item->getID(),
-				'theme' => $item->getTheme(),
-			), $score);
-		}
-		foreach($botsGene as $item)
-		{
-			$xmlbuilder->createItem(array(
-				'id' => $item->getID(),
-				'theme' => $item->getTheme(),
-			), $gene);
-		}
-		$xmlbuilder->output(CConstants::FILE_XSL_TOP);
-		$entity->setNextState(CEmptyState::getInstance());
 	}
 
 	/**
