@@ -23,7 +23,7 @@ class CSceneTop
 	{
 		if(self::$instance == null)
 		{
-			self::$instance = new CSceneParseQuery();
+			self::$instance = new CSceneTop();
 		}
 		return self::$instance;
 	}
