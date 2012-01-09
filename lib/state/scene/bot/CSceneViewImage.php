@@ -141,8 +141,6 @@ class CSceneViewImage
 				$xmlbuilder->createInfo('bot', array(
 					'generation' => $child->getGeneration(),
 					'amount' => $child->getAmount()));
-				$info = $xmlbuilder->createElement('bot');
-				$this->createAttribute($element, $k, $v);
 				for($y = 0; $y < $size['y']; $y++)
 				{
 					$line = $xmlbuilder->createElement('line');
@@ -152,7 +150,6 @@ class CSceneViewImage
 							array('color' => $pixels[$y * $size['x'] + $x]), $line);
 					}
 				}
-				$xmlbuilder->createSimpleMessage(_('ERROR'), _('HOGEE!'));
 				$xmlbuilder->output(CConstants::FILE_XSL_VIEW);
 				$entity->setNextState(CEmptyState::getInstance());
 			}

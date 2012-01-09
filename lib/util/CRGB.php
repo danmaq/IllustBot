@@ -23,7 +23,7 @@ class CRGB
 		}
 		else
 		{
-			$rgb = ord($raw[0]) << 8 + ord($raw[1]);
+			$rgb = (ord($raw[0]) << 4) + ord($raw[1]);
 		}
 		$this->rgb = $rgb;
 	}

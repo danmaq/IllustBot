@@ -412,7 +412,7 @@ class CChild
 		$size = $this->getOwner()->getSize();
 		$len = $size['x'] * $size['y'];
 		$pixels = array();
-		for($i = 0; $i < $len; $i += 2)
+		for($i = 0; $i < $len; $i++)
 		{
 			$color = new CRGB();
 			array_push($pixels, $color);
