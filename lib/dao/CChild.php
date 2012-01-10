@@ -2,7 +2,7 @@
 
 require_once('CBot.php');
 require_once(IB01_LIB_ROOT . '/file/CFileSQLChild.php');
-require_once(IB01_LIB_ROOT . '/util/CRGB.php');
+require_once(IB01_LIB_ROOT . '/util/CPixels.php');
 
 /**
  *	子ぼっとDAOクラス。
@@ -20,7 +20,7 @@ class CChild
 	private static $initialized = false;
 
 	/**	ピクセル情報。 */
-	private $pixels;
+	private $pixels = null;
 
 	/**	子ぼっとID。 */
 	private $id;
@@ -190,7 +190,6 @@ class CChild
 			$id = CDataEntity::createGUID();
 		}
 		$this->id = $id;
-		$this->pixels = array();
 		$this->setGeneration(0);
 		$this->setVoteCount(0);
 		$this->setScore(0);
@@ -230,6 +229,10 @@ class CChild
 	public function setOwner($value)
 	{
 		$this->owner = $value;
+		if($this->pixels == null)
+		{
+			$this->resetPixels();
+		}
 	}
 
 	/**
@@ -313,7 +316,7 @@ class CChild
 	/**
 	 *	ピクセル情報を取得します。
 	 *
-	 *	@return array ピクセル情報。
+	 *	@return CPixels ピクセル情報。
 	 */
 	public function &getPixels()
 	{
@@ -402,10 +405,6 @@ class CChild
 			}
 			else
 			{
-				if(count($this->getPixels()) == 0)
-				{
-					$this->resetPixels();
-				}
 				$storage =& $this->storage();
 				$storage['m'] = base64_encode(gzdeflate($this->createRawPixels()));
 				$sql = $fcache->insert;
@@ -448,15 +447,7 @@ class CChild
 			$this->setVoteCount($body[0]['VOTE_COUNT']);
 			$this->setScore($body[0]['SCORE']);
 			$body =& $this->storage();
-			$raw = gzinflate(base64_decode($body['m']));
-			$len = strlen($raw);
-			$pixels = array();
-			for($i = 0; $i < $len; $i += 2)
-			{
-				$color = new CRGB(substr($raw, $i, 2));
-				array_push($pixels, $color);
-			}
-			$this->pixels = $pixels;
+			$this->pixels = new CPixels(gzinflate(base64_decode($body['m'])));
 		}
 		return $result;
 	}
@@ -484,14 +475,7 @@ class CChild
 	public function resetPixels()
 	{
 		$size = $this->getOwner()->getSize();
-		$len = $size['x'] * $size['y'];
-		$pixels = array();
-		for($i = 0; $i < $len; $i++)
-		{
-			$color = new CRGB();
-			array_push($pixels, $color);
-		}
-		$this->pixels = $pixels;
+		$this->pixels = new CPixels($size['x'] * $size['y']);
 	}
 
 	/**
@@ -501,13 +485,7 @@ class CChild
 	 */
 	private function createRawPixels()
 	{
-		$result = '';
-		$pixels = $this->pixels;
-		for($i = count($pixels); --$i >= 0; )
-		{
-			$result = $pixels[$i]->getRGBRaw() . $result;
-		}
-		return $result;
+		return $this->pixels->getRawData();
 	}
 
 	/**
