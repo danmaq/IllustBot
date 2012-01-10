@@ -44,6 +44,9 @@ class CVector2
 			CMisc::lerp($v1->x, $v2->x, $amount),
 			CMisc::lerp($v1->y, $v2->y, $amount));
 	}
+
+	//* instance methods ───────────────────────────*
+
 }
 
 ?>

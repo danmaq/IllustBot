@@ -8,6 +8,8 @@ require_once(IB01_LIB_ROOT . '/state/CEmptyState.php');
 class CEntity
 {
 
+	//* fields ────────────────────────────────*
+
 	/**	前回の状態。 */
 	private $previousState;
 
@@ -16,6 +18,8 @@ class CEntity
 
 	/**	次の状態。 */
 	private $nextState;
+
+	//* constructor & destructor ───────────────────────*
 
 	/**
 	 *	コンストラクタ。
@@ -37,6 +41,8 @@ class CEntity
 	{
 		$this->dispose();
 	}
+
+	//* instance methods ───────────────────────────*
 
 	/**
 	 *	前回の状態を取得します。

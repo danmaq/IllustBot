@@ -16,6 +16,8 @@ require_once(IB01_LIB_ROOT . '/state/scene/initialize/CSceneParseQuery.php');
 class CIB01
 {
 
+	//* class methods ────────────────────────────-*
+
 	/**
 	 *	実行します。
 	 */
