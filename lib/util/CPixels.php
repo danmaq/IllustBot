@@ -10,7 +10,14 @@ class CPixels
 
 	//* fields ────────────────────────────────*
 
+	/**	ピクセル情報。 */
 	private $pixels;
+
+	/**	X軸サイズ。 */
+	private $x;
+
+	/**	Y軸サイズ。 */
+	private $y;
 
 	//* constructor & destructor ───────────────────────*
 
@@ -18,18 +25,21 @@ class CPixels
 	 *	コンストラクタ。
 	 *
 	 *	@param string $raw バイナリによるピクセル情報、またはピクセル数。
+	 *	@param int $x X軸サイズ。
+	 *	@param int $x Y軸サイズ。
 	 */
-	public function __construct($raw)
+	public function __construct($raw, $x = 0, $y = 0)
 	{
-		$pixels = array();
 		if(is_string($raw))
 		{
+			$pixels = array();
 			$len = strlen($raw);
 			for($i = 0; $i < $len; $i += 2)
 			{
 				$color = new CRGB(substr($raw, $i, 2));
 				array_push($pixels, $color);
 			}
+			$this->pixels =& $pixels;
 		}
 		elseif(is_int($raw))
 		{
@@ -39,7 +49,12 @@ class CPixels
 		{
 			throw new Exception(_('引数はバイナリか整数でなければなりません。'));
 		}
-		$this->pixels =& $pixels;
+		if($x * $y <= 0)
+		{
+			$x = floor(sqrt(count($this->get())));
+			$y = $x;
+		}
+		$this->setSize($x, $y);
 	}
 
 	//* class methods ────────────────────────────-*
@@ -56,14 +71,16 @@ class CPixels
 	{
 		$pixelsA =& $a->get();
 		$pixelsB =& $b->get();
-		$size = count($pixelsA);
-		if($size != count($pixelsB))
+		$len = count($pixelsA);
+		$size = $a->getSize();
+		if($len != count($pixelsB))
 		{
 			throw new Exception(_('画素数を一致させる必要があります。'));
 		}
-		$result = new CPixels($size);
+		$result = new CPixels($len);
+		$result->setSize($size['x'], $size['y']);
 		$pixels =& $result->get();
-		for($i = $size; --$i >= 0; )
+		for($i = $len; --$i >= 0; )
 		{
 			$rnd = mt_rand(0, 65535);
 			if($rnd > 1024)
@@ -74,6 +91,30 @@ class CPixels
 	}
 
 	//* instance methods ───────────────────────────*
+
+	/**
+	 *	画像サイズを取得します。
+	 *
+	 *	@return array 画像サイズ。{x => x, y => y}
+	 */
+	public function getSize()
+	{
+		return array(
+			'x' => $this->x,
+			'y' => $this->y);
+	}
+
+	/**
+	 *	画像サイズを設定します。
+	 *
+	 *	@param integer $x X軸の画像サイズ。
+	 *	@param integer $y Y軸の画像サイズ。
+	 */
+	public function setSize($x, $y)
+	{
+		$this->x = $x;
+		$this->y = $y;
+	}
 
 	/**
 	 *	ピクセル情報を取得します。
@@ -102,6 +143,18 @@ class CPixels
 	}
 
 	/**
+	 *	ディープ コピーを取得します。
+	 *
+	 *	@return CPixels ピクセル情報。
+	 */
+	public function clone()
+	{
+		$result = new CPixels($this->getRawData());
+		$result->setSize($this->x, $this->y);
+		return $result;
+	}
+
+	/**
 	 *	平均色を取得します。
 	 *
 	 *	@return string バイナリによるピクセル情報。
@@ -110,34 +163,24 @@ class CPixels
 	{
 		$result = 0;
 		$pixels = $this->pixels;
-		$size = count($pixels);
-		for($i = $size; --$i >= 0; )
+		$len = count($pixels);
+		for($i = $len; --$i >= 0; )
 		{
 			$result += $pixels[$i]->getRGB();
 		}
-		return floor($result / $size);
-	}
-
-	/**
-	 *	ディープ コピーを取得します。
-	 *
-	 *	@return CPixels ピクセル情報。
-	 */
-	public function clone()
-	{
-		return new CPixels($this->getRawData());
+		return floor($result / $len);
 	}
 
 	/**
 	 *	ピクセル情報をリセットします。
 	 *
-	 *	@param int $size ピクセル数。既定値は現在格納されている情報のピクセル数。
+	 *	@param int $len ピクセル数。既定値は現在格納されている情報のピクセル数。
 	 */
-	public function reset($size = null)
+	public function reset($len = 0)
 	{
-		if($size === null)
+		if($len <= 0)
 		{
-			$size = count($this->pixels);
+			$len = count($this->pixels);
 		}
 		$pixels = array();
 		for($i = 0; $i < $len; $i++)
@@ -147,6 +190,8 @@ class CPixels
 		}
 		$this->pixels = $pixels;
 	}
+	
+//	public function 
 }
 
 ?>
