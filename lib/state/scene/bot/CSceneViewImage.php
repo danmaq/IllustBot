@@ -184,6 +184,7 @@ class CSceneViewImage
 		{
 			$this->id = $child->getID();
 		}
+		return $child;
 	}
 
 	/**
@@ -201,11 +202,11 @@ class CSceneViewImage
 		$threshold = ceil($len * 0.2);
 		for($i = 0; $i < $threshold; $i++)
 		{
-			$childs[$i]->shallowCopy();
+			$child = $childs[$i]->shallowCopy();
 		}
 		for($i = $len - $threshold; --$i >= 0; )
 		{
-			CChild::inheritance(
+			$child = CChild::inheritance(
 				$childs[mt_rand(0, $threshold)],
 				$childs[mt_rand(0, $threshold)]);
 		}
