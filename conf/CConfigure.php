@@ -20,7 +20,7 @@ class CConfigure
 	/**
 	 *	レスポンスを圧縮するかどうかを設定します。
 	 */
-	const COMPRESS = false;
+	const COMPRESS = true;
 
 	/**
 	 *	デフォルトの1ページあたりの記事数です。

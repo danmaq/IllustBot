@@ -74,22 +74,7 @@ class CSceneViewImage
 						}
 						catch(Exception $e)
 						{
-							// TODO : 引き継ぎ・交叉遺伝・突然変異
-							$childs = CChild::getFromOwner($bot);
-							$len = min($bot->getChilds(), count($childs));
-							$threshold = ceil($len * 0.2);
-							for($i = 0; $i < $threshold; $i++)
-							{
-								$childs[$i]->shallowCopy();
-							}
-							for($i = $len - $threshold; --$i >= 0; )
-							{
-								CChild::inheritance(
-									$childs[mt_rand(0, $threshold)],
-									$childs[mt_rand(0, $threshold)]);
-							}
-							$bot->nextGeneration();
-							$bot->commit();
+							$child = $this->createChildsInheritance($entity, $bot);
 						}
 						if($child === null)
 						{
@@ -199,6 +184,34 @@ class CSceneViewImage
 		{
 			$this->id = $child->getID();
 		}
+	}
+
+	/**
+	 *	子ぼっとを生成します。
+	 *
+	 *	@param CEntity $entity この状態が適用されたオブジェクト。
+	 *	@param CBot $bot 親ぼっと。
+	 *	@return CChild 子ぼっと。
+	 */
+	private function createChildsInheritance(CEntity $entity, CBot $bot)
+	{
+		$child = null;
+		$childs = CChild::getFromOwner($bot);
+		$len = min($bot->getChilds(), count($childs));
+		$threshold = ceil($len * 0.2);
+		for($i = 0; $i < $threshold; $i++)
+		{
+			$childs[$i]->shallowCopy();
+		}
+		for($i = $len - $threshold; --$i >= 0; )
+		{
+			CChild::inheritance(
+				$childs[mt_rand(0, $threshold)],
+				$childs[mt_rand(0, $threshold)]);
+		}
+		$bot->nextGeneration();
+		$bot->commit();
+		return $child;
 	}
 }
 
