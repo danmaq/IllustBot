@@ -45,7 +45,7 @@ class CConfigure
 	 *	Opera Version 9以降
 	 *	Apple Safari Version 3以降
 	 */
-	const USE_CLIENT_XSLT = true;
+	const USE_CLIENT_XSLT = false;
 
 	/**
 	 *	使用するDBMSを選択します。
