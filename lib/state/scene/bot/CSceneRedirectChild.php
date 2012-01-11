@@ -168,7 +168,7 @@ class CSceneRedirectChild
 		$threshold = ceil($len * 0.2);
 		for($i = 0; $i < $threshold; $i++)
 		{
-			$child = $childs[$i]->shallowCopy();
+			$child = $childs[$i]->createNextGeneration();
 		}
 		for($i = $len - $threshold; --$i >= 0; )
 		{

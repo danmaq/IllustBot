@@ -2,7 +2,7 @@
 
 require_once(IB01_CONSTANTS);
 require_once('CSceneRedirectChild.php');
-require_once(IB01_LIB_ROOT . '/dao/CChild.php');
+require_once(IB01_LIB_ROOT . '/dao/CImage.php');
 require_once(IB01_LIB_ROOT . '/state/scene/ranking/CSceneTop.php');
 
 /**
@@ -58,30 +58,14 @@ class CSceneViewRawImage
 		{
 			if(!isset($_GET['id']))
 			{
-				throw new Exception(_('ぼっとを指名してください。'));
+				throw new Exception(_('画像IDを指名してください。'));
 			}
 			if($entity->connectDatabase())
 			{
-				$child = new CChild($_GET['id']);
-				if(!$child->rollback())
+				$image = CImage::directLoad($_GET['id']);
+				if($image === null)
 				{
-					$bot = new CBot($_GET['id']);
-					if(!$bot->rollback())
-					{
-						throw new Exception(_('存在しないIDです。'));
-					}
-					$child = CSceneRedirectChild::getInstance()->findChild($bot);
-					if($child === null)
-					{
-						throw new Exception(
-							_('子ぼっとがいるようで、だけどいないような、異常な事態(素敵な事態)'));
-					}
-				}
-				$image = new CImage($child->getHash());
-				if($image->getPixels() === null)
-				{
-					throw new Exception(
-						_('子ぼっとがいるけど、画像がないような、異常な事態(素敵な事態)'));
+					throw new Exception(_('存在しない画像IDです。'));
 				}
 				$this->image = $image;
 			}
@@ -103,10 +87,12 @@ class CSceneViewRawImage
 	{
 		if($entity->getNextState() === null)
 		{
-			$image = $this->image;
+			$fn = '';
+			$ln = 0;
 			header('Content-Type: image/png');
-			header(sprintf('Content-Disposition: inline; filename=%d.png', $image->getID()));
-			echo $image->render();
+			header(sprintf('Content-Disposition: inline; filename=%d.png', $_GET['id']));
+			echo $this->image;
+			$entity->setNextState(CEmptyState::getInstance());
 		}
 	}
 

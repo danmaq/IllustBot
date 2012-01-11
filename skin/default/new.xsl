@@ -59,8 +59,8 @@
 							<label for="childs">ぼっとの性格</label>
 							<select id="childs" name="childs">
 								<option value="20">飲み込み早いけど、偏屈さん</option>
-								<option value="50" default="default">バランス型</option>
-								<option value="120">気変わりしやすく、物覚え悪い</option>
+								<option value="50" selected="selected">バランス型</option>
+								<option value="100">気変わりしやすく、物覚え悪い</option>
 							</select>
 						</li>
 						<li>

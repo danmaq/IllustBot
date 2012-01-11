@@ -83,7 +83,7 @@ class CChild
 	{
 		$ia = new CImage($a->getHash());
 		$ib = new CImage($b->getHash());
-		$ic = new CImage(CPixels::inheritance($ia, $ib));
+		$ic = new CImage(CPixels::inheritance($ia->getPixels(), $ib->getPixels()));
 		$ic->commit();
 		$result = new CChild();
 		$result->setOwner($a->getOwner());
@@ -194,7 +194,7 @@ class CChild
 	{
 		return array(
 			'owner' => array($owner->getID(), PDO::PARAM_STR),
-			'generation' => array($owner->getGeneration(), PDO::PARAM_INT);
+			'generation' => array($owner->getGeneration(), PDO::PARAM_INT));
 	}
 
 	//* instance methods ───────────────────────────*
@@ -212,12 +212,13 @@ class CChild
 	/**
 	 *	親ぼっとを取得します。
 	 *
+	 *	@param boolean $autoCreate 自動的にオブジェクトを生成するかどうか。
 	 *	@return CBot 親ぼっと。
 	 */
-	public function getOwner()
+	public function getOwner($autoCreate = true)
 	{
 		$result = $this->owner;
-		if(is_string($result))
+		if($autoCreate && is_string($result))
 		{
 			$result = new CBot($result);
 			$result->rollback();
@@ -350,6 +351,39 @@ class CChild
 	}
 
 	/**
+	 *	次の世代となるクローンを取得します。
+	 *
+	 *	@return CChild 子ぼっとオブジェクト。
+	 */
+	public function createNextGeneration()
+	{
+		$result = new CChild();
+		$result->setOwner($this->getOwner(false));
+		$result->setGeneration($this->getGeneration() + 1);
+		$result->setHash($this->getHash());
+		$result->commit();
+		return $result;
+	}
+
+	/**
+	 *	画像をリセットします。
+	 */
+	public function resetImage()
+	{
+		$size = $this->getOwner()->getSize();
+		if($this->getHash() >= 0)
+		{
+			$image = new CImage($hash, false);
+			$image->delete();
+		}
+		$p = new CPixels();
+		$p->createFromSize($size['x'], $size['y']);
+		$image = new CImage($p);
+		$image->commit();
+		$this->setHash($image->getID());
+	}
+
+	/**
 	 *	データベースに保存されているかどうかを取得します。
 	 *
 	 *	注意: この関数は、コミットされているかどうかを保証するものではありません。
@@ -404,6 +438,10 @@ class CChild
 		$db = CDBManager::getInstance();
 		$pdo = $db->getPDO();
 		$result = false;
+		if($this->getHash() < 0)
+		{
+			$this->resetImage();
+		}
 		try
 		{
 			$pdo->beginTransaction();
@@ -467,9 +505,7 @@ class CChild
 	 */
 	private function createDBParams()
 	{
-		return array(
-			'id' => array($this->getID(), PDO::PARAM_STR)
-		);
+		return array('id' => array($this->getID(), PDO::PARAM_STR));
 	}
 }
 

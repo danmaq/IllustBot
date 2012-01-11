@@ -47,7 +47,7 @@
 				</p>
 				<p>
 					<img alt="">
-						<xsl:attribute name="src">?f=core/rawImage&amp;id=<xsl:value-of select="bot/@id" /></xsl:attribute>
+						<xsl:attribute name="src">?f=core/rawImage&amp;id=<xsl:value-of select="bot/@hash" /></xsl:attribute>
 						<xsl:attribute name="width"><xsl:value-of select="bot/@width * 20" /></xsl:attribute>
 						<xsl:attribute name="height"><xsl:value-of select="bot/@height * 20" /></xsl:attribute>
 					</img>

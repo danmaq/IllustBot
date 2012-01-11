@@ -180,6 +180,12 @@ class CMySQL
 	public function singleFetch($sql, $column, $args = array())
 	{
 		$body = $this->execAndFetch($sql, $args);
+		if(count($body) <= 0)
+		{
+			$e = new Exception(_('データが1件も見つかりませんでした。'));
+			$this->exception = $e;
+			throw $e;
+		}
 		return $body[0][$column];
 	}
 

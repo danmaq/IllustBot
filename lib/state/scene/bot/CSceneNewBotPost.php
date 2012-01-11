@@ -93,7 +93,7 @@ class CSceneNewBotPost
 				{
 					throw new Exception(_('不正なサイズは受理不可。'));
 				}
-				if($childs < 10 || $childs > 100)
+				if($childs < 10 || $childs > 200)
 				{
 					throw new Exception(_('ぼっとさんをいじめちゃだめー。'));
 				}

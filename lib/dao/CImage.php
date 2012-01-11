@@ -27,13 +27,17 @@ class CImage
 	 *	コンストラクタ。
 	 *
 	 *	@param mixed $data ハッシュ または 画像データ、またはCPixelsオブジェクト。
+	 *	@param boolean $autoload 自動的に画像をデータベースから読み出すかどうか。
 	 */
-	public function __construct($data = null)
+	public function __construct($data, $autoload = true)
 	{
 		if(is_int($data))
 		{
 			$this->id = $data;
-			$this->rollback();
+			if($autoload)
+			{
+				$this->rollback();
+			}
 		}
 		elseif(is_string($data))
 		{
@@ -62,6 +66,20 @@ class CImage
 			CDBManager::getInstance()->execute(CFileSQLImage::getInstance()->ddl);
 			self::$initialized = true;
 		}
+	}
+
+	/**
+	 *	オブジェクトを介さず、直接データをDBから読み出します。
+	 *
+	 *	@param mixed $data ハッシュ。
+	 *	@return string 画像のRAWデータ(PNG)。存在しない場合、null。
+	 */
+	public static function directLoad($id)
+	{
+		self::initialize();
+		return CDBManager::getInstance()->singleFetch(
+			CFileSQLImage::getInstance()->select, 'BODY',
+			array('hash' => array($id, PDO::PARAM_INT)));
 	}
 
 	//* instance methods ───────────────────────────*
@@ -149,18 +167,19 @@ class CImage
 	 */
 	public function commit()
 	{
-		self::initialize();
 		$raw = $this->getPixels()->render();
-		$this->id = hash('crc32', $raw);
+		$this->id = hexdec(hash('crc32', $raw));
+		self::initialize();
 		$result = $this->isExists();
 		if(!$result)
 		{
+			$db = CDBManager::getInstance();
 			$pdo = $db->getPDO();
 			try
 			{
 				$pdo->beginTransaction();
 				$result = $db->execute(CFileSQLImage::getInstance()->insert,
-					$this->createDBParams() + array('body' => array($raw, PDO::PARAM_LOB));
+					$this->createDBParams() + array('body' => array($raw, PDO::PARAM_LOB)));
 				if(!$result)
 				{
 					throw new Exception(_('DB書き込みに失敗'));
@@ -183,19 +202,8 @@ class CImage
 	 */
 	public function rollback()
 	{
-		$result = true;
-		try
-		{
-			$body = CDBManager::getInstance()->singleFetch(
-				CFileSQLImage::getInstance()->select, 'BODY', $this->createDBParams());
-			$this->setRawData($body);
-		}
-		catch(Exception e)
-		{
-			error_log($e);
-			$result = false;
-		}
-		return $result;
+		$this->setRawData(self::directLoad($this->getID()));
+		return true;
 	}
 
 	/**

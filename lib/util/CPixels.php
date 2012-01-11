@@ -106,9 +106,9 @@ class CPixels
 	private static function getPixel($resource, $x, $y)
 	{
 		$rgb = imagecolorat($resource, $x, $y);
-		$ra = (($rgb >> 16) & 255);
-		$ga = (($rgb >> 8) & 255);
-		$ba = (($rgb >> 0) & 255);
+		$r = (($rgb >> 16) & 255);
+		$g = (($rgb >> 8) & 255);
+		$b = (($rgb >> 0) & 255);
 		return array(
 			'r' => $r,
 			'g' => $g,
@@ -129,14 +129,14 @@ class CPixels
 	private static function setPixel($resource, $x, $y, $r = null, $g = null, $b = null)
 	{
 		$result = false;
-		$color = imagecolorallocate($result,
+		$color = imagecolorallocate($resource,
 			$r === null ? round(mt_rand(0, 255)) : $r,
 			$g === null ? round(mt_rand(0, 255)) : $g,
 			$b === null ? round(mt_rand(0, 255)) : $b);
 		if($color)
 		{
-			$result = imagesetpixel($result, $x, $y, $color);
-			imagecolordeallocate($result, $color);
+			$result = imagesetpixel($resource, $x, $y, $color);
+			imagecolordeallocate($resource, $color);
 		}
 		return $result;
 	}
@@ -189,6 +189,7 @@ class CPixels
 	 */
 	public function getSize()
 	{
+		$resource = $this->getResource();
 		$x = imagesx($resource);
 		$y = imagesy($resource);
 		return array(
@@ -308,7 +309,7 @@ class CPixels
 			{
 				for($_x = $x; --$_x >= 0; )
 				{
-					self::setPixel($resource, $_x, $_y);
+					self::setPixel($result, $_x, $_y);
 				}
 			}
 		}
@@ -357,7 +358,7 @@ class CPixels
 	 *
 	 *	@return CPixels ピクセル情報。
 	 */
-	public function clone()
+	public function copy()
 	{
 		$result = new CPixels();
 		$result->createFromObject($this);

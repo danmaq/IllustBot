@@ -96,11 +96,12 @@ class CSceneViewImage
 		{
 			$child = $this->child;
 			$owner = $child->getOwner();
-			$size = $child->getSize();
+			$size = $owner->getSize();
 			$xmlbuilder = new CDocumentBuilder();
 			$xmlbuilder->setTitle($owner->getTheme());
 			$xmlbuilder->createInfo('bot', array(
 				'id' => $child->getID(),
+				'hash' => $child->getHash(),
 				'owner' => $owner->getID(),
 				'width' => $size['x'],
 				'height' => $size['y'],

@@ -45,6 +45,7 @@
 					<li><a href="?f=core/newGame">依頼する</a></li>
 					<li><a href="?f=core/list">育てる</a></li>
 					<li>ヘルプ(工事中)</li>
+					<li><a href="HISTORY">VERSION <xsl:value-of select="@ver" /></a></li>
 				</ul>
 				<h2>
 					新着お題
