@@ -1,6 +1,7 @@
 <?php
 
 require_once('CBot.php');
+require_once('CImage.php');
 require_once(IB01_LIB_ROOT . '/file/CFileSQLChild.php');
 require_once(IB01_LIB_ROOT . '/util/CPixels.php');
 
@@ -11,9 +12,11 @@ class CChild
 	extends CDataIndex
 {
 
+	//* fields ────────────────────────────────*
+
 	/**	実体のメンバとデフォルト値一覧。 */
 	private static $format = array(
-		'm'	=> '',
+		'hash'	=> -1,
 	);
 
 	/**	初期化済みかどうか。 */
@@ -26,19 +29,19 @@ class CChild
 	private $id;
 
 	/**	親ぼっと。 */
-	private $owner;
+	private $owner = null;
 
 	/**	世代。 */
-	private $generation;
+	private $generation = 0;
 
 	/**	投票数。 */
-	private $voteCount;
+	private $voteCount = 0;
 
 	/**	スコア。 */
-	private $score;
+	private $score = 0;
 
 	/**	未投票ぼっとの数。 */
-	private $amount;
+	private $amount = -1;
 
 	/**
 	 *	交叉遺伝します。
@@ -181,18 +184,14 @@ class CChild
 	 *	@param string $id 子ぼっとID。
 	 *	@param string $entity_id 実体ID(GUID)。
 	 */
-	public function __construct($id = null, $entity_id = null)
+	public function __construct($id = null)
 	{
-		parent::__construct(self::$format, $entity_id);
-		self::initialize();
+		parent::__construct(self::$format);
 		if($id === null)
 		{
 			$id = CDataEntity::createGUID();
 		}
 		$this->id = $id;
-		$this->setGeneration(0);
-		$this->setVoteCount(0);
-		$this->setScore(0);
 	}
 
 	/**
@@ -229,10 +228,6 @@ class CChild
 	public function setOwner($value)
 	{
 		$this->owner = $value;
-		if($this->pixels == null)
-		{
-			$this->resetPixels();
-		}
 	}
 
 	/**
@@ -314,13 +309,25 @@ class CChild
 	}
 
 	/**
-	 *	ピクセル情報を取得します。
+	 *	画像ハッシュを取得します。
 	 *
-	 *	@return CPixels ピクセル情報。
+	 *	@return int 画像ハッシュ。
 	 */
-	public function &getPixels()
+	public function getHash()
 	{
-		return $this->pixels;
+		$body =& $this->storage();
+		return $body['hash'];
+	}
+
+	/**
+	 *	画像ハッシュを設定します。
+	 *
+	 *	@param integer $value 画像ハッシュ。
+	 */
+	public function setHash($value)
+	{
+		$body =& $this->storage();
+		$body['hash'] = $value;
 	}
 
 	/**
@@ -330,7 +337,7 @@ class CChild
 	 */
 	public function getAmount()
 	{
-		if($this->amount === null)
+		if($this->amount < 0)
 		{
 			$this->amount = self::getCountUnvotedFromOwner($this->getOwner());
 		}
@@ -391,13 +398,13 @@ class CChild
 		self::initialize();
 		$db = CDBManager::getInstance();
 		$pdo = $db->getPDO();
+		$result = false;
 		try
 		{
 			$pdo->beginTransaction();
 			$fcache = CFileSQLChild::getInstance();
 			$sql = null;
 			$params = null;
-			$result = true;
 			if($this->isExists())
 			{
 				$sql = $fcache->update;
@@ -405,17 +412,14 @@ class CChild
 			}
 			else
 			{
-				$storage =& $this->storage();
-				$storage['m'] = base64_encode(gzdeflate($this->createRawPixels()));
 				$sql = $fcache->insert;
 				$params =
 					$this->createDBParams() +
 					$this->createDBParamsFromOwner() +
 					$this->createDBParamsOnlyEID();
-				$entity = $this->getEntity();
-				$result = $entity->isExists() || $entity->commit();
 			}
-			if(!($result && $db->execute($sql, $params)))
+			$result = $this->getEntity()->commit() && $db->execute($sql, $params);
+			if(!$result)
 			{
 				throw new Exception(_('DB書き込みに失敗'));
 			}
@@ -446,46 +450,8 @@ class CChild
 			$this->setGeneration($body[0]['GENERATION']);
 			$this->setVoteCount($body[0]['VOTE_COUNT']);
 			$this->setScore($body[0]['SCORE']);
-			$body =& $this->storage();
-			$this->pixels = new CPixels(gzinflate(base64_decode($body['m'])));
 		}
 		return $result;
-	}
-
-	/**
-	 *	クローンを生成します。
-	 *	世代レベルは自動的にインクリメントします。
-	 *	実体はクローンしません。(シャローコピーに近いです)
-	 *
-	 *	@return CChild クローン オブジェクト。
-	 */
-	public function shallowCopy()
-	{
-		$result = new CChild();
-		$result->setEntity($this->getEntity());
-		$result->setOwner($this->owner);
-		$result->setGeneration($this->getGeneration() + 1);
-		$result->commit();
-		return $result;
-	}
-
-	/**
-	 *	ピクセル情報をリセットします。
-	 */
-	public function resetPixels()
-	{
-		$size = $this->getOwner()->getSize();
-		$this->pixels = new CPixels($size['x'] * $size['y']);
-	}
-
-	/**
-	 *	生のピクセル情報を取得します。
-	 *
-	 *	@return string 生のピクセル情報。
-	 */
-	private function createRawPixels()
-	{
-		return $this->pixels->getRawData();
 	}
 
 	/**

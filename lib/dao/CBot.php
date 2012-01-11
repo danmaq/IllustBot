@@ -10,6 +10,8 @@ class CBot
 	extends CDataIndex
 {
 
+	//* fields ────────────────────────────────*
+
 	/**	実体のメンバとデフォルト値一覧。 */
 	private static $format = array(
 		'x' => 8,
@@ -28,6 +30,23 @@ class CBot
 
 	/**	累計スコア。 */
 	private $score;
+
+	//* constructor & destructor ───────────────────────*
+
+	/**
+	 *	コンストラクタ。
+	 *
+	 *	@param string $entity_id ぼっとID。実体IDと兼用(GUID)。
+	 */
+	public function __construct($entity_id = null)
+	{
+		parent::__construct(self::$format, $entity_id);
+		self::getTotalCount();
+		$this->setGeneration(0);
+		$this->setScore(0);
+	}
+
+	//* class methods ────────────────────────────-*
 
 	/**
 	 *	ぼっと一覧を取得します。
@@ -113,18 +132,7 @@ class CBot
 		return self::$members;
 	}
 
-	/**
-	 *	コンストラクタ。
-	 *
-	 *	@param string $entity_id ぼっとID。実体IDと兼用(GUID)。
-	 */
-	public function __construct($entity_id = null)
-	{
-		parent::__construct(self::$format, $entity_id);
-		self::getTotalCount();
-		$this->setGeneration(0);
-		$this->setScore(0);
-	}
+	//* instance methods ───────────────────────────*
 
 	/**
 	 *	ぼっとIDを取得します。
@@ -314,7 +322,6 @@ class CBot
 	public function commit()
 	{
 		self::getTotalCount();
-		$entity = $this->getEntity();
 		$db = CDBManager::getInstance();
 		$pdo = $db->getPDO();
 		try
@@ -322,7 +329,7 @@ class CBot
 			$pdo->beginTransaction();
 			$exists = $this->isExists();
 			$fcache = CFileSQLBot::getInstance();
-			$result = $entity->commit();
+			$result = $this->getEntity()->commit();
 			if($result)
 			{
 				$params = $this->createDBParams() + $this->createDBParamsOnlyEID();

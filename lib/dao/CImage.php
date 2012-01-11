@@ -10,6 +10,8 @@ class CImage
 	implements IDAO
 {
 
+	//* fields ────────────────────────────────*
+
 	/**	初期化済みかどうか。 */
 	private static $initialized = false;
 
@@ -18,6 +20,36 @@ class CImage
 
 	/**	ハッシュ。 */
 	private $id = -1;
+
+	//* constructor & destructor ───────────────────────*
+
+	/**
+	 *	コンストラクタ。
+	 *
+	 *	@param mixed $data ハッシュ または 画像データ、またはCPixelsオブジェクト。
+	 */
+	public function __construct($data = null)
+	{
+		if(is_int($data))
+		{
+			$this->id = $data;
+			$this->rollback();
+		}
+		elseif(is_string($data))
+		{
+			$this->setRawData($data);
+		}
+		elseif($data instanceof CPixels)
+		{
+			$this->pixels = $data;
+		}
+		else
+		{
+			throw new Exception(_('画像データかハッシュ情報を指定してください。'));
+		}
+	}
+
+	//* class methods ────────────────────────────-*
 
 	/**
 	 *	テーブルの初期化をします。
@@ -32,29 +64,7 @@ class CImage
 		}
 	}
 
-	/**
-	 *	コンストラクタ。
-	 *
-	 *	@param mixed $data ハッシュ または 画像データ。
-	 */
-	public function __construct($data = null)
-	{
-		if(is_int($data))
-		{
-			$this->id = $data;
-			$this->rollback();
-		}
-		elseif(is_string($data))
-		{
-			$pixels = new CPixels();
-			$pixels->createFromData($data);
-			$this->pixels = $pixels;
-		}
-		else
-		{
-			throw new Exception(_('画像データかハッシュ情報を指定してください。'));
-		}
-	}
+	//* instance methods ───────────────────────────*
 
 	/**
 	 *	ハッシュを取得します。
@@ -108,6 +118,7 @@ class CImage
 	 */
 	public function delete()
 	{
+		$result = false;
 		$db = CDBManager::getInstance();
 		$pdo = $db->getPDO();
 		try
@@ -132,6 +143,7 @@ class CImage
 
 	/**
 	 *	コミットします。
+	 *	同時にハッシュを更新し、DBと重複している場合は何もせずに戻ります。
 	 *
 	 *	@return boolean 成功した場合、true。
 	 */
@@ -139,36 +151,17 @@ class CImage
 	{
 		self::initialize();
 		$raw = $this->getPixels()->render();
-		$this->hash = hash('crc32', $raw);
-		if(!$this->isExists())
+		$this->id = hash('crc32', $raw);
+		$result = $this->isExists();
+		if(!$result)
 		{
 			$pdo = $db->getPDO();
 			try
 			{
 				$pdo->beginTransaction();
-				$db->execute(CFileSQLImage::getInstance()->insert, $params)
-				$fcache = CFileSQLImage::getInstance();
-				$sql = null;
-				$params = null;
-				$result = true;
-				if($this->isExists())
-				{
-					$sql = $fcache->update;
-					$params = $this->createDBParams() + $this->createDBParamsScore();
-				}
-				else
-				{
-					$storage =& $this->storage();
-					$storage['m'] = base64_encode(gzdeflate($this->createRawPixels()));
-					$sql = $fcache->insert;
-					$params =
-						$this->createDBParams() +
-						$this->createDBParamsFromOwner() +
-						$this->createDBParamsOnlyEID();
-					$entity = $this->getEntity();
-					$result = $entity->isExists() || $entity->commit();
-				}
-				if(!($result && $db->execute($sql, $params)))
+				$result = $db->execute(CFileSQLImage::getInstance()->insert,
+					$this->createDBParams() + array('body' => array($raw, PDO::PARAM_LOB));
+				if(!$result)
 				{
 					throw new Exception(_('DB書き込みに失敗'));
 				}
@@ -179,44 +172,6 @@ class CImage
 				error_log($e);
 				$pdo->rollback();
 			}
-
-		}
-		$db = CDBManager::getInstance();
-		$pdo = $db->getPDO();
-		try
-		{
-			$pdo->beginTransaction();
-			$fcache = CFileSQLImage::getInstance();
-			$sql = null;
-			$params = null;
-			$result = true;
-			if($this->isExists())
-			{
-				$sql = $fcache->update;
-				$params = $this->createDBParams() + $this->createDBParamsScore();
-			}
-			else
-			{
-				$storage =& $this->storage();
-				$storage['m'] = base64_encode(gzdeflate($this->createRawPixels()));
-				$sql = $fcache->insert;
-				$params =
-					$this->createDBParams() +
-					$this->createDBParamsFromOwner() +
-					$this->createDBParamsOnlyEID();
-				$entity = $this->getEntity();
-				$result = $entity->isExists() || $entity->commit();
-			}
-			if(!($result && $db->execute($sql, $params)))
-			{
-				throw new Exception(_('DB書き込みに失敗'));
-			}
-			$pdo->commit();
-		}
-		catch(Exception $e)
-		{
-			error_log($e);
-			$pdo->rollback();
 		}
 		return $result;
 	}
@@ -228,18 +183,17 @@ class CImage
 	 */
 	public function rollback()
 	{
-		$body = CDBManager::getInstance()->execAndFetch(
-			CFileSQLImage::getInstance()->select, $this->createDBParams());
-		$result = count($body) > 0;
-		if($result)
+		$result = true;
+		try
 		{
-			$this->createEntity($body[0]['ENTITY_ID']);
-			$this->setOwner($body[0]['OWNER']);
-			$this->setGeneration($body[0]['GENERATION']);
-			$this->setVoteCount($body[0]['VOTE_COUNT']);
-			$this->setScore($body[0]['SCORE']);
-			$body =& $this->storage();
-			$this->pixels = new CPixels(gzinflate(base64_decode($body['m'])));
+			$body = CDBManager::getInstance()->singleFetch(
+				CFileSQLImage::getInstance()->select, 'BODY', $this->createDBParams());
+			$this->setRawData($body);
+		}
+		catch(Exception e)
+		{
+			error_log($e);
+			$result = false;
 		}
 		return $result;
 	}
@@ -249,9 +203,21 @@ class CImage
 	 *
 	 *	@return string レンダリングされた画像データ。(PNG24フォーマット)
 	 */
-	private function render()
+	public function render()
 	{
 		return $this->pixels->render();
+	}
+
+	/**
+	 *	RAWデータを設定します。
+	 *
+	 *	@return string RAWデータ。
+	 */
+	private function setRawData($data)
+	{
+		$pixels = new CPixels();
+		$pixels->createFromData($data);
+		$this->pixels = $pixels;
 	}
 
 	/**
