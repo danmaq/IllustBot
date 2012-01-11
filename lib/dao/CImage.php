@@ -138,6 +138,49 @@ class CImage
 	public function commit()
 	{
 		self::initialize();
+		$raw = $this->getPixels()->render();
+		$this->hash = hash('crc32', $raw);
+		if(!$this->isExists())
+		{
+			$pdo = $db->getPDO();
+			try
+			{
+				$pdo->beginTransaction();
+				$db->execute(CFileSQLImage::getInstance()->insert, $params)
+				$fcache = CFileSQLImage::getInstance();
+				$sql = null;
+				$params = null;
+				$result = true;
+				if($this->isExists())
+				{
+					$sql = $fcache->update;
+					$params = $this->createDBParams() + $this->createDBParamsScore();
+				}
+				else
+				{
+					$storage =& $this->storage();
+					$storage['m'] = base64_encode(gzdeflate($this->createRawPixels()));
+					$sql = $fcache->insert;
+					$params =
+						$this->createDBParams() +
+						$this->createDBParamsFromOwner() +
+						$this->createDBParamsOnlyEID();
+					$entity = $this->getEntity();
+					$result = $entity->isExists() || $entity->commit();
+				}
+				if(!($result && $db->execute($sql, $params)))
+				{
+					throw new Exception(_('DB書き込みに失敗'));
+				}
+				$pdo->commit();
+			}
+			catch(Exception $e)
+			{
+				error_log($e);
+				$pdo->rollback();
+			}
+
+		}
 		$db = CDBManager::getInstance();
 		$pdo = $db->getPDO();
 		try
