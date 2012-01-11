@@ -13,8 +13,10 @@ require_once(IB01_ROOT . '/conf/CConfigure.php');
 class CConstants
 {
 
+	//* constants ──────────────────────────────-*
+
 	/** バージョン情報。 */
-	const VERSION = '0.0.3';
+	const VERSION = '0.0.4';
 
 	/** MySQL用のID。 */
 	const DBMS_MYSQL = 'mysql';

@@ -13,6 +13,8 @@ class CSceneTop
 	implements IState
 {
 
+	//* fields ────────────────────────────────*
+
 	/**	クラス オブジェクト。 */
 	private static $instance = null;
 
@@ -24,6 +26,17 @@ class CSceneTop
 
 	/**	ぼっと一覧。 */
 	private $botsOrderGeneration;
+
+	//* constructor & destructor ───────────────────────*
+
+	/**
+	 *	コンストラクタ。
+	 */
+	private function __construct()
+	{
+	}
+
+	//* class methods ────────────────────────────-*
 
 	/**
 	 *	この状態のオブジェクトを取得します。
@@ -39,12 +52,7 @@ class CSceneTop
 		return self::$instance;
 	}
 
-	/**
-	 *	コンストラクタ。
-	 */
-	private function __construct()
-	{
-	}
+	//* instance methods ───────────────────────────*
 
 	/**
 	 *	この状態が開始されたときに呼び出されます。

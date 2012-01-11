@@ -10,6 +10,8 @@ class CMySQL
 	implements IDB
 {
 
+	//* fields ────────────────────────────────*
+
 	/**	クラス オブジェクト。 */
 	private static $instance = null;
 
@@ -19,19 +21,7 @@ class CMySQL
 	/**	最後に発生した例外オブジェクト。 */
 	private $exception;
 
-	/**
-	 *	データベース オブジェクトを取得します。
-	 *
-	 *	@return IDB データベース オブジェクト。
-	 */
-	public static function getInstance()
-	{
-		if(self::$instance == null)
-		{
-			self::$instance = new CMySQL();
-		}
-		return self::$instance;
-	}
+	//* constructor & destructor ───────────────────────*
 
 	/**
 	 *	コンストラクタ。
@@ -47,6 +37,24 @@ class CMySQL
 	{
 		$this->close();
 	}
+
+	//* class methods ────────────────────────────-*
+
+	/**
+	 *	データベース オブジェクトを取得します。
+	 *
+	 *	@return IDB データベース オブジェクト。
+	 */
+	public static function getInstance()
+	{
+		if(self::$instance == null)
+		{
+			self::$instance = new CMySQL();
+		}
+		return self::$instance;
+	}
+
+	//* instance methods ───────────────────────────*
 
 	/**
 	 *	接続を確立します。

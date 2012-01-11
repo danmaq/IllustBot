@@ -7,6 +7,8 @@ class CErrorException
 	extends Exception
 {
 
+	//* constructor & destructor ───────────────────────*
+
 	/**
 	 *	コンストラクタ。
 	 *

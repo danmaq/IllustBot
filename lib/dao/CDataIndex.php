@@ -9,11 +9,15 @@ abstract class CDataIndex
 	implements IDAO
 {
 
+	//* fields ────────────────────────────────*
+
 	/**	実体のメンバとデフォルト値一覧。 */
 	private $format;
 
 	/**	実体。 */
 	protected $entity;
+
+	//* constructor & destructor ───────────────────────*
 
 	/**
 	 *	コンストラクタ。
@@ -26,6 +30,8 @@ abstract class CDataIndex
 		$this->format = $format;
 		$this->entity = new CDataEntity($format, $id);
 	}
+
+	//* instance methods ───────────────────────────*
 
 	/**
 	 *	実体オブジェクトを取得します。

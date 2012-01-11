@@ -45,8 +45,10 @@
 					このぼっとのレベルは<xsl:value-of select="bot/@generation" />です。
 					次のレベルまで必要な経験値は<xsl:value-of select="bot/@amount" />です。
 				</p>
-				<p class="aa">
-					<xsl:apply-templates select="line" />
+				<p>
+					<img>
+						<xsl:attribute name="src">?f=core/rawImage&amp;id=<xsl:value-of select="bot/@id" /></xsl:attribute>
+					</img>
 				</p>
 				<h2>
 					「<xsl:value-of select="@title" />」に見えますか？評価してあげてください。

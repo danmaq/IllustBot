@@ -15,14 +15,24 @@ class CSceneViewImage
 	implements IState
 {
 
+	//* fields ────────────────────────────────*
+
 	/**	クラス オブジェクト。 */
 	private static $instance = null;
 
-	/**	ジャンプ先ID。 */
-	private $id;
-
 	/**	子ぼっと。 */
 	private $child;
+
+	//* constructor & destructor ───────────────────────*
+
+	/**
+	 *	コンストラクタ。
+	 */
+	private function __construct()
+	{
+	}
+
+	//* class methods ────────────────────────────-*
 
 	/**
 	 *	この状態のオブジェクトを取得します。
@@ -38,12 +48,7 @@ class CSceneViewImage
 		return self::$instance;
 	}
 
-	/**
-	 *	コンストラクタ。
-	 */
-	private function __construct()
-	{
-	}
+	//* instance methods ───────────────────────────*
 
 	/**
 	 *	この状態が開始されたときに呼び出されます。
@@ -52,58 +57,30 @@ class CSceneViewImage
 	 */
 	public function setup(CEntity $entity)
 	{
-		$this->id = null;
 		$this->child = null;
-		if(isset($_GET['id']))
+		try
 		{
+			if(!isset($_GET['id']))
+			{
+				throw new Exception(_('ぼっとを指名してください。'));
+			}
 			if($entity->connectDatabase())
 			{
-				$bot = new CBot($_GET['id']);
-				if($bot->rollback())
+				$child = new CChild($_GET['id']);
+				if($child->rollback())
 				{
-					if(CChild::getCountAllFromOwner($bot) <= 0)
-					{
-						$this->createChilds($entity, $bot);
-					}
-					else
-					{
-						$child = null;
-						try
-						{
-							$child = CChild::getUnvotedFromOwner($bot);
-						}
-						catch(Exception $e)
-						{
-							$child = $this->createChildsInheritance($entity, $bot);
-						}
-						if($child === null)
-						{
-							$_GET['err'] = _('子ぼっとがいるようだけど初期化できなかった、異常な事態(素敵な事態)');
-							$entity->setNextState(CSceneTop::getInstance());
-						}
-						else
-						{
-							$this->id = $child->getID();
-						}
-					}
+					$this->child = $child;
 				}
 				else
 				{
-					$child = new CChild($_GET['id']);
-					if($child->rollback())
-					{
-						$this->child = $child;
-					}
-					else
-					{
-						$_GET['err'] = _('存在しないIDです。');
-						$entity->setNextState(CSceneTop::getInstance());
-					}
+					throw new Exception(_('存在しないIDです。'));
+					$entity->setNextState(CSceneTop::getInstance());
 				}
 			}
 		}
-		else
+		catch(Exception $e)
 		{
+			$_GET['err'] = $e->getMessage();
 			$entity->setNextState(CSceneTop::getInstance());
 		}
 	}
@@ -117,35 +94,16 @@ class CSceneViewImage
 	{
 		if($entity->getNextState() === null)
 		{
-			if($this->id !== null)
-			{
-				CRedirector::seeOther($this->id);
-				$entity->dispose();
-			}
-			elseif($this->child !== null)
-			{
-				$child = $this->child;
-				$owner = $child->getOwner();
-				$size = $owner->getSize();
-				$pixels =& $child->getPixels();
-				$xmlbuilder = new CDocumentBuilder();
-				$xmlbuilder->setTitle($owner->getTheme());
-				$xmlbuilder->createInfo('bot', array(
-					'id' => $child->getID(),
-					'generation' => $child->getGeneration() + 1,
-					'amount' => $child->getAmount()));
-				for($y = 0; $y < $size['y']; $y++)
-				{
-					$line = $xmlbuilder->createElement('line');
-					for($x = 0; $x < $size['x']; $x++)
-					{
-						$xmlbuilder->createItem(
-							array('color' => $pixels[$y * $size['x'] + $x]), $line);
-					}
-				}
-				$xmlbuilder->output(CConstants::FILE_XSL_VIEW);
-				$entity->setNextState(CEmptyState::getInstance());
-			}
+			$child = $this->child;
+			$owner = $child->getOwner();
+			$xmlbuilder = new CDocumentBuilder();
+			$xmlbuilder->setTitle($owner->getTheme());
+			$xmlbuilder->createInfo('bot', array(
+				'id' => $child->getID(),
+				'owner' => $owner->getID(),
+				'generation' => $child->getGeneration() + 1,
+				'amount' => $child->getAmount()));
+			$xmlbuilder->output(CConstants::FILE_XSL_VIEW);
 			$entity->setNextState(CEmptyState::getInstance());
 		}
 	}
@@ -157,62 +115,6 @@ class CSceneViewImage
 	 */
 	public function teardown(CEntity $entity)
 	{
-	}
-
-	/**
-	 *	子ぼっとを生成します。
-	 *
-	 *	@param CEntity $entity この状態が適用されたオブジェクト。
-	 *	@param CBot $bot 親ぼっと。
-	 */
-	private function createChilds(CEntity $entity, CBot $bot)
-	{
-		$child = null;
-		for($i = $bot->getChilds(); --$i >= 0; )
-		{
-			$child = new CChild();
-			$child->setOwner($bot);
-			$child->setGeneration($bot->getGeneration());
-			$child->commit();
-		}
-		if($child === null)
-		{
-			$_GET['err'] = _('子ぼっとがいるようでいないような、異常な事態(素敵な事態)');
-			$entity->setNextState(CSceneTop::getInstance());
-		}
-		else
-		{
-			$this->id = $child->getID();
-		}
-		return $child;
-	}
-
-	/**
-	 *	子ぼっとを生成します。
-	 *
-	 *	@param CEntity $entity この状態が適用されたオブジェクト。
-	 *	@param CBot $bot 親ぼっと。
-	 *	@return CChild 子ぼっと。
-	 */
-	private function createChildsInheritance(CEntity $entity, CBot $bot)
-	{
-		$child = null;
-		$childs = CChild::getFromOwner($bot);
-		$len = min($bot->getChilds(), count($childs));
-		$threshold = ceil($len * 0.2);
-		for($i = 0; $i < $threshold; $i++)
-		{
-			$child = $childs[$i]->shallowCopy();
-		}
-		for($i = $len - $threshold; --$i >= 0; )
-		{
-			$child = CChild::inheritance(
-				$childs[mt_rand(0, $threshold)],
-				$childs[mt_rand(0, $threshold)]);
-		}
-		$bot->nextGeneration();
-		$bot->commit();
-		return $child;
 	}
 }
 

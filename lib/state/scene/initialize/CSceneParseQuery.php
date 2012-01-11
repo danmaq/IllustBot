@@ -10,6 +10,8 @@ class CSceneParseQuery
 	implements IState
 {
 
+	//* fields ────────────────────────────────*
+
 	/**	クラス オブジェクト。 */
 	private static $instance = null;
 
@@ -18,6 +20,17 @@ class CSceneParseQuery
 
 	/**	プラグイン名。 */
 	private $plugin = '';
+
+	//* constructor & destructor ───────────────────────*
+
+	/**
+	 *	コンストラクタ。
+	 */
+	private function __construct()
+	{
+	}
+
+	//* class methods ────────────────────────────-*
 
 	/**
 	 *	この状態のオブジェクトを取得します。
@@ -33,12 +46,7 @@ class CSceneParseQuery
 		return self::$instance;
 	}
 
-	/**
-	 *	コンストラクタ。
-	 */
-	private function __construct()
-	{
-	}
+	//* instance methods ───────────────────────────*
 
 	/**
 	 *	トップページかどうかを取得します。

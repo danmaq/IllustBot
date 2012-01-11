@@ -15,6 +15,8 @@ class CSceneVotePost
 	implements IState
 {
 
+	//* fields ────────────────────────────────*
+
 	/**	クラス オブジェクト。 */
 	private static $instance = null;
 
@@ -31,6 +33,17 @@ class CSceneVotePost
 	/**	エラー表示。 */
 	private $errors = null;
 
+	//* constructor & destructor ───────────────────────*
+
+	/**
+	 *	コンストラクタ。
+	 */
+	private function __construct()
+	{
+	}
+
+	//* class methods ────────────────────────────-*
+
 	/**
 	 *	この状態のオブジェクトを取得します。
 	 *
@@ -45,12 +58,7 @@ class CSceneVotePost
 		return self::$instance;
 	}
 
-	/**
-	 *	コンストラクタ。
-	 */
-	private function __construct()
-	{
-	}
+	//* instance methods ───────────────────────────*
 
 	/**
 	 *	この状態が開始されたときに呼び出されます。

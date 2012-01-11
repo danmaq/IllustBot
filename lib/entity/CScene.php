@@ -12,6 +12,8 @@ class CScene
 	extends CEntity
 {
 
+	//* constructor & destructor ───────────────────────*
+
 	/**
 	 *	コンストラクタ。
 	 *
@@ -21,6 +23,8 @@ class CScene
 	{
 		parent::__construct($firstState);
 	}
+
+	//* instance methods ───────────────────────────*
 
 	/**
 	 *	データベースに接続します。

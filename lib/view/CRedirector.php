@@ -8,6 +8,8 @@ require_once(IB01_CONSTANTS);
 class CRedirector
 {
 
+	//* class methods ────────────────────────────-*
+
 	/**
 	 *	リダイレクトします。
 	 *

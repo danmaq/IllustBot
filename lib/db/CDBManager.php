@@ -10,11 +10,27 @@ class CDBManager
 	implements IDB
 {
 
+	//* fields ────────────────────────────────*
+
 	/**	クラス オブジェクト。 */
 	private static $instance = null;
 
 	/**	データベース オブジェクト。 */
 	private $db;
+
+	//* constructor & destructor ───────────────────────*
+
+	/**
+	 *	コンストラクタ。
+	 */
+	private function __construct()
+	{
+		$db = null;
+		require_once(CConfigure::DB_TYPE . '.php');
+		$this->db = $db;
+	}
+
+	//* class methods ────────────────────────────-*
 
 	/**
 	 *	データベース オブジェクトを取得します。
@@ -30,15 +46,7 @@ class CDBManager
 		return self::$instance;
 	}
 
-	/**
-	 *	コンストラクタ。
-	 */
-	private function __construct()
-	{
-		$db = null;
-		require_once(CConfigure::DB_TYPE . '.php');
-		$this->db = $db;
-	}
+	//* instance methods ───────────────────────────*
 
 	/**
 	 *	接続を確立します。

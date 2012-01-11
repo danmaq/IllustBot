@@ -8,6 +8,8 @@ require_once(IB01_CONSTANTS);
 class CPager
 {
 
+	//* fields ────────────────────────────────*
+
 	/**	最大ページ数。 */
 	public $maxPage = 0;
 
@@ -19,6 +21,8 @@ class CPager
 
 	/**	現在の件数。 */
 	public $topics = 0;
+
+	//* constructor & destructor ───────────────────────*
 
 	/**
 	 *	コンストラクタ。
@@ -32,6 +36,8 @@ class CPager
 		$this->topicPerPage =
 			$topicPerPage === null ? CConfigure::DEFAULT_TOPIC_PER_PAGE : $topicPerPage;
 	}
+
+	//* instance methods ───────────────────────────*
 
 	/**
 	 *	データベースに渡すリミット情報を取得します。

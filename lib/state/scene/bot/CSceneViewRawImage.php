@@ -1,14 +1,14 @@
 <?php
 
 require_once(IB01_CONSTANTS);
-require_once(IB01_LIB_ROOT . '/view/CDocumentBuilder.php');
-require_once(IB01_LIB_ROOT . '/db/CDBManager.php');
+require_once(IB01_LIB_ROOT . '/dao/CChild.php');
 require_once(IB01_LIB_ROOT . '/state/IState.php');
+require_once(IB01_LIB_ROOT . '/state/scene/ranking/CSceneTop.php');
 
 /**
- *	データベース接続に失敗した場合に呼び出されるシーンです。
+ *	ぼっとを育てるページを表示します。
  */
-class CSceneDBFailed
+class CSceneViewRawImage
 	implements IState
 {
 
@@ -16,6 +16,9 @@ class CSceneDBFailed
 
 	/**	クラス オブジェクト。 */
 	private static $instance = null;
+
+	/**	子ぼっと。 */
+	private $child;
 
 	//* constructor & destructor ───────────────────────*
 
@@ -37,7 +40,7 @@ class CSceneDBFailed
 	{
 		if(self::$instance == null)
 		{
-			self::$instance = new CSceneDBFailed();
+			self::$instance = new CSceneViewRawImage();
 		}
 		return self::$instance;
 	}
@@ -60,13 +63,6 @@ class CSceneDBFailed
 	 */
 	public function execute(CEntity $entity)
 	{
-		$xmlbuilder = new CDocumentBuilder();
-		$message = CDBManager::getInstance()->getException();
-		$xmlbuilder->createSimpleMessage(
-			_('ERROR'), _('データベースとの通信に失敗しました。') .
-			$message->getMessage() . "\n" . $message->getTraceAsString());
-		$xmlbuilder->output(CConstants::FILE_XSL_MESSAGE);
-		$entity->setNextState(CEmptyState::getInstance());
 	}
 
 	/**

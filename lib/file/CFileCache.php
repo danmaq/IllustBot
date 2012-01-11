@@ -6,11 +6,15 @@
 class CFileCache
 {
 
+	//* fields ────────────────────────────────*
+
 	/**	ファイル パス。 */
 	private $filePath;
 
 	/**	ファイルの中身一覧。 */
 	private $bodyList;
+
+	//* constructor & destructor ───────────────────────*
 
 	/**
 	 *	コンストラクタ。
@@ -22,6 +26,8 @@ class CFileCache
 		$this->filePath = $filePath;
 		$this->bodyList = array();
 	}
+
+	//* instance methods ───────────────────────────*
 
 	/**
 	 *	ファイル パスを取得します。

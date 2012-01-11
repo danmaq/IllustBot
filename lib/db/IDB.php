@@ -6,6 +6,8 @@
 interface IDB
 {
 
+	//* instance methods ───────────────────────────*
+
 	/**
 	 *	接続を確立します。
 	 *

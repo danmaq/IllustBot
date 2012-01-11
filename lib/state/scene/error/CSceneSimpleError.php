@@ -11,6 +11,8 @@ class CSceneSimpleError
 	implements IState
 {
 
+	//* fields ────────────────────────────────*
+
 	/**	未定義の動作状態を指定した場合のエラー クラス オブジェクト。 */
 	private static $illegalMode = null;
 
@@ -22,6 +24,20 @@ class CSceneSimpleError
 
 	/**	エラー メッセージ。 */
 	private $description;
+
+	//* constructor & destructor ───────────────────────*
+
+	/**
+	 *	コンストラクタ。
+	 *
+	 *	@param string $description エラー メッセージ。
+	 */
+	private function __construct($description)
+	{
+		$this->description = $description;
+	}
+
+	//* class methods ────────────────────────────-*
 
 	/**
 	 *	存在しないページを指定した場合のエラー オブジェクトを取得します。
@@ -65,15 +81,7 @@ class CSceneSimpleError
 		return self::$sessionFailed;
 	}
 
-	/**
-	 *	コンストラクタ。
-	 *
-	 *	@param string $description エラー メッセージ。
-	 */
-	private function __construct($description)
-	{
-		$this->description = $description;
-	}
+	//* instance methods ───────────────────────────*
 
 	/**
 	 *	この状態が開始されたときに呼び出されます。

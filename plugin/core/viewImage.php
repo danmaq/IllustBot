@@ -1,7 +1,7 @@
 <?php
 
-require_once(IB01_LIB_ROOT . '/state/scene/bot/CSceneViewImage.php');
+require_once(IB01_LIB_ROOT . '/state/scene/bot/CSceneRedirectChild.php');
 
-$nextState = CSceneViewImage::getInstance();
+$nextState = CSceneRedirectChild::getInstance();
 
 ?>

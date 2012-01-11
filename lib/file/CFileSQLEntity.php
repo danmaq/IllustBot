@@ -9,8 +9,22 @@ class CFileSQLEntity
 	extends CFileCache
 {
 
+	//* fields ────────────────────────────────*
+
 	/**	クラス オブジェクト。 */
 	private static $instance = null;
+
+	//* constructor & destructor ───────────────────────*
+
+	/**
+	 *	コンストラクタ。
+	 */
+	protected function __construct()
+	{
+		parent::__construct(IB01_ROOT . '/sql/entity');
+	}
+
+	//* class methods ────────────────────────────-*
 
 	/**
 	 *	クラス オブジェクトを取得します。
@@ -26,13 +40,7 @@ class CFileSQLEntity
 		return self::$instance;
 	}
 
-	/**
-	 *	コンストラクタ。
-	 */
-	protected function __construct()
-	{
-		parent::__construct(IB01_ROOT . '/sql/entity');
-	}
+	//* instance methods ───────────────────────────*
 
 	/**
 	 *	不明なプロパティが呼ばれた際に呼び出されます。

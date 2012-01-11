@@ -11,8 +11,12 @@ class CDataEntity
 	implements IDAO
 {
 
+	//* constants ──────────────────────────────-*
+
 	/**	書き込み可能な最大長。 */
 	const SIZE = 65535;
+
+	//* fields ────────────────────────────────*
 
 	/**	テーブルが初期化済みかどうか。 */
 	private static $initialized = false;
@@ -29,17 +33,7 @@ class CDataEntity
 	/**	記憶領域のデフォルト値(連想配列)。 */
 	private $format;
 
-	/**
-	 *	テーブルの有無を確認し、存在しなければ初期化します。
-	 */
-	public static function initializeTable()
-	{
-		if(!self::$initialized)
-		{
-			self::$initialized = true;
-			CDBManager::getInstance()->execute(CFileSQLEntity::getInstance()->ddl);
-		}
-	}
+	//* constructor & destructor ───────────────────────*
 
 	/**
 	 *	コンストラクタ。
@@ -59,6 +53,20 @@ class CDataEntity
 		$this->resetStorage();
 	}
 
+	//* class methods ────────────────────────────-*
+
+	/**
+	 *	テーブルの有無を確認し、存在しなければ初期化します。
+	 */
+	public static function initializeTable()
+	{
+		if(!self::$initialized)
+		{
+			self::$initialized = true;
+			CDBManager::getInstance()->execute(CFileSQLEntity::getInstance()->ddl);
+		}
+	}
+
 	/**
 	 *	GUIDを生成します。
 	 *
@@ -71,6 +79,8 @@ class CDataEntity
 			mt_rand(0, 65535), mt_rand(16384, 20479), mt_rand(32768, 49151),
 			mt_rand(0, 65535), mt_rand(0, 65535), mt_rand(0, 65535));
  	}
+
+	//* instance methods ───────────────────────────*
 
 	/**
 	 *	更新日時を取得します。

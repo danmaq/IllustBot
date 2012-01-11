@@ -8,6 +8,8 @@ require_once(IB01_LIB_ROOT . '/entity/CEntity.php');
 interface IState
 {
 
+	//* instance methods ───────────────────────────*
+
 	/**
 	 *	この状態が開始されたときに呼び出されます。
 	 *

@@ -11,6 +11,8 @@ require_once(IB01_LIB_ROOT . '/util/CPager.php');
 class CDocumentBuilder
 {
 
+	//* constants ──────────────────────────────-*
+
 	/**	XML名前空間URL。 */
 	const URI_XMLNS = 'http://www.w3.org/2000/xmlns/';
 
@@ -25,6 +27,8 @@ class CDocumentBuilder
 
 	/**	XHTML名前空間。 */
 	const NS_XSI = 'xsi';
+
+	//* fields ────────────────────────────────*
 
 	/**	トレース メッセージ。 */
 	public static $trace = '';

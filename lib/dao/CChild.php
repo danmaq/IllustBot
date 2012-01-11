@@ -3,7 +3,6 @@
 require_once('CBot.php');
 require_once('CImage.php');
 require_once(IB01_LIB_ROOT . '/file/CFileSQLChild.php');
-require_once(IB01_LIB_ROOT . '/util/CPixels.php');
 
 /**
  *	子ぼっとDAOクラス。
@@ -21,9 +20,6 @@ class CChild
 
 	/**	初期化済みかどうか。 */
 	private static $initialized = false;
-
-	/**	ピクセル情報。 */
-	private $pixels = null;
 
 	/**	子ぼっとID。 */
 	private $id;
@@ -43,9 +39,41 @@ class CChild
 	/**	未投票ぼっとの数。 */
 	private $amount = -1;
 
+	//* constructor & destructor ───────────────────────*
+
+	/**
+	 *	コンストラクタ。
+	 *
+	 *	@param string $id 子ぼっとID。
+	 *	@param string $entity_id 実体ID(GUID)。
+	 */
+	public function __construct($id = null)
+	{
+		parent::__construct(self::$format);
+		if($id === null)
+		{
+			$id = CDataEntity::createGUID();
+		}
+		$this->id = $id;
+	}
+
+	//* class methods ────────────────────────────-*
+
+	/**
+	 *	テーブルの初期化をします。
+	 */
+	public static function initialize()
+	{
+		if(!self::$initialized)
+		{
+			CDataEntity::initializeTable();
+			CDBManager::getInstance()->execute(CFileSQLChild::getInstance()->ddl);
+			self::$initialized = true;
+		}
+	}
+
 	/**
 	 *	交叉遺伝します。
-	 *	交叉アルゴリズムに一様交叉を使用します。
 	 *
 	 *	@param CChild $a 子ぼっと。
 	 *	@param CChild $b 子ぼっと。
@@ -53,22 +81,14 @@ class CChild
 	 */
 	public static function inheritance(CChild $a, CChild $b)
 	{
+		$ia = new CImage($a->getHash());
+		$ib = new CImage($b->getHash());
+		$ic = new CImage(CPixels::inheritance($ia, $ib));
+		$ic->commit();
 		$result = new CChild();
 		$result->setOwner($a->getOwner());
 		$result->setGeneration($a->getGeneration() + 1);
-		$result->resetPixels();
-		$pixels =& $result->getPixels();
-		$pixelsA =& $a->getPixels();
-		$pixelsB =& $b->getPixels();
-		for($i = count($pixels); --$i >= 0; )
-		{
-			$rnd = mt_rand(0, 65535);
-			$pixels[$i] = ($rnd & 1) == 0 ? $pixelsA[$i] : $pixelsB[$i];
-			if($rnd < 1024)
-			{
-				$pixels[$i] = new CRGB();
-			}
-		}
+		$result->setHash($ic->getID());
 		$result->commit();
 		return $result;
 	}
@@ -81,15 +101,20 @@ class CChild
 	 */
 	public static function getUnvotedFromOwner(CBot $owner)
 	{
-		self::initialize();
-		$params = array(
-			'owner' => array($owner->getID(), PDO::PARAM_STR),
-			'generation' => array($owner->getGeneration(), PDO::PARAM_INT)
-		);
-		$info = CDBManager::getInstance()->singleFetch(
-			CFileSQLChild::getInstance()->selectUnvoted, 'ID', $params);
-		$result = new CChild($info);
-		if(!$result->rollback())
+		$result = null;
+		try
+		{
+			self::initialize();
+			$info = CDBManager::getInstance()->singleFetch(
+				CFileSQLChild::getInstance()->selectUnvoted, 'ID',
+				self::createDBParamsFromOwner($owner));
+			$result = new CChild($info);
+			if(!$result->rollback())
+			{
+				throw new Exception();
+			}
+		}
+		catch(Exception $e)
 		{
 			$result = null;
 		}
@@ -100,17 +125,14 @@ class CChild
 	 *	子ぼっとを取得します。
 	 *
 	 *	@param CBot $owner 親ぼっと。
-	 *	@return int 子ぼっとの数。
+	 *	@return int 子ぼっと一覧。
 	 */
 	public static function getFromOwner(CBot $owner)
 	{
 		self::initialize();
-		$params = array(
-			'owner' => array($owner->getID(), PDO::PARAM_STR),
-			'generation' => array($owner->getGeneration(), PDO::PARAM_INT)
-		);
 		$info = CDBManager::getInstance()->execAndFetch(
-			CFileSQLChild::getInstance()->selectFromOwner, $params);
+			CFileSQLChild::getInstance()->selectFromOwner,
+			self::createDBParamsFromOwner($owner));
 		$result = array();
 		$len = count($info);
 		for($i = 0; $i < $len; $i++)
@@ -158,41 +180,24 @@ class CChild
 	public static function getNumberFromOwner(CBot $owner, $sql)
 	{
 		self::initialize();
-		$params = array(
-			'owner' => array($owner->getID(), PDO::PARAM_STR),
-			'generation' => array($owner->getGeneration(), PDO::PARAM_INT)
-		);
-		return CDBManager::getInstance()->singleFetch($sql, 'COUNT', $params);
+		return CDBManager::getInstance()->singleFetch($sql, 'COUNT',
+			self::createDBParamsFromOwner($owner));
 	}
 
 	/**
-	 *	テーブルの初期化をします。
-	 */
-	public static function initialize()
-	{
-		if(!self::$initialized)
-		{
-			CDataEntity::initializeTable();
-			CDBManager::getInstance()->execute(CFileSQLChild::getInstance()->ddl);
-			self::$initialized = true;
-		}
-	}
-
-	/**
-	 *	コンストラクタ。
+	 *	DB受渡し用のパラメータを生成します。
 	 *
-	 *	@param string $id 子ぼっとID。
-	 *	@param string $entity_id 実体ID(GUID)。
+	 *	@param CBot $owner 親ぼっと。
+	 *	@return array DB受渡し用のパラメータ。
 	 */
-	public function __construct($id = null)
+	private static function createDBParamsFromOwner(CBot $owner)
 	{
-		parent::__construct(self::$format);
-		if($id === null)
-		{
-			$id = CDataEntity::createGUID();
-		}
-		$this->id = $id;
+		return array(
+			'owner' => array($owner->getID(), PDO::PARAM_STR),
+			'generation' => array($owner->getGeneration(), PDO::PARAM_INT);
 	}
+
+	//* instance methods ───────────────────────────*
 
 	/**
 	 *	子ぼっとIDを取得します。
@@ -408,15 +413,16 @@ class CChild
 			if($this->isExists())
 			{
 				$sql = $fcache->update;
-				$params = $this->createDBParams() + $this->createDBParamsScore();
+				$params = $this->createDBParams() + array(
+					'vote_count' => array($this->getVoteCount(), PDO::PARAM_INT),
+					'score' => array($this->getScore(), PDO::PARAM_INT));
 			}
 			else
 			{
 				$sql = $fcache->insert;
-				$params =
-					$this->createDBParams() +
-					$this->createDBParamsFromOwner() +
-					$this->createDBParamsOnlyEID();
+				$params = $this->createDBParams() +	$this->createDBParamsOnlyEID() + array(
+					'owner' => array($this->getOwner()->getID(), PDO::PARAM_STR),
+					'generation' => array($this->getGeneration(), PDO::PARAM_INT));
 			}
 			$result = $this->getEntity()->commit() && $db->execute($sql, $params);
 			if(!$result)
@@ -463,32 +469,6 @@ class CChild
 	{
 		return array(
 			'id' => array($this->getID(), PDO::PARAM_STR)
-		);
-	}
-
-	/**
-	 *	DB受渡し用のパラメータを生成します。
-	 *
-	 *	@return array DB受渡し用のパラメータ。
-	 */
-	private function createDBParamsFromOwner()
-	{
-		return array(
-			'owner' => array($this->getOwner()->getID(), PDO::PARAM_STR),
-			'generation' => array($this->getGeneration(), PDO::PARAM_INT)
-		);
-	}
-
-	/**
-	 *	DB受渡し用のパラメータを生成します。
-	 *
-	 *	@return array DB受渡し用のパラメータ。
-	 */
-	private function createDBParamsScore()
-	{
-		return array(
-			'vote_count' => array($this->getVoteCount(), PDO::PARAM_INT),
-			'score' => array($this->getScore(), PDO::PARAM_INT)
 		);
 	}
 }

@@ -6,6 +6,8 @@
 interface IDAO
 {
 
+	//* instance methods ───────────────────────────*
+
 	/**
 	 *	IDを取得します。
 	 *
