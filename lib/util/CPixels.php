@@ -60,10 +60,39 @@ class CPixels
 					$g = ($rnd & 2) == 0 ? $rgba['g'] : $rgbb['g'];
 					$b = ($rnd & 4) == 0 ? $rgba['b'] : $rgbb['b'];
 				}
-				setPixel($resource, $x, $y, $r, $g, $b);
+				self::setPixel($resource, $x, $y, $r, $g, $b);
 			}
 		}
 		return $result;
+	}
+
+	/**
+	 *	ピクセルごとに輝度を比較します。
+	 *
+	 *	@param CPixels $a ピクセル情報。
+	 *	@param CPixels $b ピクセル情報。
+	 *	@return float 0～1の値。(誤差が少ないほど小さい値になります)
+	 */
+	public static function compare(CPixels $a, CPixels $b)
+	{
+		$sa = $a->getSize();
+		$sb = $b->getSize();
+		if(!($sa['x'] == $sb['x'] || $sa['y'] == $sb['y']))
+		{
+			throw new Exception(_('画素数を一致させる必要があります。'));
+		}
+		$resa = $a->getResource();
+		$resb = $b->getResource();
+		$size = $sa['x'] * $sa['y'];
+		$result = 0;
+		for($y = $sa['y']; --$y >= 0; )
+		{
+			for($x = $sa['x']; --$x >= 0; )
+			{
+				$result += self::comparePixel($a, $b, $x, $y);
+			}
+		}
+		return $result / $size;
 	}
 
 	/**
@@ -110,6 +139,25 @@ class CPixels
 			imagecolordeallocate($result, $color);
 		}
 		return $result;
+	}
+
+	/**
+	 *	点の輝度を比較します。
+	 *
+	 *	@param int $a 画像リソース。
+	 *	@param int $b 画像リソース。
+	 *	@param int $x X座標。
+	 *	@param int $y Y座標。
+	 *	@return float 点の輝度誤差を示す0～1の値(同党の場合、0)。
+	 */
+	private static function comparePixel($a, $b, $x, $y)
+	{
+		$rgba = self::getPixel($a, $x, $y);
+		$rgbb = self::getPixel($b, $x, $y);
+		$rgap = abs($rgba['r'], $rgbb['r']);
+		$ggap = abs($rgba['g'], $rgbb['g']);
+		$bgap = abs($rgba['b'], $rgbb['b']);
+		return ($rgap + $ggap + $bgap) / 767;
 	}
 
 	//* instance methods ───────────────────────────*
