@@ -1,8 +1,8 @@
 <?php
 
 require_once(IB01_CONSTANTS);
+require_once('CSceneRedirectChild.php');
 require_once(IB01_LIB_ROOT . '/dao/CChild.php');
-require_once(IB01_LIB_ROOT . '/state/IState.php');
 require_once(IB01_LIB_ROOT . '/state/scene/ranking/CSceneTop.php');
 
 /**
@@ -17,8 +17,8 @@ class CSceneViewRawImage
 	/**	クラス オブジェクト。 */
 	private static $instance = null;
 
-	/**	子ぼっと。 */
-	private $child;
+	/**	画像DAO。 */
+	private $image;
 
 	//* constructor & destructor ───────────────────────*
 
@@ -54,6 +54,44 @@ class CSceneViewRawImage
 	 */
 	public function setup(CEntity $entity)
 	{
+		try
+		{
+			if(!isset($_GET['id']))
+			{
+				throw new Exception(_('ぼっとを指名してください。'));
+			}
+			if($entity->connectDatabase())
+			{
+				$child = new CChild($_GET['id']);
+				if(!$child->rollback())
+				{
+					$bot = new CBot($_GET['id']);
+					if(!$bot->rollback())
+					{
+						throw new Exception(_('存在しないIDです。'));
+					}
+					$child = CSceneRedirectChild::getInstance()->findChild($bot);
+					if($child === null)
+					{
+						throw new Exception(
+							_('子ぼっとがいるようで、だけどいないような、異常な事態(素敵な事態)'));
+					}
+				}
+				$image = new CImage($child->getHash());
+				if($image->getPixels() === null)
+				{
+					throw new Exception(
+						_('子ぼっとがいるけど、画像がないような、異常な事態(素敵な事態)'));
+				}
+				$this->image = $image;
+			}
+		}
+		catch(Exception $e)
+		{
+			$_GET['err'] = $e->getMessage();
+			// TODO : 存在しない場合は×アイコンを出力するようにする
+			$entity->setNextState(CSceneTop::getInstance());
+		}
 	}
 
 	/**
@@ -63,6 +101,13 @@ class CSceneViewRawImage
 	 */
 	public function execute(CEntity $entity)
 	{
+		if($entity->getNextState() === null)
+		{
+			$image = $this->image;
+			header('Content-Type: image/png');
+			header(sprintf('Content-Disposition: inline; filename=%d.png', $image->getID()));
+			echo $image->render();
+		}
 	}
 
 	/**

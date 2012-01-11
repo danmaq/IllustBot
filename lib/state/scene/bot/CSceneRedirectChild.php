@@ -67,11 +67,11 @@ class CSceneRedirectChild
 				$bot = new CBot($_GET['id']);
 				if($bot->rollback())
 				{
-					$child = $this->findChild($entity, $bot);
+					$child = $this->findChild($bot);
 					if($child === null)
 					{
 						throw new Exception(
-							_('子ぼっとがいるようだけど初期化できなかった、異常な事態(素敵な事態)'));
+							_('子ぼっとがいるようで、だけどいないような、異常な事態(素敵な事態)'));
 					}
 					$this->id = $child->getID();
 				}
@@ -114,23 +114,22 @@ class CSceneRedirectChild
 	/**
 	 *	子ぼっとを探索します。
 	 *
-	 *	@param CEntity $entity この状態が適用されたオブジェクト。
 	 *	@param CBot $bot 親ぼっと。
 	 *	@return CChild 子ぼっと。
 	 */
-	private function findChild(CEntity $entity, CBot $bot)
+	public function findChild(CBot $bot)
 	{
 		$child = null;
 		if(CChild::getCountAllFromOwner($bot) <= 0)
 		{
-			$child = $this->createChilds($entity, $bot);
+			$child = $this->createChilds($bot);
 		}
 		else
 		{
 			$child = CChild::getUnvotedFromOwner($bot);
 			if($child === null)
 			{
-				$child = $this->createChildsInheritance($entity, $bot);
+				$child = $this->createChildsInheritance($bot);
 			}
 		}
 		return $child;
@@ -139,11 +138,10 @@ class CSceneRedirectChild
 	/**
 	 *	子ぼっとを生成します。
 	 *
-	 *	@param CEntity $entity この状態が適用されたオブジェクト。
 	 *	@param CBot $bot 親ぼっと。
 	 *	@return CChild 生成した子ぼっとのうちの1体。
 	 */
-	private function createChilds(CEntity $entity, CBot $bot)
+	private function createChilds(CBot $bot)
 	{
 		$child = null;
 		for($i = $bot->getChilds(); --$i >= 0; )
@@ -159,11 +157,10 @@ class CSceneRedirectChild
 	/**
 	 *	子ぼっとを生成します。
 	 *
-	 *	@param CEntity $entity この状態が適用されたオブジェクト。
 	 *	@param CBot $bot 親ぼっと。
 	 *	@return CChild 子ぼっと。
 	 */
-	private function createChildsInheritance(CEntity $entity, CBot $bot)
+	private function createChildsInheritance(CBot $bot)
 	{
 		$child = null;
 		$childs = CChild::getFromOwner($bot);

@@ -96,11 +96,14 @@ class CSceneViewImage
 		{
 			$child = $this->child;
 			$owner = $child->getOwner();
+			$size = $child->getSize();
 			$xmlbuilder = new CDocumentBuilder();
 			$xmlbuilder->setTitle($owner->getTheme());
 			$xmlbuilder->createInfo('bot', array(
 				'id' => $child->getID(),
 				'owner' => $owner->getID(),
+				'width' => $size['x'],
+				'height' => $size['y'],
 				'generation' => $child->getGeneration() + 1,
 				'amount' => $child->getAmount()));
 			$xmlbuilder->output(CConstants::FILE_XSL_VIEW);
