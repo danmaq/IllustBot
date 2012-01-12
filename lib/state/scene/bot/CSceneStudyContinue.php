@@ -83,7 +83,10 @@ class CSceneStudyContinue
 				$cont = strtolower(trim($_POST['continue']));
 				if($cont === 'no')
 				{
+					$img = new CImage($bot->getExampleHash(), false);
+					$img->delete();
 					$bot->setExampleHash(-1);
+					$bot->setPublication(true);
 					$bot->commit();
 				}
 				$this->bot = $bot;

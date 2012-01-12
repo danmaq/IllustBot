@@ -19,7 +19,7 @@ class CSceneNewBotPost
 	private static $instance = null;
 
 	/**	既定の値一覧。 */
-	private $format = array(
+	private static $format = array(
 		'childs' => '10',
 		'x' => '8',
 		'y' => '0',
@@ -76,7 +76,7 @@ class CSceneNewBotPost
 			}
 			if($entity->connectDatabase())
 			{
-				$_POST += $this->format;
+				$_POST += self::$format;
 				$theme = trim($_POST['theme']);
 				$len = strlen($theme);
 				if($len < 1 || $len > 255)
@@ -112,6 +112,7 @@ class CSceneNewBotPost
 						$p->resize($x, $y);
 						$img = new CImage($p);
 						$img->commit();
+						$bot->setPublication(false);
 						$bot->setExampleHash($img->getID());
 					}
 				}

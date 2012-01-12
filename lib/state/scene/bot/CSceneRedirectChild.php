@@ -177,7 +177,7 @@ class CSceneRedirectChild
 		$child = null;
 		$childs = CChild::getFromOwner($bot);
 		$len = min($bot->getChilds(), count($childs));
-		$threshold = ceil($len * 0.2);
+		$threshold = ceil($len * 0.15);
 		for($i = 0; $i < $threshold; $i++)
 		{
 			$child = $childs[$i]->createNextGeneration();

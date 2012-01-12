@@ -71,12 +71,18 @@ class CSceneAutoStudy
 				$result = null;
 				if(count($parents) > 0)
 				{
+					$bot->nextGeneration();
+					$bot->commit();
 					$img = new CImage($bot->getExampleHash());
-					$result = CPixels::study($img->getPixels(), $parents);
+					$p = $img->getPixels();
+					$result = $parents;
+					$t = time();
+					for($t = time() + 10; $t >= time(); )
+					{
+						$result = CPixels::study($img->getPixels(), $result);
+					}
 				}
 				$child = $this->createChildFromPixels($bot, $result);
-				$bot->nextGeneration();
-				$bot->commit();
 				if($child === null)
 				{
 					throw new Exception(_('ぼっとがいるようで、実はいなかった、異常な事態(素敵な事態)'));
@@ -129,6 +135,8 @@ class CSceneAutoStudy
 		{
 			$img = new CImage($childs[$i]->getHash());
 			array_push($result, $img->getPixels());
+			$img->delete();
+			$childs[$i]->delete();
 		}
 		return $result;
 	}

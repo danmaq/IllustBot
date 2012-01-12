@@ -15,6 +15,12 @@ class CSceneParseQuery
 	/**	クラス オブジェクト。 */
 	private static $instance = null;
 
+	/**	既定の値一覧。 */
+	private static $formatServer = array(
+		'REQUEST_METHOD' => 'GET',
+		'HTTP_USER_AGENT' => 'CONSOLE',
+	);
+
 	/**	トップページかどうか。 */
 	private $top = true;
 
@@ -97,6 +103,7 @@ class CSceneParseQuery
 	 */
 	public function execute(CEntity $entity)
 	{
+		$_SERVER += self::$formatServer;
 		$nextState = CSceneSimpleError::getIllegalModeInstance();
 		$target = IB01_ROOT . preg_replace('/(\.|\/){2,}/', '\1', sprintf('/plugin/%s.php', str_replace(
 			"\0", '', $_SERVER['REQUEST_METHOD'] == 'POST' ? $_POST['f'] : $_GET['f'])));

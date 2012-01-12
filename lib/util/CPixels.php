@@ -1,8 +1,5 @@
 <?php
 
-/**	cmpPixelsForSort関数で使用するサンプル画像を格納してください。 */
-$_cmpPixelsExampleForSort = null;
-
 /**
  *	どちらがサンプル画像に近い画像かを取得します。
  *
@@ -12,10 +9,7 @@ $_cmpPixelsExampleForSort = null;
  */
 function cmpPixelsForSort($a, $b)
 {
-	global $_cmpPixelsExampleForSort;
-	$ga = CPixels::compare($a, $_cmpPixelsExampleForSort);
-	$gb = CPixels::compare($b, $_cmpPixelsExampleForSort);
-	return (($ga - $gb) * 10000);
+	return (($a->sort - $b->sort) * 10000);
 }
 
 /**
@@ -26,8 +20,14 @@ class CPixels
 
 	//* fields ────────────────────────────────*
 
+	/**	ソート用一時格納領域。 */
+	public $sort = -1;
+
 	/**	GDリソース。 */
 	private $resource = null;
+
+	/**	大きさ情報。 */
+	private $size;
 
 	//* constructor & destructor ───────────────────────*
 
@@ -49,7 +49,7 @@ class CPixels
 	 *	@param float $threshold 存続する閾値。
 	 *	@return array(CPixels) ピクセル情報一覧。
 	 */
-	public static function study(CPixels $expr, $parent = 50, $threshold = 0.2)
+	public static function study(CPixels $expr, $parent = 50, $threshold = 0.15)
 	{
 		$len = 0;
 		if(is_int($parent))
@@ -68,8 +68,14 @@ class CPixels
 		{
 			$len = count($parent);
 		}
-		global $_cmpPixelsExampleForSort;
-		$_cmpPixelsExampleForSort = $expr;
+		for($i = $len; --$i >= 0; )
+		{
+			$p = $parent[$i];
+			if($p->sort < 0)
+			{
+				$p->sort = CPixels::compare($p, $expr);
+			}
+		}
 		usort($parent, 'cmpPixelsForSort');
 		$result = array();
 		$threshold = round($len * $threshold);
@@ -261,12 +267,7 @@ class CPixels
 	 */
 	public function getSize()
 	{
-		$resource = $this->getResource();
-		$x = imagesx($resource);
-		$y = imagesy($resource);
-		return array(
-			'x' => $x,
-			'y' => $y);
+		return $this->size;
 	}
 
 	/**
@@ -337,6 +338,7 @@ class CPixels
 					$result, $this->getResource(), 0, 0, 0, 0, $x, $y, $size['x'], $size['y']);
 				$this->dispose();
 				$this->resource = $result;
+				$this->resetSize();
 			}
 		}
 		return $result;
@@ -360,6 +362,7 @@ class CPixels
 		if($result)
 		{
 			$this->resource = $result;
+			$this->resetSize();
 		}
 		return $result;
 	}
@@ -401,6 +404,7 @@ class CPixels
 		if($result)
 		{
 			$this->resource = $result;
+			$this->resetSize();
 		}
 		return $result;
 	}
@@ -434,6 +438,7 @@ class CPixels
 		{
 			imagecopy($result, $obj->getResource(), 0, 0, 0, 0, $size['x'], $size['y']);
 			$this->resource = $result;
+			$this->resetSize();
 		}
 		return $result;
 	}
@@ -460,7 +465,21 @@ class CPixels
 		{
 			imagedestroy($this->resource);
 			$this->resource = null;
+			$this->size = null;
 		}
+	}
+
+	/**
+	 *	画像サイズをリセットします。
+	 */
+	private function resetSize()
+	{
+		$resource = $this->getResource();
+		$x = imagesx($resource);
+		$y = imagesy($resource);
+		$this->size = array(
+			'x' => $x,
+			'y' => $y);
 	}
 }
 

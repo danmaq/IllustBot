@@ -32,6 +32,9 @@ class CBot
 	/**	累計スコア。 */
 	private $score;
 
+	/**	公開対象であるかどうか。 */
+	private $publication = true;
+
 	//* constructor & destructor ───────────────────────*
 
 	/**
@@ -143,6 +146,26 @@ class CBot
 	public function getID()
 	{
 		return $this->getEntity()->getID();
+	}
+
+	/**
+	 *	公開対象であるかどうかを取得します。
+	 *
+	 *	@return boolean 公開対象である場合、true。
+	 */
+	public function isPublication()
+	{
+		return $this->publication;
+	}
+
+	/**
+	 *	公開対象であるかどうかを設定します。
+	 *
+	 *	@param boolean $value 公開対象であるかどうか。
+	 */
+	public function setPublication($value)
+	{
+		$this->publication = $value;
 	}
 
 	/**
@@ -403,6 +426,7 @@ class CBot
 		if($result)
 		{
 			$this->createEntity($this->getID());
+			$this->setPublication($body[0]['PUBLICATION']);
 			$this->setGeneration($body[0]['GENERATION']);
 			$this->setTheme($body[0]['THEME']);
 			$this->setScore($body[0]['SCORE']);
@@ -419,7 +443,8 @@ class CBot
 	{
 		return array(
 			'score' => array($this->getScore(), PDO::PARAM_INT),
-			'generation' => array($this->getGeneration(), PDO::PARAM_INT)
+			'generation' => array($this->getGeneration(), PDO::PARAM_INT),
+			'publication' => array($this->isPublication(), PDO::PARAM_BOOL)
 		);
 	}
 

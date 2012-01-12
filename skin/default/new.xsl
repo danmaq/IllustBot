@@ -53,7 +53,9 @@
 							<select id="x" name="x">
 								<option value="8">8 x 8</option>
 								<option value="16">16 x 16</option>
+								<option value="32">32 x 32</option>
 							</select>
+							(小さい方が早く覚えるよ！)
 						</li>
 						<li>
 							<label for="childs">ぼっとの性格</label>
@@ -64,7 +66,7 @@
 							</select>
 						</li>
 						<li>
-							<label for="example">予備学習の画像(指定サイズにリサイズしてからうｐしてください)</label>
+							<label for="example">予備学習</label>
 							<input type="file" id="example" name="example" value="" placeholder="予備学習させたい場合のみ選択" />
 						</li>
 						<li>
@@ -73,6 +75,16 @@
 						</li>
 					</ul>
 				</form>
+				<h2>
+					予備学習の注意
+				</h2>
+				<ul>
+					<li>あんまりマイナーなフォーマットの画像は嫌がります。</li>
+					<li>大きすぎたり、AS比が大きく食い違う画像も嫌がります。</li>
+					<li>予め食べやすいようにリサイズしてあげると喜びます。</li>
+					<li>一回学習するのに、10～20秒程度かかることがあります。ボタンを連打しないでください。</li>
+					<li>予備学習中は公開されません。また古い画像は削除されますので、記念に残したい場合はDLしてください。</li>
+				</ul>
 				<footer>
 					<hr />
 					<address>by danmaq</address>

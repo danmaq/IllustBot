@@ -71,6 +71,11 @@
 						<input type="submit" name="continue" value="NO" />
 					</p>
 				</form>
+				<ul>
+					<li>一回学習するのに、10～20秒程度かかることがあります。ボタンを連打しないでください。</li>
+					<li>予備学習を終えるまで公開されません。</li>
+					<li>古い画像は削除されますので、記念に残したい場合はDLしてください。</li>
+				</ul>
 				<footer>
 					<hr />
 					<address>by danmaq</address>
