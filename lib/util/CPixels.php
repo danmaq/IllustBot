@@ -148,22 +148,23 @@ class CPixels
 	{
 		$sa = $a->getSize();
 		$sb = $b->getSize();
-		if(!($sa['x'] == $sb['x'] || $sa['y'] == $sb['y']))
+		$sx = $sa['x'];
+		$sy = $sa['y'];
+		if(!($sx == $sb['x'] || $sy == $sb['y']))
 		{
 			throw new Exception(_('画素数を一致させる必要があります。'));
 		}
 		$resa = $a->getResource();
 		$resb = $b->getResource();
-		$size = $sa['x'] * $sa['y'];
 		$result = 0;
-		for($y = $sa['y']; --$y >= 0; )
+		for($y = $sy; --$y >= 0; )
 		{
-			for($x = $sa['x']; --$x >= 0; )
+			for($x = $sx; --$x >= 0; )
 			{
 				$result += self::comparePixel($resa, $resb, $x, $y);
 			}
 		}
-		return $result / $size;
+		return ($result / ($sx * $sy));
 	}
 
 	/**
@@ -223,11 +224,11 @@ class CPixels
 	 */
 	private static function comparePixel($a, $b, $x, $y)
 	{
-		$rgba = self::getPixel($a, $x, $y);
-		$rgbb = self::getPixel($b, $x, $y);
-		$rgap = abs($rgba['r'] - $rgbb['r']);
-		$ggap = abs($rgba['g'] - $rgbb['g']);
-		$bgap = abs($rgba['b'] - $rgbb['b']);
+		$rgba = imagecolorat($a, $x, $y);
+		$rgbb = imagecolorat($b, $x, $y);
+		$rgap = abs((($rgba >> 16) & 255) - (($rgbb >> 16) & 255));
+		$ggap = abs((($rgba >> 8) & 255) - (($rgbb >> 8) & 255));
+		$bgap = abs((($rgba >> 0) & 255) - (($rgbb >> 0) & 255));
 		return ($rgap + $ggap + $bgap) / 767;
 	}
 

@@ -68,9 +68,12 @@ class CSceneAutoStudy
 			if($entity->connectDatabase())
 			{
 				$parents = $this->getChildPixels($bot);
-				$params = count($parents) == 0 ? $bot->getChilds() : $parents;
-				$img = new CImage($bot->getExampleHash());
-				$result = CPixels::study($img->getPixels(), $params);
+				$result = null;
+				if(count($parents) > 0)
+				{
+					$img = new CImage($bot->getExampleHash());
+					$result = CPixels::study($img->getPixels(), $parents);
+				}
 				$child = $this->createChildFromPixels($bot, $result);
 				$bot->nextGeneration();
 				$bot->commit();
@@ -121,9 +124,7 @@ class CSceneAutoStudy
 	private function getChildPixels(CBot $bot)
 	{
 		$result = array();
-		$bot->prevGeneration();
 		$childs = CChild::getFromOwner($bot);
-		$bot->nextGeneration();
 		for($i = count($childs); --$i >= 0; )
 		{
 			$img = new CImage($childs[$i]->getHash());
@@ -143,6 +144,17 @@ class CSceneAutoStudy
 	{
 		$result = null;
 		$gene = $bot->getGeneration();
+		if($pixels === null)
+		{
+			$pixels = array();
+			$size = $bot->getSize();
+			for($i = $bot->getChilds(); --$i >= 0; )
+			{
+				$img = new CPixels();
+				$img->createFromSize($size['x'], $size['y']);
+				array_push($pixels, $img);
+			}
+		}
 		for($i = count($pixels); --$i >= 0; )
 		{
 			$cimg = new CImage($pixels[$i]);
