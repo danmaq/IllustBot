@@ -163,6 +163,7 @@ class CSceneAutoStudy
 			$result->setOwner($bot);
 			$result->setGeneration($gene);
 			$result->setHash($cimg->getID());
+			$result->addVoteCount();
 			$result->commit();
 		}
 		return $result;
