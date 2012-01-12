@@ -173,7 +173,8 @@ class CImage
 	public function commit()
 	{
 		$raw = $this->getPixels()->render();
-		$this->id = hexdec(hash('crc32', $raw));
+		// 32bit環境では7FFF FFFF以上の整数が扱えない
+		$this->id = (int)(floor(hexdec(hash('crc32', $raw)) * 0.5));
 		self::initialize();
 		$result = $this->isExists();
 		if(!$result)
