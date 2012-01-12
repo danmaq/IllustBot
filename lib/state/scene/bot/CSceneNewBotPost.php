@@ -2,6 +2,7 @@
 
 require_once(IB01_CONSTANTS);
 require_once(IB01_LIB_ROOT . '/dao/CBot.php');
+require_once(IB01_LIB_ROOT . '/dao/CImage.php');
 require_once(IB01_LIB_ROOT . '/state/IState.php');
 require_once(IB01_LIB_ROOT . '/view/CRedirector.php');
 
@@ -23,6 +24,7 @@ class CSceneNewBotPost
 		'x' => '8',
 		'y' => '0',
 		'theme' => ''
+		'example' => ''
 	);
 
 	/**	ぼっとさん。 */
@@ -97,10 +99,21 @@ class CSceneNewBotPost
 				{
 					throw new Exception(_('ぼっとさんをいじめちゃだめー。'));
 				}
+				// 画像があれば取り込む
 				$bot = new CBot();
 				$bot->setChilds($childs);
 				$bot->setSize($x, $y);
 				$bot->setTheme($theme);
+				if(!isset($_FILES['example']) && is_uploaded_file($_FILES['example']['tmp_name']))
+				{
+					$p = new CPixels(();
+					if($p->createFromFile($_FILES['userfile']['tmp_name']))
+					{
+						$img = new CImage($p);
+						$img->commit();
+						$bot->setExampleHash($img->getID());
+					}
+				}
 				$bot->commit();
 				$this->bot = $bot;
 			}

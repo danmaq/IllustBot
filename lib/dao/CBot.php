@@ -17,6 +17,7 @@ class CBot
 		'x' => 8,
 		'y' => 8,
 		'childs' => 10,
+		'example' => -1,
 	);
 
 	/**	ぼっと数。 */
@@ -242,6 +243,28 @@ class CBot
 	{
 		$body =& $this->storage();
 		$body['childs'] = $value;
+	}
+
+	/**
+	 *	サンプル画像のハッシュを取得します。
+	 *
+	 *	@return int サンプル画像のハッシュ。
+	 */
+	public function getExampleHash()
+	{
+		$body =& $this->storage();
+		return $body['example'];
+	}
+
+	/**
+	 *	サンプル画像のハッシュを設定します。
+	 *
+	 *	@param int $value サンプル画像のハッシュ。
+	 */
+	public function setExampleHash($value)
+	{
+		$body =& $this->storage();
+		$body['example'] = $value;
 	}
 
 	/**

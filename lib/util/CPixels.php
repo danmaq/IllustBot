@@ -24,6 +24,17 @@ class CPixels
 	//* class methods ────────────────────────────-*
 
 	/**
+	 *	学習します。
+	 *
+	 *	@param CPixels $expr サンプル画像。
+	 *	@param array $ ピクセル情報。
+	 *	@return CPixels 交叉されたピクセル情報。
+	 */
+	public static function study(CPixels $expr, $array)
+	{
+	}
+
+	/**
 	 *	交叉遺伝します。
 	 *	交叉アルゴリズムとしてRGB毎の一様交叉を使用し、
 	 *	また1.56%程度の確率で突然変異を発生させます。
@@ -330,6 +341,20 @@ class CPixels
 		{
 			$this->resource = $result;
 		}
+		return $result;
+	}
+
+	/**
+	 *	ファイルから画像を初期化します。
+	 *
+	 *	@param int $name ファイル名。
+	 *	@return boolean 成功したかどうか。
+	 */
+	public function createFromFile($name)
+	{
+		$fh = fopen($name, 'rb');
+		$result = $this->createFromData(fread($fh, filesize($name)));
+		fclose($fh);
 		return $result;
 	}
 

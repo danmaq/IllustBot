@@ -42,7 +42,7 @@
 					<li>ぼっとにお題を与えてください。</li>
 					<li>ぼっとは超ど素人です。できるだけ記号的で単純なお題を与えてあげると、成長が早いです(丸とか星形とか)。</li>
 				</ul>
-				<form action="./" method="post">
+				<form action="./" method="post" enctype="multipart/form-data">
 					<ul>
 						<li>
 							<label for="theme">お題</label>
@@ -62,6 +62,10 @@
 								<option value="50" selected="selected">バランス型</option>
 								<option value="100">気変わりしやすく、物覚え悪い</option>
 							</select>
+						</li>
+						<li>
+							<label for="example">予備学習の画像(指定サイズにリサイズしてからうｐしてください)</label>
+							<input type="file" id="example" name="example" value="" placeholder="予備学習させたい場合のみ選択" />
 						</li>
 						<li>
 							<input type="hidden" name="f" value="core/newGamePOST" />
