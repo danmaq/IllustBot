@@ -125,7 +125,7 @@ class CChild
 	 *	子ぼっとを取得します。
 	 *
 	 *	@param CBot $owner 親ぼっと。
-	 *	@return int 子ぼっと一覧。
+	 *	@return array[CChild] 子ぼっと一覧。
 	 */
 	public static function getFromOwner(CBot $owner)
 	{

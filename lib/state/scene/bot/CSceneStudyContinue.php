@@ -1,15 +1,16 @@
 <?php
 
 require_once(IB01_CONSTANTS);
+require_once('CSceneViewImage.php');
 require_once(IB01_LIB_ROOT . '/dao/CBot.php');
 require_once(IB01_LIB_ROOT . '/dao/CImage.php');
-require_once(IB01_LIB_ROOT . '/state/IState.php');
+require_once(IB01_LIB_ROOT . '/state/scene/ranking/CSceneTop.php');
 require_once(IB01_LIB_ROOT . '/view/CRedirector.php');
 
 /**
- *	ぼっとにお題を教えるページを表示します。
+ *	予備学習を継続させます。
  */
-class CSceneNewBotPost
+class CSceneStudyContinue
 	implements IState
 {
 
@@ -20,15 +21,12 @@ class CSceneNewBotPost
 
 	/**	既定の値一覧。 */
 	private $format = array(
-		'childs' => '10',
-		'x' => '8',
-		'y' => '0',
-		'theme' => ''
-		'example' => ''
+		'id' => '',
+		'continue' => 'NO',
 	);
 
-	/**	ぼっとさん。 */
-	private $bot = null;
+	/**	親ぼっとオブジェクト。 */
+	private $bot;
 
 	/**	エラー表示。 */
 	private $errors = null;
@@ -53,7 +51,7 @@ class CSceneNewBotPost
 	{
 		if(self::$instance == null)
 		{
-			self::$instance = new CSceneNewBotPost();
+			self::$instance = new CSceneAutoStudy();
 		}
 		return self::$instance;
 	}
@@ -77,45 +75,17 @@ class CSceneNewBotPost
 			if($entity->connectDatabase())
 			{
 				$_POST += $this->format;
-				$theme = trim($_POST['theme']);
-				$len = strlen($theme);
-				if($len < 1 || $len > 255)
+				$bot = new CBot($_POST['id']);
+				if(!$bot->rollback())
 				{
-					throw new Exception(_('お題は1～255バイト以内。'));
+					throw new Exception(_('存在しないぼっとです。'));
 				}
-				$x = intval($_POST['x']);
-				$y = intval($_POST['y']);
-				$childs = intval($_POST['childs']);
-				if($y <= 0)
+				$cont = strtolower(trim($_POST['continue']));
+				if($cont === 'no')
 				{
-					$y = $x;
-					$_POST['y'] = sprintf('%d', $y);
+					$bot->setExampleHash(-1);
+					$bot->commit();
 				}
-				if($x <= 0 || $x > 128 || $y <= 0 || $y > 128)
-				{
-					throw new Exception(_('不正なサイズは受理不可。'));
-				}
-				if($childs < 10 || $childs > 200)
-				{
-					throw new Exception(_('ぼっとさんをいじめちゃだめー。'));
-				}
-				// 画像があれば取り込む
-				$bot = new CBot();
-				$bot->setChilds($childs);
-				$bot->setSize($x, $y);
-				$bot->setTheme($theme);
-				if(!isset($_FILES['example']) && is_uploaded_file($_FILES['example']['tmp_name']))
-				{
-					$p = new CPixels(();
-					if($p->createFromFile($_FILES['userfile']['tmp_name']))
-					{
-						$p->resize($x, $y);
-						$img = new CImage($p);
-						$img->commit();
-						$bot->setExampleHash($img->getID());
-					}
-				}
-				$bot->commit();
 				$this->bot = $bot;
 			}
 		}
@@ -135,7 +105,7 @@ class CSceneNewBotPost
 	{
 		if($entity->getNextState() === null)
 		{
-			$query = array();
+			$query = '';
 			if($this->errors === null)
 			{
 				$query = $this->bot->getID();
@@ -143,11 +113,7 @@ class CSceneNewBotPost
 			else
 			{
 				$query = array(
-					'f' => 'core/newGame',
-					'childs' => $_POST['childs'],
-					'x' => $_POST['x'],
-					'y' => $_POST['y'],
-					'theme' => $_POST['theme'],
+					'f' => 'core/top',
 					'err' => $this->errors);
 			}
 			CRedirector::seeOther($query);

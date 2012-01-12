@@ -1,8 +1,10 @@
 <?php
 
 require_once(IB01_CONSTANTS);
+require_once('CSceneAutoStudy.php');
 require_once('CSceneViewImage.php');
 require_once(IB01_LIB_ROOT . '/dao/CChild.php');
+require_once(IB01_LIB_ROOT . '/dao/CImage.php');
 require_once(IB01_LIB_ROOT . '/state/scene/ranking/CSceneTop.php');
 require_once(IB01_LIB_ROOT . '/view/CRedirector.php');
 
@@ -67,13 +69,23 @@ class CSceneRedirectChild
 				$bot = new CBot($_GET['id']);
 				if($bot->rollback())
 				{
-					$child = $this->findChild($bot);
-					if($child === null)
+					$img = new CImage($bot->getExampleHash(), false);
+					if($img->isExists())
 					{
-						throw new Exception(
-							_('子ぼっとがいるようで、だけどいないような、異常な事態(素敵な事態)'));
+						$instance = CSceneAutoStudy::getInstance();
+						$instance->bot = $bot;
+						$entity->setNextState($instance);
 					}
-					$this->id = $child->getID();
+					else
+					{
+						$child = $this->findChild($bot);
+						if($child === null)
+						{
+							throw new Exception(
+								_('子ぼっとがいるようで、だけどいないような、異常な事態(素敵な事態)'));
+						}
+						$this->id = $child->getID();
+					}
 				}
 				else
 				{

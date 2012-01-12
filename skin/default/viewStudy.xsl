@@ -39,11 +39,10 @@
 				</header>
 				<xsl:apply-templates select="topic" />
 				<h2>
-					今度は<xsl:value-of select="@title" />を描いてみたようです。
+					ぼっとは見本画像を観察して、<xsl:value-of select="@title" />の予備学習をしました。
 				</h2>
 				<p>
 					このぼっとのレベルは<xsl:value-of select="bot/@generation" />です。
-					次のレベルまで必要な経験値は<xsl:value-of select="bot/@amount" />です。
 				</p>
 				<p>
 					<img alt="" title="ぼっとが描いてみた画像">
@@ -51,23 +50,24 @@
 						<xsl:attribute name="width"><xsl:value-of select="bot/@width * 20" /></xsl:attribute>
 						<xsl:attribute name="height"><xsl:value-of select="bot/@height * 20" /></xsl:attribute>
 					</img>
+					&lt;生成 | 見本&gt;
+					<img alt="" title="見本として提示した画像">
+						<xsl:attribute name="src">?f=core/rawImage&amp;id=<xsl:value-of select="bot/@example" /></xsl:attribute>
+						<xsl:attribute name="width"><xsl:value-of select="bot/@width * 20" /></xsl:attribute>
+						<xsl:attribute name="height"><xsl:value-of select="bot/@height * 20" /></xsl:attribute>
+					</img>
 				</p>
 				<h2>
-					「<xsl:value-of select="@title" />」に見えますか？評価してあげてください。
+					さらに予備学習を続けますか？
 				</h2>
 				<form action="./" method="post">
 					<p>
-						<input type="hidden" name="f" value="core/botVote" />
+						<input type="hidden" name="f" value="core/botStudy" />
 						<input type="hidden" name="id">
-							<xsl:attribute name="value"><xsl:value-of select="bot/@id" /></xsl:attribute>
+							<xsl:attribute name="value"><xsl:value-of select="bot/@owner" /></xsl:attribute>
 						</input>
-						<input type="hidden" name="max" value="4" />
-						<input type="submit" name="score" value="4" />
-						<input type="submit" name="score" value="3" />
-						<input type="submit" name="score" value="2" />
-						<input type="submit" name="score" value="1" />
-						<input type="submit" name="score" value="0" />
-						点
+						<input type="submit" name="continue" value="YES" />
+						<input type="submit" name="continue" value="NO" />
 					</p>
 				</form>
 				<footer>

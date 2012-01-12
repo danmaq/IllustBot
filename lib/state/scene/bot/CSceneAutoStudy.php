@@ -1,18 +1,15 @@
 <?php
 
 require_once(IB01_CONSTANTS);
-require_once(IB01_LIB_ROOT . '/dao/CBot.php');
 require_once(IB01_LIB_ROOT . '/dao/CChild.php');
 require_once(IB01_LIB_ROOT . '/dao/CImage.php');
-require_once(IB01_LIB_ROOT . '/state/IState.php');
 require_once(IB01_LIB_ROOT . '/state/scene/ranking/CSceneTop.php');
-require_once(IB01_LIB_ROOT . '/view/CDocumentBuilder.php');
 require_once(IB01_LIB_ROOT . '/view/CRedirector.php');
 
 /**
- *	ぼっとを育てるページを表示します。
+ *	予備学習させます。
  */
-class CSceneViewImage
+class CSceneAutoStudy
 	implements IState
 {
 
@@ -21,8 +18,11 @@ class CSceneViewImage
 	/**	クラス オブジェクト。 */
 	private static $instance = null;
 
-	/**	子ぼっと。 */
-	private $child;
+	/**	親ぼっと。 */
+	public $bot = null;
+
+	/**	ジャンプ先ID。 */
+	private $id;
 
 	//* constructor & destructor ───────────────────────*
 
@@ -44,7 +44,7 @@ class CSceneViewImage
 	{
 		if(self::$instance == null)
 		{
-			self::$instance = new CSceneViewImage();
+			self::$instance = new CSceneAutoStudy();
 		}
 		return self::$instance;
 	}
@@ -58,25 +58,27 @@ class CSceneViewImage
 	 */
 	public function setup(CEntity $entity)
 	{
-		$this->child = null;
 		try
 		{
-			if(!isset($_GET['id']))
+			$bot = $this->bot;
+			if($bot === null || $bot->getExampleHash() < 0)
 			{
-				throw new Exception(_('ぼっとを指名してください。'));
+				throw new Exception(_('ぼっとが変ですよん。。。'));
 			}
 			if($entity->connectDatabase())
 			{
-				$child = new CChild($_GET['id']);
-				if($child->rollback())
+				$parents = $this->getChildPixels($bot);
+				$params = count($parents) == 0 ? $bot->getChilds() : $parents;
+				$img = new CImage($bot->getExampleHash());
+				$result = CPixels::study($img->getPixels(), $params);
+				$child = $this->createChildFromPixels($bot, $result);
+				$bot->nextGeneration();
+				$bot->commit();
+				if($child === null)
 				{
-					$this->child = $child;
+					throw new Exception(_('ぼっとがいるようで、実はいなかった、異常な事態(素敵な事態)'));
 				}
-				else
-				{
-					throw new Exception(_('存在しないIDです。'));
-					$entity->setNextState(CSceneTop::getInstance());
-				}
+				$this->id = $child->getID();
 			}
 		}
 		catch(Exception $e)
@@ -95,28 +97,8 @@ class CSceneViewImage
 	{
 		if($entity->getNextState() === null)
 		{
-			$child = $this->child;
-			$owner = $child->getOwner();
-			$size = $owner->getSize();
-			$xmlbuilder = new CDocumentBuilder();
-			$xmlbuilder->setTitle($owner->getTheme());
-			$xmlbuilder->createInfo('bot', array(
-				'id' => $child->getID(),
-				'hash' => $child->getHash(),
-				'example' => $owner->getExampleHash(),
-				'owner' => $owner->getID(),
-				'width' => $size['x'],
-				'height' => $size['y'],
-				'generation' => $child->getGeneration() + 1,
-				'amount' => $child->getAmount()));
-			$xsl = CConstants::FILE_XSL_VIEW;
-			$example = new CImage($child->getOwner()->getExampleHash(), false);
-			if($example->isExists())
-			{
-				$xsl = CConstants::FILE_XSL_VIEW_STUDY;
-			}
-			$xmlbuilder->output($xsl);
-			$entity->setNextState(CEmptyState::getInstance());
+			CRedirector::seeOther($this->id);
+			$entity->dispose();
 		}
 	}
 
@@ -127,6 +109,49 @@ class CSceneViewImage
 	 */
 	public function teardown(CEntity $entity)
 	{
+		$this->bot = null;
+	}
+
+	/**
+	 *	ピクセル情報一覧を作成します。
+	 *
+	 *	@param CBot $bot 親ぼっとオブジェクト。
+	 *	@return array[CPixels] ピクセル情報一覧。
+	 */
+	private function getChildPixels(CBot $bot)
+	{
+		$result = array();
+		$childs = CChild::getFromOwner($bot);
+		for($i = count($childs); --$i >= 0; )
+		{
+			$img = new CImage($childs[$i]->getHash());
+			array_push($result, $img->getPixels());
+		}
+		return $result;
+	}
+
+	/**
+	 *	ピクセル情報一覧を作成します。
+	 *
+	 *	@param CBot $bot 親ぼっとオブジェクト。
+	 *	@param array[CPixels] $pixels ピクセル情報一覧。
+	 *	@return CChild 生成された子ぼっとのうちの1体。
+	 */
+	private function createChildFromPixels(CBot $bot, $pixels)
+	{
+		$result = null;
+		$gene = $bot->getGeneration();
+		for($i = count($pixels); --$i >= 0; )
+		{
+			$cimg = new CImage($pixels[$i]);
+			$cimg->commit();
+			$result = new CChild();
+			$result->setOwner($bot);
+			$result->setGeneration($gene);
+			$result->setHash($cimg->getID());
+			$result->commit();
+		}
+		return $result;
 	}
 }
 

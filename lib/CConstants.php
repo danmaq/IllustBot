@@ -16,7 +16,7 @@ class CConstants
 	//* constants ──────────────────────────────-*
 
 	/** バージョン情報。 */
-	const VERSION = '0.0.4';
+	const VERSION = '0.0.5';
 
 	/** MySQL用のID。 */
 	const DBMS_MYSQL = 'mysql';
@@ -35,6 +35,9 @@ class CConstants
 
 	/** お絵かき表示時用XSLファイル。 */
 	const FILE_XSL_VIEW = 'view.xsl';
+
+	/** お絵かき表示時用XSLファイル。 */
+	const FILE_XSL_VIEW_STUDY = 'viewStudy.xsl';
 
 }
 

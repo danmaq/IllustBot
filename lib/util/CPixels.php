@@ -1,5 +1,22 @@
 <?php
 
+/**	cmpPixelsForSort関数で使用するサンプル画像を格納してください。 */
+$_cmpPixelsExampleForSort = null;
+
+/**
+ *	どちらがサンプル画像に近い画像かを取得します。
+ *
+ *	@param CPixels $a 画像。
+ *	@param CPixels $b 画像。
+ *	@return float $aが近い場合負数、$bが近い場合正数。
+ */
+function cmpPixelsForSort($a, $b)
+{
+	$ga = CPixels::compare($a, $_cmpPixelsExampleForSort);
+	$gb = CPixels::compare($b, $_cmpPixelsExampleForSort);
+	return $ga - $gb;
+}
+
 /**
  *	ピクセル情報 クラス。
  */
@@ -27,11 +44,52 @@ class CPixels
 	 *	学習します。
 	 *
 	 *	@param CPixels $expr サンプル画像。
-	 *	@param array $ ピクセル情報。
-	 *	@return CPixels 交叉されたピクセル情報。
+	 *	@param mixed $parent 親となるピクセル情報、または数。
+	 *	@param float $threshold 存続する閾値。
+	 *	@return array(CPixels) ピクセル情報一覧。
 	 */
-	public static function study(CPixels $expr, $array)
+	public static function study(CPixels $expr, $parent = 50, $threshold = 0.2)
 	{
+		$len = 0;
+		if(is_int($parent))
+		{
+			$size = $expr->getSize();
+			$len = $parent;
+			$parent = array();
+			for($i = $len; --$i >= 0; )
+			{
+				$item = new CPixels();
+				$item->createFromSize($size['x'], $size['y']);
+				array_push($parent, $item);
+			}
+		}
+		else
+		{
+			$len = count($parent);
+		}
+		$_cmpPixelsExampleForSort = $expr;
+		usort($parent, 'cmpPixelsForSort');
+		$result = array();
+		$threshold = round($len * $threshold);
+		for($i = $threshold; --$i >= 0; )
+		{
+			array_unshift($result, $parent[$i]);
+		}
+		for($i = $len - $threshold; --$i >= 0; )
+		{
+			$ia = 0;
+			$ib = 0;
+			do
+			{
+				$ia = mt_rand(0, $threshold);
+				$ib = mt_rand(0, $threshold);
+			}
+			while($ia == $ib);
+			array_push(self::inheritance(
+				$parent[$ia],
+				$parent[$ib]));
+		}
+		return $result;
 	}
 
 	/**
