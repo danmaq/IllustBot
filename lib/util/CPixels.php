@@ -12,9 +12,10 @@ $_cmpPixelsExampleForSort = null;
  */
 function cmpPixelsForSort($a, $b)
 {
+	global $_cmpPixelsExampleForSort;
 	$ga = CPixels::compare($a, $_cmpPixelsExampleForSort);
 	$gb = CPixels::compare($b, $_cmpPixelsExampleForSort);
-	return $ga - $gb;
+	return (($ga - $gb) * 10000);
 }
 
 /**
@@ -67,6 +68,7 @@ class CPixels
 		{
 			$len = count($parent);
 		}
+		global $_cmpPixelsExampleForSort;
 		$_cmpPixelsExampleForSort = $expr;
 		usort($parent, 'cmpPixelsForSort');
 		$result = array();
@@ -85,7 +87,7 @@ class CPixels
 				$ib = mt_rand(0, $threshold);
 			}
 			while($ia == $ib);
-			array_push(self::inheritance(
+			array_push($result, self::inheritance(
 				$parent[$ia],
 				$parent[$ib]));
 		}
@@ -95,7 +97,7 @@ class CPixels
 	/**
 	 *	交叉遺伝します。
 	 *	交叉アルゴリズムとしてRGB毎の一様交叉を使用し、
-	 *	また1.56%程度の確率で突然変異を発生させます。
+	 *	また0.98%程度の確率で突然変異を発生させます。
 	 *
 	 *	@param CPixels $a ピクセル情報。
 	 *	@param CPixels $b ピクセル情報。
@@ -123,7 +125,7 @@ class CPixels
 				$g = null;
 				$b = null;
 				$rnd = mt_rand(0, 65535);
-				if($rnd > 1024)
+				if($rnd > 640)
 				{
 					$r = ($rnd & 1) == 0 ? $rgba['r'] : $rgbb['r'];
 					$g = ($rnd & 2) == 0 ? $rgba['g'] : $rgbb['g'];
@@ -158,7 +160,7 @@ class CPixels
 		{
 			for($x = $sa['x']; --$x >= 0; )
 			{
-				$result += self::comparePixel($a, $b, $x, $y);
+				$result += self::comparePixel($resa, $resb, $x, $y);
 			}
 		}
 		return $result / $size;
@@ -223,9 +225,9 @@ class CPixels
 	{
 		$rgba = self::getPixel($a, $x, $y);
 		$rgbb = self::getPixel($b, $x, $y);
-		$rgap = abs($rgba['r'], $rgbb['r']);
-		$ggap = abs($rgba['g'], $rgbb['g']);
-		$bgap = abs($rgba['b'], $rgbb['b']);
+		$rgap = abs($rgba['r'] - $rgbb['r']);
+		$ggap = abs($rgba['g'] - $rgbb['g']);
+		$bgap = abs($rgba['b'] - $rgbb['b']);
 		return ($rgap + $ggap + $bgap) / 767;
 	}
 

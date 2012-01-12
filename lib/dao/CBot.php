@@ -166,6 +166,14 @@ class CBot
 	}
 
 	/**
+	 *	世代レベルをデクリメントします。
+	 */
+	public function prevGeneration()
+	{
+		$this->generation--;
+	}
+
+	/**
 	 *	世代レベルをインクリメントします。
 	 */
 	public function nextGeneration()

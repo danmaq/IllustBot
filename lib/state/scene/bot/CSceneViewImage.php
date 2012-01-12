@@ -101,6 +101,7 @@ class CSceneViewImage
 			$xmlbuilder = new CDocumentBuilder();
 			$xmlbuilder->setTitle($owner->getTheme());
 			$xmlbuilder->createInfo('bot', array(
+				'same' => $this->getSamePercentage($child),
 				'id' => $child->getID(),
 				'hash' => $child->getHash(),
 				'example' => $owner->getExampleHash(),
@@ -127,6 +128,27 @@ class CSceneViewImage
 	 */
 	public function teardown(CEntity $entity)
 	{
+	}
+
+	/**
+	 *	サンプル画像とどの位そっくりかどうかを取得ます。
+	 *
+	 *	@param CChild $child 子ぼっとオブジェクト。
+	 *	@return float そっくりな確率。
+	 */
+	private function getSamePercentage(CChild $child)
+	{
+		$owner = $child->getOwner();
+		$img = new CImage($owner->getExampleHash(), false);
+		$result = 0;
+		if($img->isExists())
+		{
+			$img->rollback();
+			$example = $img->getPixels();
+			$img = new CImage($child->getHash());
+			$result = (1 - CPixels::compare($example, $img->getPixels())) * 100;
+		}
+		return $result;
 	}
 }
 

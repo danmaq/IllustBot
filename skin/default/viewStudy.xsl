@@ -47,15 +47,16 @@
 				<p>
 					<img alt="" title="ぼっとが描いてみた画像">
 						<xsl:attribute name="src">?f=core/rawImage&amp;id=<xsl:value-of select="bot/@hash" /></xsl:attribute>
-						<xsl:attribute name="width"><xsl:value-of select="bot/@width * 20" /></xsl:attribute>
-						<xsl:attribute name="height"><xsl:value-of select="bot/@height * 20" /></xsl:attribute>
+						<xsl:attribute name="width"><xsl:value-of select="bot/@width * 6" /></xsl:attribute>
+						<xsl:attribute name="height"><xsl:value-of select="bot/@height * 6" /></xsl:attribute>
 					</img>
 					&lt;生成 | 見本&gt;
 					<img alt="" title="見本として提示した画像">
 						<xsl:attribute name="src">?f=core/rawImage&amp;id=<xsl:value-of select="bot/@example" /></xsl:attribute>
-						<xsl:attribute name="width"><xsl:value-of select="bot/@width * 20" /></xsl:attribute>
-						<xsl:attribute name="height"><xsl:value-of select="bot/@height * 20" /></xsl:attribute>
-					</img>
+						<xsl:attribute name="width"><xsl:value-of select="bot/@width * 6" /></xsl:attribute>
+						<xsl:attribute name="height"><xsl:value-of select="bot/@height * 6" /></xsl:attribute>
+					</img><br />
+					完全に一致率：<xsl:value-of select="bot/@same" /> パーセント
 				</p>
 				<h2>
 					さらに予備学習を続けますか？

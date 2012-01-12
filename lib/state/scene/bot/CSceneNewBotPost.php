@@ -23,7 +23,7 @@ class CSceneNewBotPost
 		'childs' => '10',
 		'x' => '8',
 		'y' => '0',
-		'theme' => ''
+		'theme' => '',
 		'example' => ''
 	);
 
@@ -104,10 +104,10 @@ class CSceneNewBotPost
 				$bot->setChilds($childs);
 				$bot->setSize($x, $y);
 				$bot->setTheme($theme);
-				if(!isset($_FILES['example']) && is_uploaded_file($_FILES['example']['tmp_name']))
+				if(isset($_FILES['example']) && is_uploaded_file($_FILES['example']['tmp_name']))
 				{
-					$p = new CPixels(();
-					if($p->createFromFile($_FILES['userfile']['tmp_name']))
+					$p = new CPixels();
+					if($p->createFromFile($_FILES['example']['tmp_name']))
 					{
 						$p->resize($x, $y);
 						$img = new CImage($p);

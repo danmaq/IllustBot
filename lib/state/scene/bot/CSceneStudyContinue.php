@@ -51,7 +51,7 @@ class CSceneStudyContinue
 	{
 		if(self::$instance == null)
 		{
-			self::$instance = new CSceneAutoStudy();
+			self::$instance = new CSceneStudyContinue();
 		}
 		return self::$instance;
 	}

@@ -123,10 +123,15 @@ class CImage
 	 */
 	public function isExists()
 	{
-		self::initialize();
-		return CDBManager::getInstance()->singleFetch(
-			CFileSQLImage::getInstance()->selectExists,
-			'EXIST', $this->createDBParams());
+		$result = $this->getID() >= 0;
+		if($result)
+		{
+			self::initialize();
+			$result = CDBManager::getInstance()->singleFetch(
+				CFileSQLImage::getInstance()->selectExists,
+				'EXIST', $this->createDBParams());
+		}
+		return $result;
 	}
 
 	/**
@@ -202,8 +207,13 @@ class CImage
 	 */
 	public function rollback()
 	{
-		$this->setRawData(self::directLoad($this->getID()));
-		return true;
+		$raw = self::directLoad($this->getID());
+		$result = $raw !== null;
+		if($result)
+		{
+			$this->setRawData(self::directLoad($this->getID()));
+		}
+		return $result;
 	}
 
 	/**

@@ -121,7 +121,9 @@ class CSceneAutoStudy
 	private function getChildPixels(CBot $bot)
 	{
 		$result = array();
+		$bot->prevGeneration();
 		$childs = CChild::getFromOwner($bot);
+		$bot->nextGeneration();
 		for($i = count($childs); --$i >= 0; )
 		{
 			$img = new CImage($childs[$i]->getHash());
