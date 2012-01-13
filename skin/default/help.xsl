@@ -16,6 +16,7 @@
 			<li><a href="#description">解説</a></li>
 			<li><a href="#foresight">今後</a></li>
 		</ul>
+		<p id="version"><a href="HISTORY">VERSION <xsl:value-of select="@ver" /></a></p>
 		<h2 id="#overview">概要</h2>
 		<p>
 			ぼっとにお題を与えると、絵を描き始めるので、みなさんで上手く描けているか投票してあげてください。
