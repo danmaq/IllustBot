@@ -17,7 +17,7 @@
 			<li><a href="#foresight">今後</a></li>
 		</ul>
 		<p id="version"><a href="HISTORY">VERSION <xsl:value-of select="@ver" /></a></p>
-		<h2 id="#overview">概要</h2>
+		<h2 id="overview">概要</h2>
 		<p>
 			ぼっとにお題を与えると、絵を描き始めるので、みなさんで上手く描けているか投票してあげてください。
 			みなさんの投票によって、ぼっとは成長していきます。
@@ -28,12 +28,12 @@
 			思わぬところからいろいろなバグが出てくるかもしれません。
 			もしお気づきの点や、その他サポートしてほしい場合は<a href="http://twitter.com/danmaq">Twitter(@danmaq)</a>へ@ツイートしてください。
 		</p>
-		<h2 id="#description">解説</h2>
+		<h2 id="description">解説</h2>
 		<ul>
 			<li>画像の各ピクセルを遺伝子とみなし、遺伝的アルゴリズムを使用して成長しています。</li>
 			<li>一様交叉、生存率15％、突然変異率0.98％です。</li>
 		</ul>
-		<h2 id="#foresight">今後</h2>
+		<h2 id="foresight">今後</h2>
 		<ul>
 			<li>学習の高速化(ピクセル総なめするのが重いこと重いこと)</li>
 			<li>学習の高効率化(スコアの高い遺伝子を隣の遺伝子が真似し始めたり、突然変異の変化量をゆるくしたり)</li>
