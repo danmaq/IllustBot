@@ -21,6 +21,7 @@
 					<meta http-equiv="X-UA-Compatible" content="IE=edge" />
 					<meta name="msapplication-navbutton-color" content="#6495ED" />
 				</xsl:if>
+				<meta name="viewport" content="width=420" />
 				<meta name="application-name" content="ぼっと[IB-01]がお絵かきするようです。" />
 				<meta name="author" content="danmaq" />
 				<title><xsl:if test="body/@title and string-length(body/@title) > 0"><xsl:value-of select="body/@title" /> - </xsl:if>ぼっと[IB-01]がお絵かきするようです。</title>
