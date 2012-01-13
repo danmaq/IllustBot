@@ -16,7 +16,10 @@
 			<li><a href="?f=core/list">育てる</a></li>
 			<li><a href="./">ヘルプ<br />(工事中)</a></li>
 		</ul>
-		<p id="version"><a href="HISTORY">VERSION <xsl:value-of select="@ver" /></a></p>
+		<p id="version">
+			<a href="HISTORY">VERSION <xsl:value-of select="@ver" /></a>
+			サポートは<a href="http://twitter.com/danmaq">Twitter(@danmaq)</a>へ@ツイートしてください。
+		</p>
 		<h2>新着お題</h2>
 		<xsl:apply-templates select="new" />
 		<h2>高評価順ランキング</h2>
