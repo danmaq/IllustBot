@@ -83,13 +83,13 @@ class CPixels
 		{
 			array_unshift($result, $parent[$i]);
 		}
+		$ia = 0;
 		for($i = $len - $threshold; --$i >= 0; )
 		{
-			$ia = 0;
+			$ia = ($ia + 1) % $threshold;
 			$ib = 0;
 			do
 			{
-				$ia = mt_rand(0, $threshold);
 				$ib = mt_rand(0, $threshold);
 			}
 			while($ia == $ib);
