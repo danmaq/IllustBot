@@ -12,7 +12,7 @@
 	<xsl:template match="body">
 		<h2>メインメニュー</h2>
 		<ul id="mainMenu">
-			<li><a href="?f=core/newGame">依頼する</a></li>
+			<li><a href="?f=core/newGame">お題出す</a></li>
 			<li><a href="?f=core/list">育てる</a></li>
 			<li><a href="?f=core/help">ヘルプ<br /></a></li>
 		</ul>

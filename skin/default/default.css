@@ -5,17 +5,17 @@
 
 	a:link, a:visited
 	{
-		color: #6495ED;
+		color: #4378B6;
 	}
 
 	a:hover, a:active
 	{
-		color: Red;
+		color: #62629F;
 	}
 
 	body
 	{
-		color: rgb(64, 164, 113);
+		color: #40A471;
 		font-family: "ヒラギノ角ゴ Pro W3", "Hiragino Kaku Gothic Pro", "メイリオ", "Meiryo", "ＭＳ Ｐゴシック", sans-serif;
 		margin: 0px;
 		padding: 1em;
@@ -30,7 +30,12 @@
 
 	h2
 	{
-		border-top: Lavender 3px dotted;
+		border-top: #FFF6C7 3px dotted;
+		margin: 0px;
+	}
+
+	h3
+	{
 		margin: 0px;
 	}
 
@@ -41,13 +46,13 @@
 
 	input.text, select
 	{
-		border: 2px #6495ED solid;
+		border: 2px #4378B6 solid;
 		font-size: 115%;
 	}
 
 	input.submit
 	{
-		background-color: #6495ED;
+		background-color: #4378B6;
 		border-style: none;
 		color: White;
 		font-size: 150%;
@@ -63,17 +68,18 @@
 	ul#mainMenu li a:link, ul#mainMenu li a:visited
 	{
 		color: White;
+		background-color: #4378B6;
 	}
 
 	ul#mainMenu li a:hover, ul#mainMenu li a:active
 	{
-		color: Lavender;
+		color: White;
+		background-color: #62629F;
 	}
 
 	ul#mainMenu li a
 	{
 		display :block;
-		background-color: #6495ED;
 		color: White;
 		float: left;
 		width: 100%;

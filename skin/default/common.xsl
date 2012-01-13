@@ -19,7 +19,7 @@
 				<meta charset="UTF-8" />
 				<xsl:if test="contains(body/@ua, ' IE ') or contains(body/@ua, ' MSIE ')">
 					<meta http-equiv="X-UA-Compatible" content="IE=edge" />
-					<meta name="msapplication-navbutton-color" content="#6495ED" />
+					<meta name="msapplication-navbutton-color" content="#4378B6" />
 				</xsl:if>
 				<meta name="viewport" content="width=420" />
 				<meta name="application-name" content="ぼっと[IB-01]がお絵かきするようです。" />

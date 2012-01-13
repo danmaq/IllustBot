@@ -16,7 +16,7 @@ class CConstants
 	//* constants ──────────────────────────────-*
 
 	/** バージョン情報。 */
-	const VERSION = '0.0.6';
+	const VERSION = '0.0.7';
 
 	/** MySQL用のID。 */
 	const DBMS_MYSQL = 'mysql';

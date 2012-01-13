@@ -78,19 +78,19 @@ class CPixels
 		}
 		usort($parent, 'cmpPixelsForSort');
 		$result = array();
-		$threshold = round($len * $threshold);
+		$threshold = (int)round($len * $threshold);
 		for($i = $threshold; --$i >= 0; )
 		{
 			array_unshift($result, $parent[$i]);
 		}
-		$ia = 0;
+		$ia_ = 0;
 		for($i = $len - $threshold; --$i >= 0; )
 		{
-			$ia = ($ia + 1) % $threshold;
+			$ia = ($ia_++ + mt_rand(0, 2)) % $threshold;
 			$ib = 0;
 			do
 			{
-				$ib = mt_rand(0, $threshold);
+				$ib = mt_rand(0, $i < 3 ? $len : $threshold);
 			}
 			while($ia == $ib);
 			array_push($result, self::inheritance(
