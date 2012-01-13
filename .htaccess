@@ -1,0 +1,11 @@
+DirectoryIndex index.php index.html index.xml
+
+Options ExecCGI Includes MultiViews FollowSymLinks -Indexes
+
+RewriteEngine on
+RewriteCond %{HTTP_USER_AGENT} ".*Safari.*" [OR]
+RewriteCond %{HTTP:Accept-Encoding} !gzip
+RewriteRule (.*)\.jgz$ $1\.js [L]
+
+AddType "text/javascript;charset=UTF-8" .jgz
+AddEncoding gzip .jgz
