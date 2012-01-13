@@ -90,7 +90,7 @@ class CPixels
 			$ib = 0;
 			do
 			{
-				$ib = mt_rand(0, $i < 3 ? $len : $threshold);
+				$ib = mt_rand(0, $i < 3 ? $len - 1 : $threshold);
 			}
 			while($ia == $ib);
 			array_push($result, self::inheritance(
