@@ -6,72 +6,23 @@
 	exclude-result-prefixes="xhtml">
 	<xsl:output method="xml" encoding="UTF-8" indent="yes" media-type="application/xhtml+xml" />
 
+	<xsl:include href="common.xsl" />
+
 	<!-- メイン。 -->
-	<xsl:template match="/body">
-
-		<!-- HTML5のためのDOCTYPE宣言。 -->
-		<xsl:text disable-output-escaping='yes'>&lt;!DOCTYPE html&gt;
-</xsl:text>
-		<!-- 出力のインデントが乱れるため、意図して改行しています。 -->
-
-		<html xml:lang="ja">
-			<head>
-				<meta charset="UTF-8" />
-				<xsl:if test="contains(@ua, ' IE ') or contains(@ua, ' MSIE ')">
-					<meta http-equiv="X-UA-Compatible" content="IE=edge" />
-					<meta name="msapplication-navbutton-color" content="#BCC0DD" />
-				</xsl:if>
-				<meta name="application-name" content="Network Utterance Environment" />
-				<meta name="author" content="danmaq" />
-				<title>
-					<xsl:if test="@title and string-length(@title) > 0"><xsl:value-of select="@title" /> - </xsl:if>
-					ぼっと[IB-01]がお絵かきするようです。
-				</title>
-				<link href="skin/default/default.css" rel="StyleSheet" />
-				<link href="http://twitter.com/danmaq" rel="Author" />
-				<xsl:comment> 評価中 </xsl:comment>
-			</head>
-			<body>
-				<header>
-					<h1>
-						<a href="./">ぼっと[IB-01]がお絵かきするようです。</a>
-					</h1>
-				</header>
-				<xsl:apply-templates select="topic" />
-				<h2>
-					メインメニュー
-				</h2>
-				<ul>
-					<li><a href="?f=core/newGame">依頼する</a></li>
-					<li><a href="?f=core/list">育てる</a></li>
-					<li>ヘルプ(工事中)</li>
-					<li><a href="HISTORY">VERSION <xsl:value-of select="@ver" /></a></li>
-				</ul>
-				<h2>
-					新着お題
-				</h2>
-				<xsl:apply-templates select="new" />
-				<h2>
-					高評価順ランキング
-				</h2>
-				<xsl:apply-templates select="score" />
-				<h2>
-					覚えが早い順ランキング
-				</h2>
-				<xsl:apply-templates select="gene" />
-				<footer>
-					<hr />
-					<address>by danmaq</address>
-				</footer>
-			</body>
-		</html>
-	</xsl:template>
-
-	<!-- トピック。 -->
-	<xsl:template match="topic">
-		<p>
-			<xsl:value-of select="@title" />: <xsl:value-of select="." />
-		</p>
+	<xsl:template match="body">
+		<h2>メインメニュー</h2>
+		<ul id="mainMenu">
+			<li><a href="?f=core/newGame">依頼する</a></li>
+			<li><a href="?f=core/list">育てる</a></li>
+			<li><a href="./">ヘルプ<br />(工事中)</a></li>
+		</ul>
+		<p id="version"><a href="HISTORY">VERSION <xsl:value-of select="@ver" /></a></p>
+		<h2>新着お題</h2>
+		<xsl:apply-templates select="new" />
+		<h2>高評価順ランキング</h2>
+		<xsl:apply-templates select="score" />
+		<h2>覚えが早い順ランキング</h2>
+		<xsl:apply-templates select="gene" />
 	</xsl:template>
 
 	<!-- ぼっと一覧。 -->
@@ -83,12 +34,7 @@
 
 	<!-- ぼっと。 -->
 	<xsl:template match="item">
-		<li>
-			<a>
-				<xsl:attribute name="href">?<xsl:value-of select="@id" /></xsl:attribute>
-				<xsl:value-of select="@theme" />
-			</a>
-		</li>
+		<li><a><xsl:attribute name="href">?<xsl:value-of select="@id" /></xsl:attribute><xsl:value-of select="@theme" /></a></li>
 	</xsl:template>
 
 </xsl:stylesheet>
