@@ -2,29 +2,99 @@
 
 @media all
 {
+
+	a:link, a:visited
+	{
+		color: #6495ED;
+	}
+
+	a:hover, a:active
+	{
+		color: Red;
+	}
+
 	body
 	{
 		color: rgb(64, 164, 113);
-		font-family: "メイリオ", sans-serif;
+		font-family: "ヒラギノ角ゴ Pro W3", "Hiragino Kaku Gothic Pro", "メイリオ", "Meiryo", "ＭＳ Ｐゴシック", sans-serif;
 		margin: 0px;
 		padding: 1em;
 		width: 93%;
 	}
 
-	h1, h2
+	h1
 	{
 		margin: 0px;
+		font-size: 150%;
+	}
+
+	h2
+	{
+		border-top: Lavender 3px dotted;
+		margin: 0px;
+	}
+
+	input, select
+	{
+		font-family: "ヒラギノ角ゴ Pro W3", "Hiragino Kaku Gothic Pro", "メイリオ", "Meiryo", "ＭＳ Ｐゴシック", sans-serif;
+	}
+
+	input.text, select
+	{
+		border: 2px #6495ED solid;
+		font-size: 115%;
+	}
+
+	input.submit
+	{
+		background-color: #6495ED;
+		border-style: none;
+		color: White;
+		font-size: 150%;
+		padding: 1ex 1em;
+		cursor: pointer;
+	}
+
+	ul#mainMenu
+	{
+		margin: 0px;
+	}
+
+	ul#mainMenu li a:link, ul#mainMenu li a:visited
+	{
+		color: White;
+	}
+
+	ul#mainMenu li a:hover, ul#mainMenu li a:active
+	{
+		color: Lavender;
+	}
+
+	ul#mainMenu li a
+	{
+		display :block;
+		background-color: #6495ED;
+		color: White;
+		float: left;
+		width: 100%;
+		height: 100%;
+		padding: 1em;
+		vertical-align: bottom;
 	}
 
 	ul#mainMenu li
 	{
 		float: left;
-		margin: 3%;
+		margin: 5%;
 		width: 20%;
+		height: 6em;
+		list-style-type: none;
+		vertical-align: bottom;
 	}
 
 	p#version
 	{
+		padding-top: 1em;
 		clear: both;
 	}
 }
