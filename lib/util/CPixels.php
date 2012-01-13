@@ -131,11 +131,23 @@ class CPixels
 				$g = null;
 				$b = null;
 				$rnd = mt_rand(0, 65535);
-				if($rnd > 640)
+				if($rnd > 2048 || $rnd < 640)
 				{
 					$r = ($rnd & 1) == 0 ? $rgba['r'] : $rgbb['r'];
 					$g = ($rnd & 2) == 0 ? $rgba['g'] : $rgbb['g'];
 					$b = ($rnd & 4) == 0 ? $rgba['b'] : $rgbb['b'];
+				}
+				else
+				{
+					$r = (int)($rgba['r'] + $rgbb['r'] * 0.5);
+					$g = (int)($rgba['g'] + $rgbb['g'] * 0.5);
+					$b = (int)($rgba['b'] + $rgbb['b'] * 0.5);
+				}
+				if($rnd < 640)
+				{
+					$r = (int)($r + round(mt_rand(0, 255)) * 0.5);
+					$g = (int)($g + round(mt_rand(0, 255)) * 0.5);
+					$b = (int)($b + round(mt_rand(0, 255)) * 0.5);
 				}
 				self::setPixel($resource, $x, $y, $r, $g, $b);
 			}

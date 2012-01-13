@@ -31,7 +31,7 @@
 			</head>
 			<body>
 				<header>
-					<h1><a href="./">ぼっと[IB-01]がお絵かきするようです。</a></h1>
+					<h1><a href="./"><ruby>ぼっと<rt><rp>[</rp>IB-01<rp>]</rp><rt><ruby>がお絵かきするようです。</a></h1>
 				</header>
 				<xsl:apply-templates select="body/topic" />
 				<xsl:apply-templates select="body" />

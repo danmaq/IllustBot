@@ -12,7 +12,7 @@
 	<xsl:template match="body">
 		<ul>
 			<li>ぼっとにお題を与えてください。</li>
-			<li>ぼっとは超ど素人です。できるだけ記号的で単純なお題を与えてあげると、成長が早いです(丸とか星形とか)。</li>
+			<li>ぼっとは超ど素人です。できるだけ単純でかつ、言葉で言われて頭にすぐイメージできるお題の方が、成長が早いです(丸とか星形とか)。</li>
 		</ul>
 		<form action="./" method="post" enctype="multipart/form-data">
 			<ul>
@@ -26,6 +26,7 @@
 						<option value="8">8 x 8</option>
 						<option value="16">16 x 16</option>
 						<option value="32">32 x 32</option>
+						<option value="48">48 x 48</option>
 					</select>(小さい方が早く覚えるよ！)
 				</li>
 				<li>
@@ -33,7 +34,7 @@
 					<select id="childs" name="childs">
 						<option value="20">飲み込み早いけど、偏屈さん</option>
 						<option value="50" selected="selected">バランス型</option>
-						<option value="100">気変わりしやすく、物覚え悪い</option>
+						<option value="100">物覚え悪いけど、頑張り屋さん</option>
 					</select>
 				</li>
 				<li>
