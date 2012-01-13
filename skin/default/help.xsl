@@ -30,7 +30,7 @@
 		</p>
 		<h2 id="description">解説</h2>
 		<ul>
-			<li>画像の各ピクセルを遺伝子とみなし、<a href="http://www.youtube.com/watch?v=QE3SSKBdI00" target="_blank">遺伝的アルゴリズムを使用して成長しています。</li>
+			<li>画像の各ピクセルを遺伝子とみなし、<a href="http://www.youtube.com/watch?v=QE3SSKBdI00" target="_blank">遺伝的アルゴリズム</a>を使用して成長しています。</li>
 			<li>一様交叉、生存率15％、突然変異率0.98％です。</li>
 		</ul>
 		<h2 id="foresight">今後</h2>
