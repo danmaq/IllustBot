@@ -14,7 +14,7 @@
 		<ul id="mainMenu">
 			<li><a href="?f=core/newGame">依頼する</a></li>
 			<li><a href="?f=core/list">育てる</a></li>
-			<li><a href="./">ヘルプ<br />(工事中)</a></li>
+			<li><a href="?f=core/help">ヘルプ<br />(工事中)</a></li>
 		</ul>
 		<p id="version">
 			<a href="HISTORY">VERSION <xsl:value-of select="@ver" /></a>

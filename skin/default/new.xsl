@@ -37,7 +37,7 @@
 					</select>
 				</li>
 				<li>
-					<label for="example">予備学習※</label>
+					<label for="example">参考画像※</label>
 					<input type="file" id="example" name="example" value="" placeholder="予備学習させたい場合のみ選択" />
 				</li>
 				<li>
@@ -46,7 +46,7 @@
 				</li>
 			</ul>
 		</form>
-		<h2>※予備学習の注意</h2>
+		<h2>※参考画像による予備学習の注意</h2>
 		<ul>
 			<li>あんまりマイナーなフォーマットの画像は嫌がります。</li>
 			<li>大きすぎたり、AS比が大きく食い違う画像も嫌がります。</li>
