@@ -48,8 +48,8 @@
 				<p>
 					<img alt="" title="ぼっとが描いてみた画像">
 						<xsl:attribute name="src">?f=core/rawImage&amp;id=<xsl:value-of select="bot/@hash" /></xsl:attribute>
-						<xsl:attribute name="width"><xsl:value-of select="bot/@width * 10" /></xsl:attribute>
-						<xsl:attribute name="height"><xsl:value-of select="bot/@height * 10" /></xsl:attribute>
+						<xsl:attribute name="width">320</xsl:attribute>
+						<xsl:attribute name="height">320</xsl:attribute>
 					</img>
 				</p>
 				<h2>
