@@ -26,11 +26,11 @@
 		<p>
 			このWebアプリは制作期間1週間程度のアルファ版です。
 			思わぬところからいろいろなバグが出てくるかもしれません。
-			もしお気づきの点や、その他サポートしてほしい場合は<a href="http://twitter.com/danmaq">Twitter(@danmaq)</a>へ@ツイートしてください。
+			もしお気づきの点や、その他サポートしてほしい場合は<a href="http://twitter.com/danmaq" target="_blank">Twitter(@danmaq)</a>へ@ツイートしてください。
 		</p>
 		<h2 id="description">解説</h2>
 		<ul>
-			<li>画像の各ピクセルを遺伝子とみなし、遺伝的アルゴリズムを使用して成長しています。</li>
+			<li>画像の各ピクセルを遺伝子とみなし、<a href="http://www.youtube.com/watch?v=QE3SSKBdI00" target="_blank">遺伝的アルゴリズムを使用して成長しています。</li>
 			<li>一様交叉、生存率15％、突然変異率0.98％です。</li>
 		</ul>
 		<h2 id="foresight">今後</h2>
