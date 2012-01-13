@@ -65,7 +65,7 @@ class CSceneStatic
 	public function execute(CEntity $entity)
 	{
 		$xmlbuilder = new CDocumentBuilder();
-		$xmlbuilder->output($xsl);
+		$xmlbuilder->output($this->xsl);
 		$entity->setNextState(CEmptyState::getInstance());
 	}
 
