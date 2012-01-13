@@ -135,7 +135,6 @@ class CSceneAutoStudy
 		{
 			$img = new CImage($childs[$i]->getHash());
 			array_push($result, $img->getPixels());
-			$img->delete();
 			$childs[$i]->delete();
 		}
 		return $result;

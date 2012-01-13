@@ -32,7 +32,7 @@
 				<header>
 					<h1><a href="./">ぼっと[IB-01]がお絵かきするようです。</a></h1>
 				</header>
-				<xsl:apply-templates select="topic" />
+				<xsl:apply-templates select="body/topic" />
 				<xsl:apply-templates select="body" />
 				<footer>
 					<hr />

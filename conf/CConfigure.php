@@ -20,7 +20,7 @@ class CConfigure
 	/**
 	 *	レスポンスを圧縮するかどうかを設定します。
 	 */
-	const COMPRESS = true;
+	const COMPRESS = false;
 
 	/**
 	 *	デフォルトの1ページあたりの記事数です。
@@ -45,7 +45,7 @@ class CConfigure
 	 *	Opera Version 9以降
 	 *	Apple Safari Version 3以降
 	 */
-	const USE_CLIENT_XSLT = false;
+	const USE_CLIENT_XSLT = true;
 
 	/**
 	 *	使用するDBMSを選択します。
