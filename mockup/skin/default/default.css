@@ -1,0 +1,30 @@
+@charset "UTF-8";
+
+@media all
+{
+	body
+	{
+		color: rgb(64, 164, 113);
+		font-family: "メイリオ", sans-serif;
+		margin: 0px;
+		padding: 1em;
+		width: 93%;
+	}
+
+	h1, h2
+	{
+		margin: 0px;
+	}
+
+	ul#mainMenu li
+	{
+		float: left;
+		margin: 3%;
+		width: 20%;
+	}
+
+	p#version
+	{
+		clear: both;
+	}
+}
