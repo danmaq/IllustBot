@@ -94,6 +94,7 @@ class CSceneAutoStudy
 		{
 			$_GET['err'] = $e->getMessage();
 			$entity->setNextState(CSceneTop::getInstance());
+			throw $e;
 		}
 	}
 

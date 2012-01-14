@@ -120,7 +120,7 @@ class CChild
 			$srcb = 0;
 			do
 			{
-				$srcb = mt_rand(0, $len);
+				$srcb = mt_rand(0, $len - 1);
 			}
 			while($srca == $srcb);
 			$img = new CImage(CPixels::inheritance($pixels[$srca], $pixels[$srcb]));

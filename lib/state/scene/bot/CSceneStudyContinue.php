@@ -96,6 +96,7 @@ class CSceneStudyContinue
 		{
 			$this->errors = $e->getMessage();
 			error_log($e->getTraceAsString());
+			throw $e;
 		}
 	}
 
