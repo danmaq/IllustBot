@@ -15,7 +15,7 @@
 			<p>
 					<label for="theme">お題</label>
 					<input type="text" class="text" id="theme" name="theme" maxlength="80" placeholder="80字以内">
-						<xsl:attribute name="value"><xsl:value-of select="theme/@id" /></xsl:attribute>
+						<xsl:attribute name="value"><xsl:value-of select="theme/@expr" /></xsl:attribute>
 					</input>
 					<input type="hidden" name="f" value="core/list" />
 					<input type="submit" class="submit" value="これ描いた？" />
@@ -32,10 +32,17 @@
 
 	<!-- ぼっと一覧。 -->
 	<xsl:template match="theme">
-		<h2>検索: [<xsl:value-of select="@id" />]</h2>
-		<ol>
-			<xsl:apply-templates select="item" />
-		</ol>
+		<h2>検索: [<xsl:value-of select="@expr" />]</h2>
+		<xsl:choose>
+			<xsl:when test="count(item) = 0">
+				<p>1件も見つかりませんでした。</p>
+			</xsl:when>
+			<xsl:otherwise>
+				<ol>
+					<xsl:apply-templates select="item" />
+				</ol>
+			</xsl:otherwise>
+		</xsl:choose>
 	</xsl:template>
 
 	<!-- ぼっと一覧。 -->

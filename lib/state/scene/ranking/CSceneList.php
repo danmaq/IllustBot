@@ -76,7 +76,7 @@ class CSceneList
 			$_GET += $this->format;
 			if(strlen($_GET['theme']) > 0)
 			{
-				$this->botsKeyword = CBot::getFromKeyword($pager);
+				$this->botsKeyword = CBot::getFromKeyword($_GET['theme'], $pager);
 			}
 			$this->botsOrderGeneration = CBot::getAllOrderGeneration($pager);
 			$this->botsOrderNewbie = CBot::getAllOrderNewbie($pager);

@@ -30,11 +30,11 @@ class CPager
 	 *	@param int $target 要求するページ。
 	 *	@param int $tpp 1ページの最大記事数。
 	 */
-	public function __construct($target = 0, $topicPerPage = null)
+	public function __construct($target = 0, $topicsPerPage = -1)
 	{
 		$this->target = $target;
-		$this->topicPerPage =
-			$topicPerPage === null ? CConfigure::DEFAULT_TOPIC_PER_PAGE : $topicPerPage;
+		$this->topicsPerPage =
+			$topicsPerPage < 0 ? CConfigure::DEFAULT_TOPIC_PER_PAGE : $topicsPerPage;
 	}
 
 	//* instance methods ───────────────────────────*
@@ -48,8 +48,8 @@ class CPager
 	{
 		$tpp = $this->TopicsPerPage;
 		return array(
-			'start' => array($this->target * $tpp, PDO::PARAM_INT),
-			'length' => array($tpp, PDO::PARAM_INT));
+			'start' => array($this->target * $this->topicsPerPage, PDO::PARAM_INT),
+			'length' => array($this->topicsPerPage, PDO::PARAM_INT));
 	}
 
 	/**
