@@ -1,0 +1,852 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<Module>
+	<ModulePrefs title="ぼっと[IB-01]がお絵かきするようです。">
+		<Require feature="opensocial-0.8" />
+		<Require feature="views" />
+		<Require feature="dynamic-height" />
+	</ModulePrefs>
+	<Content type="html" view="canvas">
+<![CDATA[
+	<Div id="content_div" style="width:758px; border:solid 1px black;"></Div>
+	<script type="text/javascript">
+	<!--
+		//-------------------------------------------------
+		// 定数
+		//-------------------------------------------------
+		var constGekisakaUrl = "http://meiko.kagaminer.in/";
+		var constTimeOut     = 30000;	// 30秒でタイムアウト[ms]
+		var constSetVal      = 100;		// checkerの呼び出し[ms]
+		var constLoadingHtml = "<div style=\"padding:10px;\">now loading...</div>"
+		var constTimeOutHtml = "<div style=\"padding:10px;\">只今回線が混み合っているようです。<br>しばらくしてから再度アクセスしてください。</div>";
+		var constResErrHtml  = "<div style=\"padding:10px;\">只今回線が混み合っているようです。<br>しばらくしてから再度アクセスしてください。</div>";
+		var g_mixi_id  = "";
+		var g_timerVal = 0;
+		var g_TimeOut  = constTimeOut;
+		var g_SetVal   = constSetVal;
+		var g_fFlash   = false;
+		var g_mixiAppId = "25179";	// mixiアプリID
+		var g_comm_Id  = "5118893";	// コミュニティID
+		//--------------------------------
+		// GetHtml
+		//--------------------------------
+		function GetHtml(){
+			document.getElementById('content_div').innerHTML = constLoadingHtml;
+			GetID();
+			DelayIDChecker();
+		}
+		//--------------------------------
+		// GetID
+		//--------------------------------
+		function GetID(){
+			var req = opensocial.newDataRequest();
+			req.add(req.newFetchPersonRequest(opensocial.IdSpec.PersonId.VIEWER), "viewer");
+			req.send(function(data) {
+				if (data.hadError()) {
+					var msg = data.getErrorMessage();
+					// エラー発生時の処理
+				} else {
+					// 取得結果に対する処理
+					var viewer = data.get("viewer").getData();
+					g_mixi_id = viewer.getId();
+				}
+			});
+		}
+		//--------------------------------
+		// DelayIDChecker
+		//--------------------------------
+		function DelayIDChecker(){
+			// id未取得＆タイムアウトしていない
+			if(g_mixi_id=="" && g_timerVal<g_TimeOut){
+				g_timerVal += g_SetVal;
+				setTimeout("DelayIDChecker();", g_SetVal);
+			// タイムアウト発生
+			}else if(g_timerVal >= g_TimeOut){
+				// timeout
+				document.getElementById('content_div').innerHTML = constTimeOutHtml;
+			// 
+			}else{
+				// 
+				MainHtml(g_mixi_id);
+			}
+		}
+		//--------------------------------
+		// MainHtml
+		//--------------------------------
+		function MainHtml(iMixiId){
+			g_fFlash = false;
+			var opt_params = gadgets.views.getParams();
+			var url = GetSiteUrl(opt_params, iMixiId);
+			var params = {};
+			params[gadgets.io.RequestParameters.AUTHORIZATION] = gadgets.io.AuthorizationType.NONE;
+			params[gadgets.io.RequestParameters.CONTENT_TYPE] = gadgets.io.ContentType.TEXT;
+			gadgets.io.makeRequest(url, GetResponse, params);
+		}
+		//--------------------------------
+		// GetResponse
+		//--------------------------------
+		function GetResponse(obj){
+			if(obj.rc != 200){
+				document.getElementById('content_div').innerHTML = constResErrHtml;
+				return obj;
+			}
+			var sHtml = obj.text;
+			if(g_fFlash == false){
+				// embedタグチェック
+				var idx = sHtml.indexOf("embed", 0);
+				if(idx >= 0){
+					window.open("http://mixi.jp/run_appli.pl?id="+g_mixiAppId, "_top");
+					return;
+				}
+			}
+			sHtml = ConvertImgSrc(sHtml);		// IMGタグのパス加工
+			sHtml = ConvertAHref(sHtml);		// Aタグのパス加工
+			sHtml = ConvertEmbedSrc(sHtml);		// Embedタグのパス加工
+			sHtml = ConvertBgImgSrc(sHtml);		// BG画像のパス加工
+			sHtml = ConvertBgImgSrc2(sHtml);	// BG画像のパス加工
+			sHtml = ConvertSubmit(sHtml);		// sumit加工
+			sHtml = AddKeyControl(sHtml);		// keyControl追加
+			sHtml = AddInvite(sHtml);			// マイミク招待追加
+			// 画面出力
+			document.getElementById('content_div').innerHTML = sHtml;
+			// 縦幅調整
+			gadgets.window.adjustHeight();
+			// 再調整
+			setTimeout("gadgets.window.adjustHeight();", 2000);
+			// スクロールバーが出ないように余分に縦幅を広げる
+			setTimeout("SetAutoHeight();", 5000);
+		};
+		//-------------------------------------------------
+		// SetAutoHeight
+		//-------------------------------------------------
+		function SetAutoHeight(){
+			var obj = gadgets.window.getViewportDimensions();
+			gadgets.window.adjustHeight(obj.height + 10);
+		}
+		//-------------------------------------------------
+		// GetSiteUrl
+		//-------------------------------------------------
+		function GetSiteUrl(opt_params, iMixiID)
+		{
+			var sUrl  = constGekisakaUrl;
+			var sPara = "";
+			// Get引数取得処理
+			if(opt_params != null){
+				if(opt_params.mode != null){
+					var sSplit = "";
+					sPara += ("?mode=" + opt_params.mode);
+					if(opt_params.split != null){
+						if(opt_params.split == 1) sSplit = ";";
+						else if(opt_params.split == 2) sSplit = "&";
+					}
+					// mode以外のパラメータあり
+					if(sSplit != ""){
+						if(opt_params.id != null)			sPara += (sSplit + "id=" + opt_params.id);
+						if(opt_params.myScore != null)		sPara += (sSplit + "myScore=" + opt_params.myScore);
+						if(opt_params.enemyScore != null)	sPara += (sSplit + "enemyScore=" + opt_params.enemyScore);
+						if(opt_params.miracle != null)		sPara += (sSplit + "miracle=" + opt_params.miracle);
+						if(opt_params.team != null)			sPara += (sSplit + "team=" + opt_params.team);
+						if(opt_params.error != null)		sPara += (sSplit + "error=" + opt_params.error);
+						if(opt_params.formation != null)	sPara += (sSplit + "formation=" + opt_params.formation);
+						if(opt_params.tactics != null)		sPara += (sSplit + "tactics=" + opt_params.tactics);
+						if(opt_params.target != null)		sPara += (sSplit + "target=" + opt_params.target);
+						if(opt_params.friend != null)		sPara += (sSplit + "friend=" + opt_params.friend);
+						if(opt_params.locker_id != null)	sPara += (sSplit + "locker_id=" + opt_params.locker_id);
+						if(opt_params.player_id != null)	sPara += (sSplit + "player_id=" + opt_params.player_id);
+						if(opt_params.budget != null)		sPara += (sSplit + "budget=" + opt_params.budget);
+						if(opt_params.addTrainning != null)	sPara += (sSplit + "addTrainning=" + opt_params.addTrainning);
+						if(opt_params.page != null)			sPara += (sSplit + "page=" + opt_params.page);
+						if(opt_params.rows != null)			sPara += (sSplit + "rows=" + opt_params.rows);
+						if(opt_params.eventtype != null)	sPara += (sSplit + "eventtype=" + opt_params.eventtype);
+						if(opt_params.present != null)		sPara += (sSplit + "present=" + opt_params.present);
+						if(opt_params.bonusGame != null)	sPara += (sSplit + "bonusGame=" + opt_params.bonusGame);
+						if(opt_params.bonusSupporters != null)	sPara += (sSplit + "bonusSupporters=" + opt_params.bonusSupporters);
+						if(opt_params.gift != null)	sPara += (sSplit + "gift=" + opt_params.gift);
+					}
+				// help
+				}else if(opt_params.help != null){
+					sPara = "help/";
+		//		}else if(opt_params.top != null){
+				}
+			}
+			// flash-flgを立てる
+			if(sPara == "") g_fFlash = true;
+			// 認証
+			if(sPara=="" && iMixiID!=null){
+				sPara += ("?" + "opensocial_owner_id=" + iMixiID);
+			}else if(sPara.substr(0,1)=="?" && iMixiID!=null){
+				sPara += (";" + "opensocial_owner_id=" + iMixiID);
+			}
+			sUrl += sPara;
+
+			return sUrl;
+		}
+		//-------------------------------------------------
+		// RequestLink
+		//-------------------------------------------------
+		function RequestLink(sMode, eSplit, sId, sMyScore, sEnemyScore, sMiracle, 
+							 sTeam, sError, sFormation, sTactics, sTarget,
+							 sFriend, sLockerId, sPlayerId, sBudget, sAddTrainning,
+							 sPage, sRows, sEventType, sPresent, sBonusGame,
+							 sBounusSupporters, sGift)
+		{
+			var view = gadgets.views.getSupportedViews()["canvas"];
+			var params = {};
+			if(sMode != "") 		params.mode = sMode;
+			if(eSplit != "")		params.split = eSplit;
+			if(sId != "")			params.id = sId;
+			if(sMyScore != "")		params.myScore = sMyScore;
+			if(sEnemyScore != "")	params.enemyScore = sEnemyScore;
+			if(sMiracle != "")		params.miracle = sMiracle;
+			if(sTeam != "")			params.team = sTeam;
+			if(sError != "")		params.error = sError;
+			if(sFormation != "")	params.formation = sFormation;
+			if(sTactics != "")		params.tactics = sTactics;
+			if(sTarget != "")		params.target = sTarget;
+			if(sFriend != "")		params.friend = sFriend;
+			if(sLockerId != "")		params.locker_id = sLockerId;
+			if(sPlayerId != "") 	params.player_id = sPlayerId;
+			if(sBudget != "") 		params.budget = sBudget;
+			if(sAddTrainning != "") params.addTrainning = sAddTrainning;
+			if(sPage != "")			params.page = sPage;
+			if(sRows != "")			params.rows = sRows;
+			if(sEventType != "")	params.eventtype = sEventType;
+			if(sPresent != "")		params.present = sPresent;
+			if(sBonusGame != "")	params.bonusGame = sBonusGame;
+			if(sBounusSupporters != "")	params.bonusSupporters = sBounusSupporters;
+			if(sGift != "")			params.gift = sGift;
+
+			gadgets.views.requestNavigateTo(view, params);
+		}
+		//-------------------------------------------------
+		// RequestHelpLink
+		//-------------------------------------------------
+		function RequestHelpLink()
+		{
+			var view = gadgets.views.getSupportedViews()["canvas"];
+			var params = {help: "index"};
+			gadgets.views.requestNavigateTo(view, params);
+		}
+		//-------------------------------------------------
+		// RequestTopLink
+		//-------------------------------------------------
+		function RequestTopLink()
+		{
+			var view = gadgets.views.getSupportedViews()["canvas"];
+			var params = {top: "index"};
+			gadgets.views.requestNavigateTo(view, params);
+		}
+		//-------------------------------------------------
+		// SendPostData
+		//-------------------------------------------------
+		function SendPostData(){
+			var sName = document.getElementsByName("name").item(0).value;
+			var sMode = document.getElementsByName("mode").item(0).value;
+			var sId   = document.getElementsByName("id").item(0).value;
+//			var postdata = {name:sName, mode:sMode, id:sId };
+			var postdata = {name:sName, mode:sMode, id:sId, opensocial_owner_id:g_mixi_id };	// mixiidをpost送信
+			var params = {};
+			var opt_params = {};
+			// loading
+			document.getElementById('content_div').innerHTML = constLoadingHtml;
+			// postデータ生成
+			params[gadgets.io.RequestParameters.METHOD]       = gadgets.io.MethodType.POST;
+			params[gadgets.io.RequestParameters.POST_DATA]    = gadgets.io.encodeValues(postdata);
+			params[gadgets.io.RequestParameters.CONTENT_TYPE] = gadgets.io.ContentType.TEXT;
+			// opt_paramsは空
+			gadgets.io.makeRequest(GetSiteUrl(opt_params, g_mixi_id), GetResponse, params);
+		}
+		//-------------------------------------------------
+		// ConvertImgSrc
+		//-------------------------------------------------
+		function ConvertImgSrc(sHtml)
+		{
+			var sRetHtml   = sHtml;
+			var constStart = "<img ";
+			var constEnd   = "/>";
+			var sHrefStr   = "";
+			var sConvStr   = "";
+			var iIdxH = 0;
+			var iIdxS = 0;
+			var iIdxE = 0;
+			while(1)
+			{
+				iIdxS = sRetHtml.indexOf(constStart, iIdxE);
+				if(iIdxS < 0) break;
+				iIdxE = sRetHtml.indexOf(constEnd, iIdxS);
+				if(iIdxE < 0) break;
+				iIdxH = iIdxS + constStart.length;
+				sHrefStr = sRetHtml.substring(iIdxH, iIdxE);
+				sConvStr = HrefConvAbsolute(sHrefStr);
+				if(sConvStr == "") continue;
+				sRetHtml = sRetHtml.replace(sHrefStr, sConvStr);
+			}
+			return sRetHtml;
+		}
+		//-------------------------------------------------
+		// ConvertBgImgSrc
+		//-------------------------------------------------
+		function ConvertBgImgSrc(sHtml)
+		{
+			var sRetHtml   = sHtml;
+			var constStart = "background-image:url('";
+			var constEnd   = "')";
+			var sHrefStr   = "";
+			var sConvStr   = "";
+			var iIdxH = 0;
+			var iIdxS = 0;
+			var iIdxE = 0;
+			while(1)
+			{
+				iIdxS = sRetHtml.indexOf(constStart, iIdxS);
+				if(iIdxS < 0) break;
+				iIdxH = iIdxS + constStart.length;
+				iIdxE = sRetHtml.indexOf(constEnd, iIdxH);
+				if(iIdxE < 0) break;
+				// http付加済みかチェック
+				sHrefStr = sRetHtml.substring(iIdxH, iIdxE);
+				sConvStr = HrefConvAbsolute2(sHrefStr);
+				sRetHtml = sRetHtml.replace(constStart+sHrefStr, constStart+sConvStr);
+				iIdxS = iIdxH + sConvStr.length;
+			}
+			return sRetHtml;
+		}
+		//-------------------------------------------------
+		// ConvertBgImgSrc2
+		//-------------------------------------------------
+		function ConvertBgImgSrc2(sHtml)
+		{
+			var sRetHtml   = sHtml;
+			var constStart = "background:url('";
+			var constEnd   = "')";
+			var sHrefStr   = "";
+			var sConvStr   = "";
+			var iIdxH = 0;
+			var iIdxS = 0;
+			var iIdxE = 0;
+			while(1)
+			{
+				iIdxS = sRetHtml.indexOf(constStart, iIdxS);
+				if(iIdxS < 0) break;
+				iIdxH = iIdxS + constStart.length;
+				iIdxE = sRetHtml.indexOf(constEnd, iIdxH);
+				if(iIdxE < 0) break;
+				// http付加済みかチェック
+				sHrefStr = sRetHtml.substring(iIdxH, iIdxE);
+				sConvStr = HrefConvAbsolute2(sHrefStr);
+				sRetHtml = sRetHtml.replace(constStart+sHrefStr, constStart+sConvStr);
+				iIdxS = iIdxH + sConvStr.length;
+			}
+			return sRetHtml;
+		}
+		//-------------------------------------------------
+		// ConvertSubmit
+		//-------------------------------------------------
+		function ConvertSubmit(sHtml)
+		{
+			var sRetHtml   = sHtml;
+			var constStr = "<input class=\"submit\" type=\"submit\" value";
+			var convStr  = "<input class=\"submit\" type=\"button\" onclick=\"SendPostData();\" value";
+			sRetHtml = sRetHtml.replace(constStr, convStr);
+			return sRetHtml;
+		}
+		//-------------------------------------------------
+		// ConvertAHref
+		//-------------------------------------------------
+		function ConvertAHref(sHtml)
+		{
+			var sRetHtml   = sHtml;
+			var constStart = "<a href=\"";
+			var constEnd   = "\">";
+			var sHrefStr   = "";
+			var sConvStr   = "";
+			var iIdxH = 0;
+			var iIdxS = 0;	// <A Href="の位置
+			var iIdxE = 0;	// ">の位置
+
+			while(1)
+			{
+				sConvStr = "";
+				iIdxS = sRetHtml.indexOf(constStart, iIdxE);
+				if(iIdxS < 0) break;
+				iIdxE = sRetHtml.indexOf(constEnd, iIdxS);
+				iIdxH = iIdxS + constStart.length;
+				sHrefStr = sRetHtml.substring(iIdxH, iIdxE);
+				//
+				switch(sHrefStr.substring(0, 1)){
+				case '?':	// ?mode=～;id=～
+					sConvStr = HrefAddOnClick(sHrefStr);
+					break;
+				case 'h':	// help/
+					sConvStr = HrefHelp(sHrefStr);
+					if(sConvStr == ""){
+						sConvStr = HrefCommunity(sHrefStr);
+					}
+					break;
+				case '.':	// ../
+					sConvStr = HrefTop(sHrefStr);
+					break;
+				case 'm':	// mailto:～
+					// 加工しない
+					break;
+				}
+				if(sConvStr != "") sRetHtml = sRetHtml.replace(constStart + sHrefStr + constEnd, sConvStr);
+			}
+			return sRetHtml;
+		}
+		//-------------------------------------------------
+		// ConvertEmbedSrc
+		//-------------------------------------------------
+		function ConvertEmbedSrc(sHtml)
+		{
+			var sRetHtml   = sHtml;
+			var constStart = "<embed ";
+			var constEnd   = ">";
+			var sHrefStr   = "";
+			var iIdxH = 0;
+			var iIdxS = 0;
+			var iIdxE = 0;
+
+			while(1)
+			{
+				iIdxS = sRetHtml.indexOf(constStart, iIdxE);
+				if(iIdxS < 0) break;
+				iIdxE = sRetHtml.indexOf(constEnd, iIdxS);
+				if(iIdxE < 0) break;
+				iIdxH = iIdxS + constStart.length;
+				sHrefStr = sRetHtml.substring(iIdxH, iIdxE);
+				sRetHtml = sRetHtml.replace(sHrefStr, HrefConvAbsolute(sHrefStr));
+			}
+
+			return sRetHtml;
+		}
+		//-------------------------------------------------
+		// HrefConvAbsolute
+		//-------------------------------------------------
+		function HrefConvAbsolute(sHrefStr)
+		{
+			var sRet  = "";
+			var sSrc  = "";
+			var iIdxS = 0;
+			var iIdxH = 0;
+			var iIdxE = 0;
+			var constHttpUrl = constGekisakaUrl + "image/";
+
+			iIdxS = sHrefStr.indexOf("src=\"", 0);
+			if(iIdxS < 0){ return sRet; }	// error処理
+			iIdxS += "src=\"".length;
+			iIdxH  = sHrefStr.indexOf("image/", iIdxS);
+			if(iIdxH < 0){ return sRet; }	// error処理
+			iIdxH += "image/".length;
+			iIdxE = sHrefStr.indexOf("\"", iIdxH);
+			sSrc  = constHttpUrl + sHrefStr.substring(iIdxH, iIdxE);
+			// imgタグ生成
+			sRet  = sHrefStr.substring(0, iIdxS) + sSrc + sHrefStr.substring(iIdxE, sHrefStr.length);
+			return sRet;
+		}
+		//-------------------------------------------------
+		// HrefConvAbsolute2
+		//-------------------------------------------------
+		function HrefConvAbsolute2(sHrefStr)
+		{
+			var sRet  = constGekisakaUrl + sHrefStr;
+			return sRet;
+		}
+
+		//-------------------------------------------------
+		// HrefAddOnClick
+		//-------------------------------------------------
+		function HrefAddOnClick(sHrefStr)
+		{
+			var sRet = "";
+			var sMode         = "";	// mode
+			var sId           = "";	// id
+			var sMyScore      = "";	// myScore
+			var sEnemyScore   = "";	// enemyScore
+			var sMiracle      = "";	// miracle
+			var sTeam         = "";	// team
+			var sError        = "";	// error
+			var sFormation    = "";	// formation
+			var sTactics      = "";	// tactics
+			var sTarget       = "";	// target
+			var sFriend       = "";	// friend
+			var sLockerId     = "";	// locker_id
+			var sPlayerId     = "";	// player_id
+			var sBudget       = "";	// budget
+			var sAddTrainning = "";	// addTrainning
+			var sPage         = "";	// page
+			var sRows         = "";	// rows
+			var sEventtype    = "";	// eventtype
+			var sPresent      = "";	// present
+			var sBonusGame    = "";	// bonusGame
+			var sBonusSupporters = "";	// bonusSupporters
+			var sGift         = "";	// gift
+			var iIdxS = 0;
+			var iIdxE = 0;
+			var constMode = "?mode=";
+			var eSplit = 0;	// 0:modeのみ 1:";"区切り 2:"&"区切り
+			var constId           = ";id=";
+			var constMyScore      = ";myScore=";
+			var constEnemyScore   = ";enemyScore=";
+			var constMiracle      = ";miracle=";
+			var constTeam         = ";team=";
+			var constError        = ";error=";
+			var constFormation    = ";formation=";
+			var constTactics      = ";tactics=";
+			var constTarget       = ";target=";
+			var constFriend       = ";friend=";
+			var constLockerId     = ";locker_id=";
+			var constPlayerId     = ";player_id=";
+			var constBudget       = ";budget=";
+			var constAddTrainning = ";addTrainning=";
+			var constPage         = ";page=";
+			var constRows         = ";rows=";
+			var constEventtype    = ";eventtype=";
+			var constPresent      = ";present=";
+			var constBonusGame    = ";bonusGame=";
+			var constBonusSupporters = ";bonusSupporters=";
+			var constGift         = ";gift=";
+
+			// mode
+			iIdxS = sHrefStr.indexOf(constMode, 0);
+			if(iIdxS < 0){ return sRet; }	// error処理
+			iIdxS += constMode.length;
+
+			// ;検索
+			iIdxE = sHrefStr.indexOf(";", iIdxS);
+			if(iIdxE >= 0){
+				eSplit = 1;	// ";"区切り
+				sMode = sHrefStr.substring(iIdxS, iIdxE);
+			}else{
+				// &検索
+				iIdxE = sHrefStr.indexOf("&", iIdxS);
+				if(iIdxE >= 0){
+					eSplit = 2;	// "&"区切り
+					sMode = sHrefStr.substring(iIdxS, iIdxE);
+				}else{
+					// modeのみ
+					sMode = sHrefStr.substring(iIdxS, sHrefStr.length);
+				}
+			}
+
+			iIdxS = iIdxE;
+			//-- &
+			if(eSplit == 2){
+				constId           = "&id=";
+				constMyScore      = "&myScore=";
+				constEnemyScore   = "&enemyScore=";
+				constMiracle      = "&miracle=";
+				constTeam         = "&team=";
+				constError        = "&error=";
+				constFormation    = "&formation=";
+				constTactics      = "&tactics=";
+				constTarget       = "&target=";
+				constFriend       = "&friend=";
+				constLockerId     = "&locker_id=";
+				constPlayerId     = "&player_id=";
+				constBudget       = "&budget=";
+				constAddTrainning = "&addTrainning=";
+				constPage         = "&page=";
+				constRows         = "&rows=";
+				constEventtype    = "&eventtype=";
+				constPresent      = "&present=";
+				constBonusGame    = "&bonusGame=";
+				constBonusSupporters = "&bonusSupporters=";
+				constGift         = "&gift=";
+			}
+
+			// mode以外のパラメータ取得
+			if(eSplit != 0){
+				var iIdxM = 0;
+				// id
+				iIdxM = sHrefStr.indexOf(constId, iIdxS);
+				if(iIdxM >= 0){
+					iIdxM += constId.length;
+					if(eSplit == 1) iIdxE = sHrefStr.indexOf(";", iIdxM+1);
+					else iIdxE = sHrefStr.indexOf("&", iIdxM+1);
+					if(iIdxE >= 0) sId = sHrefStr.substring(iIdxM, iIdxE);
+					else sId = sHrefStr.substring(iIdxM, sHrefStr.length);
+				}
+				// myScore
+				iIdxM = sHrefStr.indexOf(constMyScore, iIdxS);
+				if(iIdxM >= 0){
+					iIdxM += constMyScore.length;
+					if(eSplit == 1) iIdxE = sHrefStr.indexOf(";", iIdxM+1);
+					else iIdxE = sHrefStr.indexOf("&", iIdxM+1);
+					if(iIdxE >= 0) sMyScore = sHrefStr.substring(iIdxM, iIdxE);
+					else sMyScore = sHrefStr.substring(iIdxM, sHrefStr.length);
+				}
+				// enemyScore
+				iIdxM = sHrefStr.indexOf(constEnemyScore, iIdxS);
+				if(iIdxM >= 0){
+					iIdxM += constEnemyScore.length;
+					if(eSplit == 1) iIdxE = sHrefStr.indexOf(";", iIdxM+1);
+					else iIdxE = sHrefStr.indexOf("&", iIdxM+1);
+					if(iIdxE >= 0) sEnemyScore = sHrefStr.substring(iIdxM, iIdxE);
+					else sEnemyScore = sHrefStr.substring(iIdxM, sHrefStr.length);
+				}
+				// miracle
+				iIdxM = sHrefStr.indexOf(constMiracle, iIdxS);
+				if(iIdxM >= 0){
+					iIdxM += constMiracle.length;
+					if(eSplit == 1) iIdxE = sHrefStr.indexOf(";", iIdxM+1);
+					else iIdxE = sHrefStr.indexOf("&", iIdxM+1);
+					if(iIdxE >= 0) sMiracle = sHrefStr.substring(iIdxM, iIdxE);
+					else sMiracle = sHrefStr.substring(iIdxM, sHrefStr.length);
+				}
+				// team
+				iIdxM = sHrefStr.indexOf(constTeam, iIdxS);
+				if(iIdxM >= 0){
+					iIdxM += constTeam.length;
+					if(eSplit == 1) iIdxE = sHrefStr.indexOf(";", iIdxM+1);
+					else iIdxE = sHrefStr.indexOf("&", iIdxM+1);
+					if(iIdxE >= 0) sTeam = sHrefStr.substring(iIdxM, iIdxE);
+					else sTeam = sHrefStr.substring(iIdxM, sHrefStr.length);
+				}
+				// error
+				iIdxM = sHrefStr.indexOf(constError, iIdxS);
+				if(iIdxM >= 0){
+					iIdxM += constError.length;
+					if(eSplit == 1) iIdxE = sHrefStr.indexOf(";", iIdxM+1);
+					else iIdxE = sHrefStr.indexOf("&", iIdxM+1);
+					if(iIdxE >= 0) sError = sHrefStr.substring(iIdxM, iIdxE);
+					else sError = sHrefStr.substring(iIdxM, sHrefStr.length);
+				}
+				// formation
+				iIdxM = sHrefStr.indexOf(constFormation, iIdxS);
+				if(iIdxM >= 0){
+					iIdxM += constFormation.length;
+					if(eSplit == 1) iIdxE = sHrefStr.indexOf(";", iIdxM+1);
+					else iIdxE = sHrefStr.indexOf("&", iIdxM+1);
+					if(iIdxE >= 0) sFormation = sHrefStr.substring(iIdxM, iIdxE);
+					else sFormation = sHrefStr.substring(iIdxM, sHrefStr.length);
+				}
+				// tactics
+				iIdxM = sHrefStr.indexOf(constTactics, iIdxS);
+				if(iIdxM >= 0){
+					iIdxM += constTactics.length;
+					if(eSplit == 1) iIdxE = sHrefStr.indexOf(";", iIdxM+1);
+					else iIdxE = sHrefStr.indexOf("&", iIdxM+1);
+					if(iIdxE >= 0) sTactics = sHrefStr.substring(iIdxM, iIdxE);
+					else sTactics = sHrefStr.substring(iIdxM, sHrefStr.length);
+				}
+				// target
+				iIdxM = sHrefStr.indexOf(constTarget, iIdxS);
+				if(iIdxM >= 0){
+					iIdxM += constTarget.length;
+					if(eSplit == 1) iIdxE = sHrefStr.indexOf(";", iIdxM+1);
+					else iIdxE = sHrefStr.indexOf("&", iIdxM+1);
+					if(iIdxE >= 0) sTarget = sHrefStr.substring(iIdxM, iIdxE);
+					else sTarget = sHrefStr.substring(iIdxM, sHrefStr.length);
+				}
+				// friend
+				iIdxM = sHrefStr.indexOf(constFriend, iIdxS);
+				if(iIdxM >= 0){
+					iIdxM += constFriend.length;
+					if(eSplit == 1) iIdxE = sHrefStr.indexOf(";", iIdxM+1);
+					else iIdxE = sHrefStr.indexOf("&", iIdxM+1);
+					if(iIdxE >= 0) sFriend = sHrefStr.substring(iIdxM, iIdxE);
+					else sFriend = sHrefStr.substring(iIdxM, sHrefStr.length);
+				}
+				// locker_id
+				iIdxM = sHrefStr.indexOf(constLockerId, iIdxS);
+				if(iIdxM >= 0){
+					iIdxM += constLockerId.length;
+					if(eSplit == 1) iIdxE = sHrefStr.indexOf(";", iIdxM+1);
+					else iIdxE = sHrefStr.indexOf("&", iIdxM+1);
+					if(iIdxE >= 0) sLockerId = sHrefStr.substring(iIdxM, iIdxE);
+					else sLockerId = sHrefStr.substring(iIdxM, sHrefStr.length);
+				}
+				// player_id
+				iIdxM = sHrefStr.indexOf(constPlayerId, iIdxS);
+				if(iIdxM >= 0){
+					iIdxM += constPlayerId.length;
+					if(eSplit == 1) iIdxE = sHrefStr.indexOf(";", iIdxM+1);
+					else iIdxE = sHrefStr.indexOf("&", iIdxM+1);
+					if(iIdxE >= 0) sPlayerId = sHrefStr.substring(iIdxM, iIdxE);
+					else sPlayerId = sHrefStr.substring(iIdxM, sHrefStr.length);
+				}
+				// budget
+				iIdxM = sHrefStr.indexOf(constBudget, iIdxS);
+				if(iIdxM >= 0){
+					iIdxM += constBudget.length;
+					if(eSplit == 1) iIdxE = sHrefStr.indexOf(";", iIdxM+1);
+					else iIdxE = sHrefStr.indexOf("&", iIdxM+1);
+					if(iIdxE >= 0) sBudget = sHrefStr.substring(iIdxM, iIdxE);
+					else sBudget = sHrefStr.substring(iIdxM, sHrefStr.length);
+				}
+				// addTrainning
+				iIdxM = sHrefStr.indexOf(constAddTrainning, iIdxS);
+				if(iIdxM >= 0){
+					iIdxM += constAddTrainning.length;
+					if(eSplit == 1) iIdxE = sHrefStr.indexOf(";", iIdxM+1);
+					else iIdxE = sHrefStr.indexOf("&", iIdxM+1);
+					if(iIdxE >= 0) sAddTrainning = sHrefStr.substring(iIdxM, iIdxE);
+					else sAddTrainning = sHrefStr.substring(iIdxM, sHrefStr.length);
+				}
+				// page
+				iIdxM = sHrefStr.indexOf(constPage, iIdxS);
+				if(iIdxM >= 0){
+					iIdxM += constPage.length;
+					if(eSplit == 1) iIdxE = sHrefStr.indexOf(";", iIdxM+1);
+					else iIdxE = sHrefStr.indexOf("&", iIdxM+1);
+					if(iIdxE >= 0) sPage = sHrefStr.substring(iIdxM, iIdxE);
+					else sPage = sHrefStr.substring(iIdxM, sHrefStr.length);
+				}
+				// rows
+				iIdxM = sHrefStr.indexOf(constRows, iIdxS);
+				if(iIdxM >= 0){
+					iIdxM += constRows.length;
+					if(eSplit == 1) iIdxE = sHrefStr.indexOf(";", iIdxM+1);
+					else iIdxE = sHrefStr.indexOf("&", iIdxM+1);
+					if(iIdxE >= 0) sRows = sHrefStr.substring(iIdxM, iIdxE);
+					else sRows = sHrefStr.substring(iIdxM, sHrefStr.length);
+				}
+				// eventtype
+				iIdxM = sHrefStr.indexOf(constEventtype, iIdxS);
+				if(iIdxM >= 0){
+					iIdxM += constEventtype.length;
+					if(eSplit == 1) iIdxE = sHrefStr.indexOf(";", iIdxM+1);
+					else iIdxE = sHrefStr.indexOf("&", iIdxM+1);
+					if(iIdxE >= 0) sEventtype = sHrefStr.substring(iIdxM, iIdxE);
+					else sEventtype = sHrefStr.substring(iIdxM, sHrefStr.length);
+				}
+				// present
+				iIdxM = sHrefStr.indexOf(constPresent, iIdxS);
+				if(iIdxM >= 0){
+					iIdxM += constPresent.length;
+					if(eSplit == 1) iIdxE = sHrefStr.indexOf(";", iIdxM+1);
+					else iIdxE = sHrefStr.indexOf("&", iIdxM+1);
+					if(iIdxE >= 0) sPresent = sHrefStr.substring(iIdxM, iIdxE);
+					else sPresent = sHrefStr.substring(iIdxM, sHrefStr.length);
+				}
+				// bonusGame
+				iIdxM = sHrefStr.indexOf(constBonusGame, iIdxS);
+				if(iIdxM >= 0){
+					iIdxM += constBonusGame.length;
+					if(eSplit == 1) iIdxE = sHrefStr.indexOf(";", iIdxM+1);
+					else iIdxE = sHrefStr.indexOf("&", iIdxM+1);
+					if(iIdxE >= 0) sBonusGame = sHrefStr.substring(iIdxM, iIdxE);
+					else sBonusGame = sHrefStr.substring(iIdxM, sHrefStr.length);
+				}
+				// bonusSupporters
+				iIdxM = sHrefStr.indexOf(constBonusSupporters, iIdxS);
+				if(iIdxM >= 0){
+					iIdxM += constBonusSupporters.length;
+					if(eSplit == 1) iIdxE = sHrefStr.indexOf(";", iIdxM+1);
+					else iIdxE = sHrefStr.indexOf("&", iIdxM+1);
+					if(iIdxE >= 0) sBonusSupporters = sHrefStr.substring(iIdxM, iIdxE);
+					else sBonusSupporters = sHrefStr.substring(iIdxM, sHrefStr.length);
+				}
+				// gift
+				iIdxM = sHrefStr.indexOf(constGift, iIdxS);
+				if(iIdxM >= 0){
+					iIdxM += constGift.length;
+					if(eSplit == 1) iIdxE = sHrefStr.indexOf(";", iIdxM+1);
+					else iIdxE = sHrefStr.indexOf("&", iIdxM+1);
+					if(iIdxE >= 0) sGift = sHrefStr.substring(iIdxM, iIdxE);
+					else sGift = sHrefStr.substring(iIdxM, sHrefStr.length);
+				}
+			}
+			// 置き換え用Aタグ生成
+			sRet = "<a href=\"javascript:void(0);\" onclick=\"RequestLink('" + sMode + "','" + eSplit + "','" 
+				 + sId + "','" + sMyScore + "','" + sEnemyScore + "','" + sMiracle + "','" + sTeam + "','" 
+				 + sError + "','" + sFormation + "','" + sTactics + "','" + sTarget + "','" + sFriend + "','" 
+				 + sLockerId + "','" + sPlayerId + "','" + sBudget + "','" + sAddTrainning + "','" 
+				 + sPage + "','" + sRows + "','" + sEventtype + "','" + sPresent + "','" + sBonusGame + "','"
+				 + sBonusSupporters + "','" + sGift + "');\">";
+			return sRet;
+		}
+		//-------------------------------------------------
+		// HrefHelp
+		//-------------------------------------------------
+		function HrefHelp(sHrefStr)
+		{
+			var sRet  = "";
+
+			iIdxS = sHrefStr.indexOf("help/", 0);
+			if(iIdxS < 0){ return sRet; }	// error処理
+			// 置き換え用Aタグ生成
+			sRet = "<a href=\"javascript:void(0);\" onclick=\"RequestHelpLink();\">";
+
+			return sRet;
+		}
+		//-------------------------------------------------
+		// HrefCommunity
+		//-------------------------------------------------
+		function HrefCommunity(sHrefStr)
+		{
+			var sRet  = "";
+			iIdxS = sHrefStr.indexOf("http://mixi.jp/view_community.pl", 0);
+			if(iIdxS < 0){ return sRet; }	// error処理
+			// 置き換え用Aタグ生成
+			sRet = "<a target=\"_top\" href=\"http://mixi.jp/view_community.pl?id=" + g_comm_Id + "\">";
+			return sRet;
+		}
+		//-------------------------------------------------
+		// HrefTop
+		//-------------------------------------------------
+		function HrefTop(sHrefStr)
+		{
+			var sRet  = "";
+
+			iIdxS = sHrefStr.indexOf("../", 0);
+			if(iIdxS < 0){
+				iIdxS = sHrefStr.indexOf("./", 0);
+				if(iIdxS < 0){ return sRet; }
+			}
+			// 置き換え用Aタグ生成
+			sRet = "<a href=\"javascript:void(0);\" onclick=\"RequestTopLink();\">";
+
+			return sRet;
+		}
+		//-------------------------------------------------
+		// AddKeyControl
+		//-------------------------------------------------
+		function AddKeyControl(sHtml)
+		{
+			var sRetHtml = sHtml;
+			var constStr = "<input type=\"text\" ";
+			var convStr  = "<input type=\"text\" onKeyPress=\"return submitStop(event);\" ";
+			sRetHtml = sRetHtml.replace(constStr, convStr);
+			return sRetHtml;
+		}
+		//-------------------------------------------------
+		// submitStop
+		//-------------------------------------------------
+		function submitStop(e){
+			if (!e) var e = window.event;
+			if(e.keyCode == 13) return false;
+		}
+		//--------------------------------
+		// AddInvite
+		//--------------------------------
+		function AddInvite(sHtml)
+		{
+			var sRetHtml = sHtml;
+			var constStr = "<a href=\"javascript:void(394);\">";
+			var convStr  = "<a href=\"javascript:void(0);\" onclick=\"InvitationMyMixi();\">";
+			sRetHtml = sRetHtml.replace(constStr, convStr);
+			return sRetHtml;
+		}
+		//--------------------------------
+		// InvitationMyMixi
+		//--------------------------------
+		function InvitationMyMixi()
+		{
+			opensocial.requestShareApp("VIEWER_FRIENDS", null, function(response) {
+				if (response.hadError()) {
+					var errCode = response.getErrorCode();
+					// 現状処理必要なし(canvasではエラーしない模様)
+				}
+			});
+		}
+		//--------------------------------
+		// OnLoad
+		//--------------------------------
+		gadgets.util.registerOnLoadHandler(GetHtml);
+	//-->
+	</script>
+]]>
+	</Content>
+	<Content type="url" view="mobile" href="http://meiko.kagaminer.in/" />
+</Module>
