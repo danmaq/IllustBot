@@ -37,17 +37,23 @@
 					</p>
 				</form>
 				<ul>
-					<li>このぼっとのレベルは<xsl:value-of select="bot/@generation + 1" />です。</li>
-					<li>次のレベルまで必要な経験値は<xsl:value-of select="bot/@amount" />です。</li>
+					<li>このぼっとのレベルは<xsl:value-of select="bot/@generation + 1" />で、次のレベルまで必要な経験値は<xsl:value-of select="bot/@amount" />です。</li>
+					<li>みなさんの評価によって、ぼっとが成長していきます。(<a href="?f=core/help" target="_blank">詳しくはヘルプ参照</a>)</li>
 					<li>一回学習するのに、3秒～4秒程度かかりることがあります。ボタンを二度押ししないでください。</li>
 					<li><a><xsl:attribute name="href">?f=core/newGame&amp;id=<xsl:value-of select="bot/@owner" /></xsl:attribute>このぼっとに別のお題を教えることもできます</a>。(コピーが作られるため、このお題は消えません)</li>
 				</ul>
-			</xsl:when
+			</xsl:when>
 			<xsl:otherwise>
 				<h2>このお絵かきの投票は〆め切りました。</h2>
 				<p><em>現在このぼっとは<a><xsl:attribute name="href">?<xsl:value-of select="bot/@owner" /></xsl:attribute>更なる進化を遂げています</a></em>ので、良かったら見てあげてください。</p>
 			</xsl:otherwise>
 		</xsl:choose>
+		<p>
+			<script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="//platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
+			<a href="https://twitter.com/share" class="twitter-share-button" data-lang="ja" data-size="large" data-hashtags="IB01">
+				<xsl:attribute name="data-text">ぼっとが<xsl:value-of select="@title" />を描いてみたようです。(レベル<xsl:value-of select="bot/@generation + 1" />)</xsl:attribute>
+			このリンクでTwitterにて共有できます。</a>
+		</p>
 	</xsl:template>
 
 </xsl:stylesheet>
