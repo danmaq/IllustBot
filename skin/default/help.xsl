@@ -23,7 +23,7 @@
 		<p>このWebアプリは制作期間1週間程度のアルファ版です。思わぬところからいろいろなバグが出てくるかもしれません。もしお気づきの点や、その他サポートしてほしい場合はmeikoｱｯｰとkagaminer.inへメールしてください。</p>
 		<h2 id="description">技術的解説</h2>
 		<ul>
-			<li>画像の各ピクセルを遺伝子とみなし、<em><a href="http://www.youtube.com/watch?v=QE3SSKBdI00" target="_blank">遺伝的アルゴリズム(GA)</a></em>を使用して成長しています。</li>
+			<li>画像の各ピクセルを遺伝子とみなし、<em><a href="http://www.youtube.com/watch?v=19M_LHsmgug" target="_blank">遺伝的アルゴリズム(GA)</a></em>を使用して成長しています。</li>
 			<li>一様交叉、生存率10％、突然変異率0.39％です。</li>
 			<li>予備学習は、各ピクセルのRGB毎の輝度を比較して算出しています。</li>
 		</ul>
