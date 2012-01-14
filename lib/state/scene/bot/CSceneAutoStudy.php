@@ -151,7 +151,7 @@ class CSceneAutoStudy
 	{
 		$result = null;
 		$parent = $bot->getParent();
-		if(strlen($parent) > 0)
+		if($parent !== null)
 		{
 			// 別のお題をもらって枝分かれする場合
 			$parent = new CBot($parent);

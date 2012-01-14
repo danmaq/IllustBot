@@ -105,7 +105,7 @@ class CChild
 		$srcChilds = self::getFromOwner($src);
 		$dstSize = $dst->getSize();
 		$pixels = array();
-		for($i = $srcChilds; --$i >= 0; )
+		for($i = count($srcChilds); --$i >= 0; )
 		{
 			$img = new CImage($srcChilds[$i]->getHash());
 			$p = $img->getPixels();
@@ -123,7 +123,7 @@ class CChild
 				$srcb = mt_rand(0, $len);
 			}
 			while($srca == $srcb);
-			$img = new CImage(CPixel::inheritance($pixels[$srca], $pixels[$srcb]));
+			$img = new CImage(CPixels::inheritance($pixels[$srca], $pixels[$srcb]));
 			$img->commit();
 			$child = new CChild();
 			$child->setOwner($dst);

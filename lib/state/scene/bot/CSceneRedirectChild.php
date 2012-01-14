@@ -157,7 +157,7 @@ class CSceneRedirectChild
 	{
 		$child = null;
 		$parent = $bot->getParent();
-		if(strlen($parent) > 0)
+		if($parent !== null)
 		{
 			$parent = new CBot($parent);
 			if($parent->rollback())

@@ -258,7 +258,7 @@ class CBot
 	/**
 	 *	元となった親ぼっとIDを取得します。
 	 *
-	 *	@return string 親ぼっとID。
+	 *	@return string 親ぼっとID(GUID)。
 	 */
 	public function getParent()
 	{
@@ -269,7 +269,7 @@ class CBot
 	/**
 	 *	元となった親ぼっとIDを設定します。
 	 *
-	 *	@param string $value 親ぼっとID。
+	 *	@param string $value 親ぼっとID(GUID)。
 	 */
 	public function setParent($value)
 	{

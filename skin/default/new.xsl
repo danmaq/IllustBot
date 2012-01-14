@@ -41,9 +41,12 @@
 					<label for="example">参考画像※</label>
 					<input type="file" id="example" name="example" value="" placeholder="予備学習させたい場合のみ選択" />
 				</li>
+				<xsl:if test="bot">
+					<li>派生元: <a><xsl:attribute name="href">?<xsl:value-of select="bot/@id" /></xsl:attribute><xsl:value-of select="bot/@theme" />(レベル<xsl:value-of select="bot/@generation + 1" />)</a></li>
+				</xsl:if>
 				<li>
-					<xsl:if test="@bot">
-						<input type="hidden" name="parent">
+					<xsl:if test="bot">
+						<input type="hidden" name="id">
 							<xsl:attribute name="value"><xsl:value-of select="bot/@id" /></xsl:attribute>
 						</input>
 					</xsl:if>

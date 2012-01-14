@@ -38,7 +38,7 @@
 			<li>このぼっとのレベルは<xsl:value-of select="bot/@generation" />です。</li>
 			<li>次のレベルまで必要な経験値は<xsl:value-of select="bot/@amount" />です。</li>
 			<li>一回学習するのに、3秒～4秒程度かかりることがあります。ボタンを二度押ししないでください。</li>
-			<li><a><xsl:attribute name="href">?f=core/new&amp;id=<xsl:value-of select="bot/@owner" /></xsl:attribute>このぼっとに別のお題を教えることもできます</a>。(コピーが作られるため、このお題は消えません)</li>
+			<li><a><xsl:attribute name="href">?f=core/newGame&amp;id=<xsl:value-of select="bot/@owner" /></xsl:attribute>このぼっとに別のお題を教えることもできます</a>。(コピーが作られるため、このお題は消えません)</li>
 		</ul>
 	</xsl:template>
 

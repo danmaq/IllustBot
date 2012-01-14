@@ -31,7 +31,7 @@
 			<p>
 				<input type="hidden" name="f" value="core/botStudy" />
 				<input type="hidden" name="id">
-					<xsl:attribute name="value"><xsl:value-of select="bot/@id" /></xsl:attribute>
+					<xsl:attribute name="value"><xsl:value-of select="bot/@owner" /></xsl:attribute>
 				</input>
 				<input type="submit" class="submit" name="continue" value="YES" />
 				<input type="submit" class="submit" name="continue" value="NO" />

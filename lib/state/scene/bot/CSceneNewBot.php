@@ -24,8 +24,8 @@ class CSceneNewBot
 	/**	エラー表示。 */
 	private $errors = null;
 
-	/**	親ぼっとID。 */
-	private $id = null;
+	/**	親ぼっと。 */
+	private $bot = null;
 
 	//* constructor & destructor ───────────────────────*
 
@@ -61,7 +61,7 @@ class CSceneNewBot
 	 */
 	public function setup(CEntity $entity)
 	{
-		$this->id = $null;
+		$this->bot = null;
 		$this->errors = null;
 		if($entity->connectDatabase())
 		{
@@ -69,9 +69,9 @@ class CSceneNewBot
 			if(strlen($_GET['id']) > 0)
 			{
 				$bot = new CBot($_GET['id']);
-				if($bot->isExists())
+				if($bot->rollback())
 				{
-					$this->id = $bot;
+					$this->bot = $bot;
 				}
 			}
 		}
@@ -87,9 +87,14 @@ class CSceneNewBot
 		if($entity->getNextState() === null)
 		{
 			$xmlbuilder = new CDocumentBuilder();
-			if($this->id !== null)
+			$bot = $this->bot;
+			if($bot !== null)
 			{
-				$xmlbuilder->createInfo('bot', array('id' => $this->id);
+				$xmlbuilder->createInfo('bot', array(
+					'id' => $bot->getID(),
+					'theme' => $bot->getTheme(),
+					'generation' => $bot->getGeneration(),
+				));
 			}
 			$xmlbuilder->output(CConstants::FILE_XSL_NEW);
 			$entity->setNextState(CEmptyState::getInstance());
