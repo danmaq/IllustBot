@@ -14,17 +14,28 @@
 		<form action="./" method="get">
 			<p>
 					<label for="theme">お題</label>
-					<input type="text" class="text" id="theme" name="theme" value="" maxlength="80" placeholder="80字以内" />
+					<input type="text" class="text" id="theme" name="theme" maxlength="80" placeholder="80字以内">
+						<xsl:attribute name="value"><xsl:value-of select="theme/@id" /></xsl:attribute>
+					</input>
 					<input type="hidden" name="f" value="core/list" />
 					<input type="submit" class="submit" value="これ描いた？" />
 			</p>
 		</form>
+		<xsl:apply-templates select="theme" />
 		<h2>新着お題</h2>
 		<xsl:apply-templates select="new" />
 		<h2>高評価順ランキング</h2>
 		<xsl:apply-templates select="score" />
 		<h2>覚えが早い順ランキング</h2>
 		<xsl:apply-templates select="gene" />
+	</xsl:template>
+
+	<!-- ぼっと一覧。 -->
+	<xsl:template match="theme">
+		<h2>検索: [<xsl:value-of select="@id" />]</h2>
+		<ol>
+			<xsl:apply-templates select="item" />
+		</ol>
 	</xsl:template>
 
 	<!-- ぼっと一覧。 -->

@@ -104,14 +104,33 @@ class CBot
 				$pager = new CPager();
 			}
 			$all = CDBManager::getInstance()->execAndFetch($sql, $pager->getLimit());
-			foreach($all as $item)
+			$result = self::createFromIDList($all);
+			$pager->setMaxPagesFromCount($totalCount);
+		}
+		return $result;
+	}
+
+	/**
+	 *	ぼっと一覧を取得します。
+	 *
+	 *	@param string $keyword キーワード。
+	 *	@param CPager $pager ページャ オブジェクト。
+	 *	@return array ぼっと一覧。
+	 */
+	public static function getFromKeyword($keyword, CPager $pager = null)
+	{
+		$result = array();
+		$totalCount = self::getTotalCount();
+		if($totalCount > 0)
+		{
+			if($pager === null)
 			{
-				$bot = new CBot($item['ENTITY_ID']);
-				if($bot->rollback())
-				{
-					array_push($result, $bot);
-				}
+				$pager = new CPager();
 			}
+			$keyword = sprintf('%%%s%%', $keyword);
+			$all = CDBManager::getInstance()->execAndFetch(CFileSQLBot::getInstance()->selectTheme,
+				array('theme' => array($keyword, PDO::PARAM_STR)) + $pager->getLimit());
+			$result = self::createFromIDList($all);
 			$pager->setMaxPagesFromCount($totalCount);
 		}
 		return $result;
@@ -135,6 +154,25 @@ class CBot
 			self::$members = $db->singleFetch($fcache->selectCount, 'COUNT');
 		}
 		return self::$members;
+	}
+
+	/**
+	 *	ID一覧からぼっとオブジェクトを作成します。
+	 *
+	 *	@return integer ユーザ数。
+	 */
+	private static function createFromIDList($info)
+	{
+		$result = array();
+		foreach($info as $item)
+		{
+			$bot = new CBot($item['ENTITY_ID']);
+			if($bot->rollback())
+			{
+				array_push($result, $bot);
+			}
+		}
+		return $result;
 	}
 
 	//* instance methods ───────────────────────────*

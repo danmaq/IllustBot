@@ -18,6 +18,14 @@ class CSceneList
 	/**	クラス オブジェクト。 */
 	private static $instance = null;
 
+	/**	既定の値一覧。 */
+	private $format = array(
+		'theme' => '',
+	);
+
+	/**	ぼっと一覧。 */
+	private $botsKeyword;
+
 	/**	ぼっと一覧。 */
 	private $botsOrderNewbie;
 
@@ -61,9 +69,15 @@ class CSceneList
 	 */
 	public function setup(CEntity $entity)
 	{
+		$this->botsKeyword = null;
 		if($entity->connectDatabase())
 		{
 			$pager = new CPager(0, 30);
+			$_GET += $this->format;
+			if(strlen($_GET['theme']) > 0)
+			{
+				$this->botsKeyword = CBot::getFromKeyword($pager);
+			}
 			$this->botsOrderGeneration = CBot::getAllOrderGeneration($pager);
 			$this->botsOrderNewbie = CBot::getAllOrderNewbie($pager);
 			$this->botsOrderScore = CBot::getAllOrderScore($pager);
@@ -80,6 +94,18 @@ class CSceneList
 		if($entity->getNextState() === null)
 		{
 			$xmlbuilder = new CDocumentBuilder();
+			if($this->botsKeyword !== null)
+			{
+				$keyword = $xmlbuilder->createInfo('theme', array('expr' => $_GET['theme']));
+				$botsKeyword = $this->botsKeyword;
+				foreach($botsKeyword as $item)
+				{
+					$xmlbuilder->createItem(array(
+						'id' => $item->getID(),
+						'theme' => $item->getTheme(),
+					), $keyword);
+				}
+			}
 			$newbie = $xmlbuilder->createElement('new');
 			$score = $xmlbuilder->createElement('score');
 			$gene = $xmlbuilder->createElement('gene');
