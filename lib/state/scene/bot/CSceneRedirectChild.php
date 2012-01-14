@@ -164,6 +164,7 @@ class CSceneRedirectChild
 			{
 				$child = CChild::branch($parent, $bot);
 			}
+			$bot->setGeneration($parent->getGeneration());
 			$bot->setParent(null);
 			$bot->commit();
 		}

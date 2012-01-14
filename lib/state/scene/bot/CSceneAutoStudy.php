@@ -160,6 +160,7 @@ class CSceneAutoStudy
 			{
 				$result = CChild::branch($parent, $bot);
 			}
+			$bot->setGeneration($parent->getGeneration());
 			$bot->setParent(null);
 		}
 		if($result === null)
