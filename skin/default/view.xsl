@@ -32,8 +32,7 @@
 						<input type="submit" class="submit" name="score" value="3" />
 						<input type="submit" class="submit" name="score" value="2" />
 						<input type="submit" class="submit" name="score" value="1" />
-						<input type="submit" class="submit" name="score" value="0" />
-						点
+						<input type="submit" class="submit" name="score" value="0" />点
 					</p>
 				</form>
 				<ul>
@@ -50,9 +49,7 @@
 		</xsl:choose>
 		<p>
 			<script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="//platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
-			<a href="https://twitter.com/share" class="twitter-share-button" data-lang="ja" data-size="large" data-hashtags="IB01">
-				<xsl:attribute name="data-text">ぼっとが<xsl:value-of select="@title" />を描いてみたようです。(レベル<xsl:value-of select="bot/@generation + 1" />)</xsl:attribute>
-			このリンクでTwitterにて共有できます。</a>
+			<a href="https://twitter.com/share" class="twitter-share-button" data-lang="ja" data-size="large" data-hashtags="IB01"><xsl:attribute name="data-text">ぼっとが<xsl:value-of select="@title" />を描いてみたようです。(レベル<xsl:value-of select="bot/@generation + 1" />)</xsl:attribute>このリンクでTwitterにて共有できます。</a>
 		</p>
 	</xsl:template>
 

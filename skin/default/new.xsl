@@ -18,7 +18,7 @@
 			<ul>
 				<li>
 					<label for="theme">お題</label>
-					<input type="text" class="text" id="theme" name="theme" value="" maxlength="255" placeholder="255字以内" />
+					<input type="text" class="text" id="theme" name="theme" value="" maxlength="80" placeholder="80字以内" />
 				</li>
 				<li>
 					<label for="x">サイズ</label>

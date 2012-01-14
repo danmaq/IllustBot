@@ -80,9 +80,9 @@ class CSceneNewBotPost
 				$_POST += self::$format;
 				$theme = trim($_POST['theme']);
 				$len = strlen($theme);
-				if($len < 1 || $len > 255)
+				if($len < 1 || $len > 80)
 				{
-					throw new Exception(_('お題は1～255バイト以内。'));
+					throw new Exception(_('お題は1～80バイト以内。'));
 				}
 				$x = intval($_POST['x']);
 				$y = intval($_POST['y']);
