@@ -24,8 +24,8 @@
 				<meta name="viewport" content="width=420" />
 				<meta name="keywords" content="ぼっと,IB-01,お絵かき,ドット絵,自動生成,遺伝的アルゴリズム,GA,Genetic Algorithm,人工知能,人工無脳,AI" />
 				<meta name="description" content="ぼっとにお題を出すと絵を描き始めるので、みなさんで上手く描けているか投票して、ぼっとを成長させてあげてください。" />
-				<meta name="author" content="danmaq">
-				<meta name="copyright" content="Copyright © 2012 danmaq All rights reserved.">
+				<meta name="author" content="danmaq" />
+				<meta name="copyright" content="Copyright © 2012 danmaq All rights reserved." />
 				<meta name="application-name" content="ぼっと[IB-01]がお絵かきするようです。" />
 				<title><xsl:if test="body/@title and string-length(body/@title) > 0"><xsl:value-of select="body/@title" /> - </xsl:if>ぼっと[IB-01]がお絵かきするようです。</title>
 				<link href="skin/default/default.css" rel="StyleSheet" />
