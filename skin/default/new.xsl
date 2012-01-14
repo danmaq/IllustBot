@@ -39,7 +39,7 @@
 				</li>
 				<li>
 					<label for="example">参考画像※</label>
-					<input type="file" id="example" name="example" value="" placeholder="予備学習させたい場合のみ選択" />
+					<input type="file" class="file" id="example" name="example" value="" placeholder="予備学習させたい場合のみ選択" />物覚えが悪いときは食べさせてあげてください。
 				</li>
 				<xsl:if test="bot">
 					<li>派生元: <a><xsl:attribute name="href">?<xsl:value-of select="bot/@id" /></xsl:attribute><xsl:value-of select="bot/@theme" />(レベル<xsl:value-of select="bot/@generation + 1" />)</a></li>
