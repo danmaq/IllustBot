@@ -121,9 +121,10 @@ class CSceneNewBotPost
 				if(strlen($_POST['id']) > 0)
 				{
 					$parent = new CBot($_POST['id']);
-					if($parent->isExists())
+					if($parent->rollback())
 					{
 						$bot->setParent($_POST['id']);
+						$bot->setGeneraton($parent->getGeneraton());
 					}
 				}
 				$bot->commit();
