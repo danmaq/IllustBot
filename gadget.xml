@@ -24,8 +24,8 @@
 		var g_TimeOut  = constTimeOut;
 		var g_SetVal   = constSetVal;
 		var g_fFlash   = false;
-		var g_mixiAppId = "25179";	// mixiアプリID
-		var g_comm_Id  = "5118893";	// コミュニティID
+		var g_mixiAppId = "35968";	// mixiアプリID
+		var g_comm_Id  = "";	// コミュニティID
 		//--------------------------------
 		// GetHtml
 		//--------------------------------
