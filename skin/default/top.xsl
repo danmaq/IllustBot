@@ -16,7 +16,7 @@
 			<li><a href="?f=core/list">育てる</a></li>
 			<li><a href="?f=core/help">ヘルプ<br /></a></li>
 		</ul>
-		<p id="version"><a href="HISTORY">VERSION <xsl:value-of select="@ver" /></a></p>
+		<p id="version"><a href="HISTORY">VERSION <xsl:value-of select="@ver" /></a><br />ぼっとにお題を出すと絵を描き始めるので、みなさんで上手く描けているか投票して、ぼっとを成長させてあげてください。</p>
 		<h2>新着お題</h2>
 		<xsl:apply-templates select="new" />
 		<h2>高評価順ランキング</h2>

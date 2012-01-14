@@ -11,7 +11,14 @@
 	<!-- メイン。 -->
 	<xsl:template match="body">
 		<h2>検索</h2>
-		<p>近日実装予定。</p>
+		<form action="./" method="get">
+			<p>
+					<label for="theme">お題</label>
+					<input type="text" class="text" id="theme" name="theme" value="" maxlength="80" placeholder="80字以内" />
+					<input type="hidden" name="f" value="core/list" />
+					<input type="submit" class="submit" value="これ描いた？" />
+			</p>
+		</form>
 		<h2>新着お題</h2>
 		<xsl:apply-templates select="new" />
 		<h2>高評価順ランキング</h2>
