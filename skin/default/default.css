@@ -56,6 +56,7 @@
 		border-style: none;
 		color: White;
 		font-size: 150%;
+		margin: 1ex;
 		padding: 1ex 1em;
 		cursor: pointer;
 	}

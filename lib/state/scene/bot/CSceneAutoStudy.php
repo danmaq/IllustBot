@@ -72,7 +72,6 @@ class CSceneAutoStudy
 				if(count($parents) > 0)
 				{
 					$bot->nextGeneration();
-					$bot->commit();
 					$img = new CImage($bot->getExampleHash());
 					$p = $img->getPixels();
 					$result = $parents;
@@ -83,6 +82,7 @@ class CSceneAutoStudy
 					}
 				}
 				$child = $this->createChildFromPixels($bot, $result);
+				$bot->commit();
 				if($child === null)
 				{
 					throw new Exception(_('ぼっとがいるようで、実はいなかった、異常な事態(素敵な事態)'));
@@ -141,7 +141,7 @@ class CSceneAutoStudy
 	}
 
 	/**
-	 *	ピクセル情報一覧を作成します。
+	 *	ピクセル情報一覧から子ぼっとを作成します。
 	 *
 	 *	@param CBot $bot 親ぼっとオブジェクト。
 	 *	@param array[CPixels] $pixels ピクセル情報一覧。
@@ -150,28 +150,42 @@ class CSceneAutoStudy
 	private function createChildFromPixels(CBot $bot, $pixels)
 	{
 		$result = null;
-		$gene = $bot->getGeneration();
-		if($pixels === null)
+		$parent = $bot->getParent();
+		if(strlen($parent) > 0)
 		{
-			$pixels = array();
-			$size = $bot->getSize();
-			for($i = $bot->getChilds(); --$i >= 0; )
+			// 別のお題をもらって枝分かれする場合
+			$parent = new CBot($parent);
+			if($parent->rollback())
 			{
-				$img = new CPixels();
-				$img->createFromSize($size['x'], $size['y']);
-				array_push($pixels, $img);
+				$result = CChild::branch($parent, $bot);
 			}
+			$bot->setParent(null);
 		}
-		for($i = count($pixels); --$i >= 0; )
+		if($result === null)
 		{
-			$cimg = new CImage($pixels[$i]);
-			$cimg->commit();
-			$result = new CChild();
-			$result->setOwner($bot);
-			$result->setGeneration($gene);
-			$result->setHash($cimg->getID());
-			$result->addVoteCount();
-			$result->commit();
+			$gene = $bot->getGeneration();
+			if($pixels === null)
+			{
+				$pixels = array();
+				$size = $bot->getSize();
+				for($i = $bot->getChilds(); --$i >= 0; )
+				{
+					$img = new CPixels();
+					$img->createFromSize($size['x'], $size['y']);
+					array_push($pixels, $img);
+				}
+			}
+			for($i = count($pixels); --$i >= 0; )
+			{
+				$cimg = new CImage($pixels[$i]);
+				$cimg->commit();
+				$result = new CChild();
+				$result->setOwner($bot);
+				$result->setGeneration($gene);
+				$result->setHash($cimg->getID());
+				$result->addVoteCount();
+				$result->commit();
+			}
 		}
 		return $result;
 	}

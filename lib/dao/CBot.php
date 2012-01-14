@@ -14,6 +14,7 @@ class CBot
 
 	/**	実体のメンバとデフォルト値一覧。 */
 	private static $format = array(
+		'parent' => null,
 		'x' => 8,
 		'y' => 8,
 		'childs' => 10,
@@ -252,6 +253,28 @@ class CBot
 	public function setTheme($value)
 	{
 		$this->theme = $value;
+	}
+
+	/**
+	 *	元となった親ぼっとIDを取得します。
+	 *
+	 *	@return string 親ぼっとID。
+	 */
+	public function getParent()
+	{
+		$body =& $this->storage();
+		return $body['parent'];
+	}
+
+	/**
+	 *	元となった親ぼっとIDを設定します。
+	 *
+	 *	@param string $value 親ぼっとID。
+	 */
+	public function setParent($value)
+	{
+		$body =& $this->storage();
+		$body['parent'] = $value;
 	}
 
 	/**

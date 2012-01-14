@@ -49,7 +49,7 @@ class CPixels
 	 *	@param float $threshold 存続する閾値。
 	 *	@return array(CPixels) ピクセル情報一覧。
 	 */
-	public static function study(CPixels $expr, $parent = 50, $threshold = 0.15)
+	public static function study(CPixels $expr, $parent = 50, $threshold = 0.1)
 	{
 		$len = 0;
 		if(is_int($parent))
@@ -90,7 +90,9 @@ class CPixels
 			$ib = 0;
 			do
 			{
-				$ib = mt_rand(0, $i < 3 ? $len - 1 : $threshold);
+				$ib = mt_rand(
+					$i < 3 ? $threshold : 0,
+					$i < 3 ? $len - 1 : $threshold);
 			}
 			while($ia == $ib);
 			array_push($result, self::inheritance(
@@ -127,23 +129,11 @@ class CPixels
 			{
 				$rgba = self::getPixel($resa, $x, $y);
 				$rgbb = self::getPixel($resb, $x, $y);
-				$r = null;
-				$g = null;
-				$b = null;
 				$rnd = mt_rand(0, 65535);
-				if($rnd > 2048 || $rnd < 640)
-				{
-					$r = ($rnd & 1) == 0 ? $rgba['r'] : $rgbb['r'];
-					$g = ($rnd & 2) == 0 ? $rgba['g'] : $rgbb['g'];
-					$b = ($rnd & 4) == 0 ? $rgba['b'] : $rgbb['b'];
-				}
-				else
-				{
-					$r = (int)($rgba['r'] + $rgbb['r'] * 0.5);
-					$g = (int)($rgba['g'] + $rgbb['g'] * 0.5);
-					$b = (int)($rgba['b'] + $rgbb['b'] * 0.5);
-				}
-				if($rnd < 640)
+				$r = ($rnd & 1) == 0 ? $rgba['r'] : $rgbb['r'];
+				$g = ($rnd & 2) == 0 ? $rgba['g'] : $rgbb['g'];
+				$b = ($rnd & 4) == 0 ? $rgba['b'] : $rgbb['b'];
+				if($rnd < 256)
 				{
 					$r = (int)($r + round(mt_rand(0, 255)) * 0.5);
 					$g = (int)($g + round(mt_rand(0, 255)) * 0.5);

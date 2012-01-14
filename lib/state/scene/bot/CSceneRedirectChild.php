@@ -156,12 +156,26 @@ class CSceneRedirectChild
 	private function createChilds(CBot $bot)
 	{
 		$child = null;
-		for($i = $bot->getChilds(); --$i >= 0; )
+		$parent = $bot->getParent();
+		if(strlen($parent) > 0)
 		{
-			$child = new CChild();
-			$child->setOwner($bot);
-			$child->setGeneration($bot->getGeneration());
-			$child->commit();
+			$parent = new CBot($parent);
+			if($parent->rollback())
+			{
+				$child = CChild::branch($parent, $bot);
+			}
+			$bot->setParent(null);
+			$bot->commit();
+		}
+		if($child == null)
+		{
+			for($i = $bot->getChilds(); --$i >= 0; )
+			{
+				$child = new CChild();
+				$child->setOwner($bot);
+				$child->setGeneration($bot->getGeneration());
+				$child->commit();
+			}
 		}
 		return $child;
 	}

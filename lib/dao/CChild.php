@@ -94,6 +94,47 @@ class CChild
 	}
 
 	/**
+	 *	特定親に所属する子ぼっとの情報をコピーして、別の親ぼっとに所属させます。
+	 *
+	 *	@param CBot $src コピー元。
+	 *	@param CBot $dst コピー先。
+	 *	@return CChild 子ぼっと。
+	 */
+	public static function branch(CBot $src, CBot $dst)
+	{
+		$srcChilds = self::getFromOwner($src);
+		$dstSize = $dst->getSize();
+		$pixels = array();
+		for($i = $srcChilds; --$i >= 0; )
+		{
+			$img = new CImage($srcChilds[$i]->getHash());
+			$p = $img->getPixels();
+			$p->resize($dstSize['x'], $dstSize['y']);
+			array_push($pixels, $p);
+		}
+		$len = count($pixels);
+		$child = null;
+		for($i = $dst->getChilds(); --$i >= 0; )
+		{
+			$srca = $i % $len;
+			$srcb = 0;
+			do
+			{
+				$srcb = mt_rand(0, $len);
+			}
+			while($srca == $srcb);
+			$img = new CImage(CPixel::inheritance($pixels[$srca], $pixels[$srcb]));
+			$img->commit();
+			$child = new CChild();
+			$child->setOwner($dst);
+			$child->setGeneration($dst->getGeneration());
+			$child->setHash($img->getID());
+			$child->commit();
+		}
+		return $child;
+	}
+
+	/**
 	 *	未投票の子ぼっとを1件取得します。
 	 *
 	 *	@param CBot $owner 親ぼっと。

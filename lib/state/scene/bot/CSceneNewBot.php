@@ -1,8 +1,8 @@
 <?php
 
-require_once(IB01_CONSTANTS);
-require_once(IB01_LIB_ROOT . '/view/CDocumentBuilder.php');
+require_once(IB01_LIB_ROOT . '/dao/CBot.php');
 require_once(IB01_LIB_ROOT . '/state/IState.php');
+require_once(IB01_LIB_ROOT . '/view/CDocumentBuilder.php');
 
 /**
  *	ぼっとにお題を教えるページを表示します。
@@ -15,6 +15,17 @@ class CSceneNewBot
 
 	/**	クラス オブジェクト。 */
 	private static $instance = null;
+
+	/**	既定の値一覧。 */
+	private $format = array(
+		'id' => '',
+	);
+
+	/**	エラー表示。 */
+	private $errors = null;
+
+	/**	親ぼっとID。 */
+	private $id = null;
 
 	//* constructor & destructor ───────────────────────*
 
@@ -50,6 +61,20 @@ class CSceneNewBot
 	 */
 	public function setup(CEntity $entity)
 	{
+		$this->id = $null;
+		$this->errors = null;
+		if($entity->connectDatabase())
+		{
+			$_GET += $this->format;
+			if(strlen($_GET['id']) > 0)
+			{
+				$bot = new CBot($_GET['id']);
+				if($bot->isExists())
+				{
+					$this->id = $bot;
+				}
+			}
+		}
 	}
 
 	/**
@@ -59,9 +84,16 @@ class CSceneNewBot
 	 */
 	public function execute(CEntity $entity)
 	{
-		$xmlbuilder = new CDocumentBuilder();
-		$xmlbuilder->output(CConstants::FILE_XSL_NEW);
-		$entity->setNextState(CEmptyState::getInstance());
+		if($entity->getNextState() === null)
+		{
+			$xmlbuilder = new CDocumentBuilder();
+			if($this->id !== null)
+			{
+				$xmlbuilder->createInfo('bot', array('id' => $this->id);
+			}
+			$xmlbuilder->output(CConstants::FILE_XSL_NEW);
+			$entity->setNextState(CEmptyState::getInstance());
+		}
 	}
 
 	/**

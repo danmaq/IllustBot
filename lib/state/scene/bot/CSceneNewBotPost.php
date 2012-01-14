@@ -20,6 +20,7 @@ class CSceneNewBotPost
 
 	/**	既定の値一覧。 */
 	private static $format = array(
+		'id' => '',
 		'childs' => '10',
 		'x' => '8',
 		'y' => '0',
@@ -114,6 +115,15 @@ class CSceneNewBotPost
 						$img->commit();
 						$bot->setPublication(false);
 						$bot->setExampleHash($img->getID());
+					}
+				}
+				// 親ぼっとがあれば指定する
+				if(strlen($_POST['id']) > 0)
+				{
+					$parent = new CBot($_POST['id']);
+					if($parent->isExists())
+					{
+						$bot->setParent($_POST['id']);
 					}
 				}
 				$bot->commit();

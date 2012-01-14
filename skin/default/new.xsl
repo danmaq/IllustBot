@@ -42,6 +42,11 @@
 					<input type="file" id="example" name="example" value="" placeholder="予備学習させたい場合のみ選択" />
 				</li>
 				<li>
+					<xsl:if test="@bot">
+						<input type="hidden" name="parent">
+							<xsl:attribute name="value"><xsl:value-of select="bot/@id" /></xsl:attribute>
+						</input>
+					</xsl:if>
 					<input type="hidden" name="f" value="core/newGamePOST" />
 					<input type="submit" class="submit" value="これ描いて！" />
 				</li>
