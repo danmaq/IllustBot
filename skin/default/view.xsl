@@ -18,28 +18,36 @@
 				<xsl:attribute name="height">320</xsl:attribute>
 			</img>
 		</p>
-		<h2>「<xsl:value-of select="@title" />」に見えますか？評価してあげてください。</h2>
-		<form action="./" method="post" onsubmit="return onSubmit(false)">
-			<p>
-				<input type="hidden" name="f" value="core/botVote" />
-				<input type="hidden" name="id">
-					<xsl:attribute name="value"><xsl:value-of select="bot/@id" /></xsl:attribute>
-				</input>
-				<input type="hidden" name="max" value="4" />
-				<input type="submit" class="submit" name="score" value="4" />
-				<input type="submit" class="submit" name="score" value="3" />
-				<input type="submit" class="submit" name="score" value="2" />
-				<input type="submit" class="submit" name="score" value="1" />
-				<input type="submit" class="submit" name="score" value="0" />
-				点
-			</p>
-		</form>
-		<ul>
-			<li>このぼっとのレベルは<xsl:value-of select="bot/@generation" />です。</li>
-			<li>次のレベルまで必要な経験値は<xsl:value-of select="bot/@amount" />です。</li>
-			<li>一回学習するのに、3秒～4秒程度かかりることがあります。ボタンを二度押ししないでください。</li>
-			<li><a><xsl:attribute name="href">?f=core/newGame&amp;id=<xsl:value-of select="bot/@owner" /></xsl:attribute>このぼっとに別のお題を教えることもできます</a>。(コピーが作られるため、このお題は消えません)</li>
-		</ul>
+		<xsl:choose>
+			<xsl:when test="bot/@generation = bot/@ownergeneration">
+				<h2>「<xsl:value-of select="@title" />」に見えますか？評価してあげてください。</h2>
+				<form action="./" method="post" onsubmit="return onSubmit(false)">
+					<p>
+						<input type="hidden" name="f" value="core/botVote" />
+						<input type="hidden" name="id">
+							<xsl:attribute name="value"><xsl:value-of select="bot/@id" /></xsl:attribute>
+						</input>
+						<input type="hidden" name="max" value="4" />
+						<input type="submit" class="submit" name="score" value="4" />
+						<input type="submit" class="submit" name="score" value="3" />
+						<input type="submit" class="submit" name="score" value="2" />
+						<input type="submit" class="submit" name="score" value="1" />
+						<input type="submit" class="submit" name="score" value="0" />
+						点
+					</p>
+				</form>
+				<ul>
+					<li>このぼっとのレベルは<xsl:value-of select="bot/@generation + 1" />です。</li>
+					<li>次のレベルまで必要な経験値は<xsl:value-of select="bot/@amount" />です。</li>
+					<li>一回学習するのに、3秒～4秒程度かかりることがあります。ボタンを二度押ししないでください。</li>
+					<li><a><xsl:attribute name="href">?f=core/newGame&amp;id=<xsl:value-of select="bot/@owner" /></xsl:attribute>このぼっとに別のお題を教えることもできます</a>。(コピーが作られるため、このお題は消えません)</li>
+				</ul>
+			</xsl:when
+			<xsl:otherwise>
+				<h2>このお絵かきの投票は〆め切りました。</h2>
+				<p><em>現在このぼっとは<a><xsl:attribute name="href">?<xsl:value-of select="bot/@owner" /></xsl:attribute>更なる進化を遂げています</a></em>ので、良かったら見てあげてください。</p>
+			</xsl:otherwise>
+		</xsl:choose>
 	</xsl:template>
 
 </xsl:stylesheet>

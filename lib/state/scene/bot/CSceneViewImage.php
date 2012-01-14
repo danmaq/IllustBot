@@ -108,7 +108,8 @@ class CSceneViewImage
 				'owner' => $owner->getID(),
 				'width' => $size['x'],
 				'height' => $size['y'],
-				'generation' => $child->getGeneration() + 1,
+				'generation' => $child->getGeneration(),
+				'ownergeneration' => $owner->getGeneration(),
 				'amount' => $child->getAmount()));
 			$xsl = CConstants::FILE_XSL_VIEW;
 			$example = new CImage($child->getOwner()->getExampleHash(), false);

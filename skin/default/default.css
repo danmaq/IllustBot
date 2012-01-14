@@ -17,9 +17,15 @@
 	{
 		color: #40A471;
 		font-family: "ヒラギノ角ゴ Pro W3", "Hiragino Kaku Gothic Pro", "メイリオ", "Meiryo", "ＭＳ Ｐゴシック", sans-serif;
+		letter-spacing: 1px;
 		margin: 0px;
 		padding: 1em;
 		width: 93%;
+	}
+
+	em
+	{
+		letter-spacing: 2px;
 	}
 
 	h1

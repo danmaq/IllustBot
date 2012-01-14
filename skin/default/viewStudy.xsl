@@ -24,7 +24,7 @@
 				<xsl:attribute name="height">100</xsl:attribute>
 			</img><br />
 			完全に一致率：<xsl:value-of select="bot/@same" /> パーセント<br />
-			このぼっとのレベルは<xsl:value-of select="bot/@generation" />です。
+			このぼっとのレベルは<xsl:value-of select="bot/@generation + 1" />です。
 		</p>
 		<h2>さらに予備学習を続けますか？</h2>
 		<form action="./" method="post" onsubmit="return onSubmit(true);">
