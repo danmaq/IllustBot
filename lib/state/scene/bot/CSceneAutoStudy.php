@@ -76,7 +76,7 @@ class CSceneAutoStudy
 					$p = $img->getPixels();
 					$result = $parents;
 					$t = time();
-					for($t = time() + 15; $t >= time(); )
+					for($t = time() + 5; $t >= time(); )
 					{
 						$result = CPixels::study($img->getPixels(), $result);
 					}
