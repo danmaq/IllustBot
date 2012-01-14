@@ -124,7 +124,7 @@ class CSceneNewBotPost
 					if($parent->rollback())
 					{
 						$bot->setParent($_POST['id']);
-						$bot->setGeneraton($parent->getGeneraton());
+						$bot->setGeneration($parent->getGeneration());
 					}
 				}
 				$bot->commit();
