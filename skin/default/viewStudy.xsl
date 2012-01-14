@@ -27,7 +27,7 @@
 			このぼっとのレベルは<xsl:value-of select="bot/@generation" />です。
 		</p>
 		<h2>さらに予備学習を続けますか？</h2>
-		<form action="./" method="post">
+		<form action="./" method="post" onsubmit="return onSubmit(true);">
 			<p>
 				<input type="hidden" name="f" value="core/botStudy" />
 				<input type="hidden" name="id">

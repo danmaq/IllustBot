@@ -19,7 +19,7 @@
 			</img>
 		</p>
 		<h2>「<xsl:value-of select="@title" />」に見えますか？評価してあげてください。</h2>
-		<form action="./" method="post">
+		<form action="./" method="post" onsubmit="return onSubmit(false)">
 			<p>
 				<input type="hidden" name="f" value="core/botVote" />
 				<input type="hidden" name="id">

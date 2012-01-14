@@ -27,7 +27,7 @@
 				<title><xsl:if test="body/@title and string-length(body/@title) > 0"><xsl:value-of select="body/@title" /> - </xsl:if>ぼっと[IB-01]がお絵かきするようです。</title>
 				<link href="skin/default/default.css" rel="StyleSheet" />
 				<link href="http://twitter.com/danmaq" rel="Author" />
-				<script type="text/javascript" src="skin/default/jquery.jgz">;</script>
+				<script type="text/javascript"><xsl:attribute name="src">skin/default/jquery.<xsl:choose><xsl:when test="contains(body/@ua, 'Safari')">js</xsl:when><xsl:otherwise>jgz</xsl:otherwise></xsl:choose></xsl:attribute>;</script>
 				<script type="text/javascript" src="skin/default/default.js">;</script>
 				<xsl:comment> 評価中 </xsl:comment>
 			</head>
