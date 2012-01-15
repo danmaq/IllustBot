@@ -71,7 +71,6 @@ class CSceneAutoStudy
 				$result = null;
 				if(count($parents) > 0)
 				{
-					$bot->nextGeneration();
 					$img = new CImage($bot->getExampleHash());
 					$p = $img->getPixels();
 					$result = $parents;
@@ -79,6 +78,7 @@ class CSceneAutoStudy
 					for($t = time() + 5; $t >= time(); )
 					{
 						$result = CPixels::study($img->getPixels(), $result);
+						$bot->nextGeneration();
 					}
 				}
 				$child = $this->createChildFromPixels($bot, $result);
