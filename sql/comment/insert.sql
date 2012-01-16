@@ -1,0 +1,10 @@
+INSERT INTO IB01_INDEX_COMMENT
+(
+	OWNER,
+	ENTITY_ID
+)
+VALUES
+(
+	:owner,
+	:entity_id
+);
