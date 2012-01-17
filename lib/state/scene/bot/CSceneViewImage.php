@@ -3,6 +3,7 @@
 require_once(IB01_CONSTANTS);
 require_once(IB01_LIB_ROOT . '/dao/CBot.php');
 require_once(IB01_LIB_ROOT . '/dao/CChild.php');
+require_once(IB01_LIB_ROOT . '/dao/CComment.php');
 require_once(IB01_LIB_ROOT . '/dao/CImage.php');
 require_once(IB01_LIB_ROOT . '/state/IState.php');
 require_once(IB01_LIB_ROOT . '/state/scene/ranking/CSceneTop.php');
@@ -23,6 +24,9 @@ class CSceneViewImage
 
 	/**	子ぼっと。 */
 	private $child;
+
+	/**	コメント一覧。 */
+	private $comments;
 
 	//* constructor & destructor ───────────────────────*
 
@@ -71,6 +75,7 @@ class CSceneViewImage
 				if($child->rollback())
 				{
 					$this->child = $child;
+					$this->comments = CComment::getListFromOwner($child->getOwner());
 				}
 				else
 				{
@@ -111,6 +116,14 @@ class CSceneViewImage
 				'generation' => $child->getGeneration(),
 				'ownergeneration' => $owner->getGeneration(),
 				'amount' => $child->getAmount()));
+			$comment = $xmlbuilder->createElement('comment');
+			foreach($botsNewbie as $item)
+			{
+				$xmlbuilder->createItem(array(
+					'datetime' => $item->getUpdate(),
+					'message' => $item->getMessage(),
+				), $comment);
+			}
 			$xsl = CConstants::FILE_XSL_VIEW;
 			$example = new CImage($child->getOwner()->getExampleHash(), false);
 			if($example->isExists())

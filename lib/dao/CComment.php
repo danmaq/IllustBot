@@ -113,6 +113,16 @@ class CComment
 	}
 
 	/**
+	 *	更新日時を取得します。
+	 *
+	 *	@return mixed 更新日時。
+	 */
+	public function getUpdated()
+	{
+		return $this->getEntity()->getUpdated();
+	}
+
+	/**
 	 *	親ぼっとを取得します。
 	 *
 	 *	@param boolean $autoCreate 自動的にオブジェクトを生成するかどうか。
