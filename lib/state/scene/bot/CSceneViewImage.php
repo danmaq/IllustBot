@@ -118,12 +118,15 @@ class CSceneViewImage
 				'amount' => $child->getAmount()));
 			$comment = $xmlbuilder->createElement('comment');
 			$comments = $this->comments;
-			foreach($comments as $item)
+			if($comments !== null)
 			{
-				$xmlbuilder->createItem(array(
-					'datetime' => $item->getUpdate(),
-					'message' => $item->getMessage(),
-				), $comment);
+				foreach($comments as $item)
+				{
+					$xmlbuilder->createItem(array(
+						'datetime' => $item->getUpdate(),
+						'message' => $item->getMessage(),
+					), $comment);
+				}
 			}
 			$xsl = CConstants::FILE_XSL_VIEW;
 			$example = new CImage($child->getOwner()->getExampleHash(), false);

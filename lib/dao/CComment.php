@@ -81,12 +81,12 @@ class CComment
 		for($i = count($info); --$i >= 0; )
 		{
 			$item = new CComment($info[$i]['ENTITY_ID'], $owner->getID());
-			if($item->rollback)
+			if($item->rollback())
 			{
 				array_unshift($result, $item);
 			}
-			return $item;
 		}
+		return $result;
 	}
 
 	/**
