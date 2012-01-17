@@ -47,10 +47,27 @@
 				<p><em>現在このぼっとは<a><xsl:attribute name="href">?<xsl:value-of select="bot/@owner" /></xsl:attribute>更なる進化を遂げています</a></em>ので、良かったら見てあげてください。</p>
 			</xsl:otherwise>
 		</xsl:choose>
-		<p>
-			<script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="//platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
-			<a href="https://twitter.com/share" class="twitter-share-button" data-lang="ja" data-size="large" data-count="none" data-hashtags="IB_01"><xsl:attribute name="data-text">ぼっとが<xsl:value-of select="@title" />を描いてみたようです。(レベル<xsl:value-of select="bot/@generation + 1" />)</xsl:attribute>このリンクでTwitterにて共有できます。</a>
-		</p>
+		<ul>
+			<li>
+				<form action="./" method="post">
+					<label for="comment">コメント</label>
+					<input type="text" class="text" id="comment" name="comment" maxlength="80" placeholder="80字以内" />
+					<input type="hidden" name="f" value="core/commentPOST" />
+					<input type="hidden" name="id">
+						<xsl:attribute name="value"><xsl:value-of select="bot/@id" /></xsl:attribute>
+					</input>
+					<input type="submit" class="submit" value="投稿する" />
+				</form>
+				<script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="//platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
+				<a href="https://twitter.com/share" class="twitter-share-button" data-lang="ja" data-size="large" data-count="none" data-hashtags="IB_01"><xsl:attribute name="data-text">ぼっとが<xsl:value-of select="@title" />を描いてみたようです。(レベル<xsl:value-of select="bot/@generation + 1" />)</xsl:attribute>このリンクでTwitterにて共有できます。</a>
+			</li>
+			<xsl:apply-templates select="comment/item" />
+		</ul>
+	</xsl:template>
+
+	<!-- コメント。 -->
+	<xsl:template match="item">
+		<li><xsl:value-of select="@comment" />[<xsl:value-of select="@datetime" />]</li>
 	</xsl:template>
 
 </xsl:stylesheet>

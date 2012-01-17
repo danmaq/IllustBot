@@ -140,6 +140,28 @@ class CComment
 	}
 
 	/**
+	 *	本文を取得します。
+	 *
+	 *	@return string 本文。
+	 */
+	public function getMessage()
+	{
+		$body =& $this->storage();
+		return $body['message'];
+	}
+
+	/**
+	 *	本文を設定します。
+	 *
+	 *	@param string $value 本文。
+	 */
+	public function setMessage($value)
+	{
+		$body =& $this->storage();
+		$body['message'] = $value;
+	}
+
+	/**
 	 *	データベースに保存されているかどうかを取得します。
 	 *
 	 *	注意: この関数は、コミットされているかどうかを保証するものではありません。
@@ -151,7 +173,7 @@ class CComment
 		self::initialize();
 		return CDBManager::getInstance()->singleFetch(
 			CFileSQLComment::getInstance()->selectExists,
-			'EXIST', $this->createDBParams());
+			'EXIST', $this->createDBParamsOnlyEID());
 	}
 
 	/**
@@ -168,7 +190,7 @@ class CComment
 			self::initialize();
 			$pdo->beginTransaction();
 			$result = $db->execute(CFileSQLComment::getInstance()->delete,
-				$this->createDBParams()) && parent::delete();
+				$this->createDBParamsOnlyEID()) && parent::delete();
 			if(!$result)
 			{
 				throw new Exception(_('DB書き込みに失敗'));
@@ -194,31 +216,16 @@ class CComment
 		$db = CDBManager::getInstance();
 		$pdo = $db->getPDO();
 		$result = false;
-		if($this->getHash() < 0)
-		{
-			$this->resetImage();
-		}
 		try
 		{
 			$pdo->beginTransaction();
-			$fcache = CFileSQLComment::getInstance();
-			$sql = null;
-			$params = null;
-			if($this->isExists())
+			$result = $this->isExists();
+			if(!$result)
 			{
-				$sql = $fcache->update;
-				$params = $this->createDBParams() + array(
-					'vote_count' => array($this->getVoteCount(), PDO::PARAM_INT),
-					'score' => array($this->getScore(), PDO::PARAM_INT));
+				$result = $db->execute(CFileSQLComment::getInstance()->insert,
+					$this->createDBParamsOnlyEID() + $this->createDBParams());
 			}
-			else
-			{
-				$sql = $fcache->insert;
-				$params = $this->createDBParams() +	$this->createDBParamsOnlyEID() + array(
-					'owner' => array($this->getOwner()->getID(), PDO::PARAM_STR),
-					'generation' => array($this->getGeneration(), PDO::PARAM_INT));
-			}
-			$result = $this->getEntity()->commit() && $db->execute($sql, $params);
+			$result = $result && $this->getEntity()->commit();
 			if(!$result)
 			{
 				throw new Exception(_('DB書き込みに失敗'));
@@ -241,15 +248,12 @@ class CComment
 	public function rollback()
 	{
 		$body = CDBManager::getInstance()->execAndFetch(
-			CFileSQLComment::getInstance()->select, $this->createDBParams());
+			CFileSQLComment::getInstance()->select, $this->createDBParamsOnlyEID());
 		$result = count($body) > 0;
 		if($result)
 		{
 			$this->createEntity($body[0]['ENTITY_ID']);
 			$this->setOwner($body[0]['OWNER']);
-			$this->setGeneration($body[0]['GENERATION']);
-			$this->setVoteCount($body[0]['VOTE_COUNT']);
-			$this->setScore($body[0]['SCORE']);
 		}
 		return $result;
 	}
