@@ -117,7 +117,8 @@ class CSceneViewImage
 				'ownergeneration' => $owner->getGeneration(),
 				'amount' => $child->getAmount()));
 			$comment = $xmlbuilder->createElement('comment');
-			foreach($botsNewbie as $item)
+			$comments = $this->comments;
+			foreach($comments as $item)
 			{
 				$xmlbuilder->createItem(array(
 					'datetime' => $item->getUpdate(),
