@@ -50,7 +50,7 @@ class CSceneCommentPost
 	{
 		if(self::$instance == null)
 		{
-			self::$instance = new CSceneNewBotPost();
+			self::$instance = new CSceneCommentPost();
 		}
 		return self::$instance;
 	}
