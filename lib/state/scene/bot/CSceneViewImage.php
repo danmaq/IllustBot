@@ -123,7 +123,7 @@ class CSceneViewImage
 				foreach($comments as $item)
 				{
 					$xmlbuilder->createItem(array(
-						'datetime' => $item->getUpdate(),
+						'datetime' => $item->getUpdated()->format('Y-m-d H:i:s'),
 						'message' => $item->getMessage(),
 					), $comment);
 				}

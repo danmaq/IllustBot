@@ -67,7 +67,7 @@
 
 	<!-- コメント。 -->
 	<xsl:template match="item">
-		<li><xsl:value-of select="@message" />[<xsl:value-of select="@datetime" />]</li>
+		<li>[<xsl:value-of select="@datetime" />]<xsl:value-of select="@message" /></li>
 	</xsl:template>
 
 </xsl:stylesheet>

@@ -49,7 +49,7 @@ class CDataEntity
 		}
 		$this->id = $id;
 		$this->format = $format;
-		$this->updated = time();
+		$this->updated = self::createDateTime();
 		$this->resetStorage();
 	}
 
@@ -79,6 +79,25 @@ class CDataEntity
 			mt_rand(0, 65535), mt_rand(16384, 20479), mt_rand(32768, 49151),
 			mt_rand(0, 65535), mt_rand(0, 65535), mt_rand(0, 65535));
  	}
+
+	/**
+	 *	DateTimeオブジェクトを作成します。
+	 *
+	 *	@param mixed $unixtime UNIXTIME。
+	 *	@return DateTime DateTimeオブジェクト。
+	 */
+	private static function createDateTime($unixtime = 'now')
+	{
+		if(!is_string($unixtime))
+		{
+			$unixtime = sprintf('@%d', $unixtime);
+		}
+		error_log($unixtime);
+		$timezone = new DateTimeZone('Asia/Tokyo');
+		$result = new DateTime($unixtime, $timezone);
+		$result->setTimezone($timezone);
+		return $result;
+	}
 
 	//* instance methods ───────────────────────────*
 
@@ -196,7 +215,7 @@ class CDataEntity
 		if($result)
 		{
 			$this->body = unserialize($body[0]['BODY']);
-			$this->updated = $body[0]['UPDATED'];
+			$this->updated = self::createDateTime((int)($body[0]['UPDATED']));
 			$this->resetStorage(false);
 		}
 		return $result;

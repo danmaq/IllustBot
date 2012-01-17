@@ -262,7 +262,7 @@ class CComment
 		$result = count($body) > 0;
 		if($result)
 		{
-			$this->createEntity($body[0]['ENTITY_ID']);
+			$this->createEntity($this->getID());
 			$this->setOwner($body[0]['OWNER']);
 		}
 		return $result;
